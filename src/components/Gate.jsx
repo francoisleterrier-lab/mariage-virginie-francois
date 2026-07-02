@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { supabase, messageErreurAuth } from "../lib/supabase.js";
-import Rosette from "./Rosette.jsx";
+import MedaillonArbre from "./MedaillonArbre.jsx";
 
 /* ============================================================
    PORTAIL : inscription / connexion / proposition couple
@@ -104,7 +104,7 @@ export default function Gate({ onEnter }) {
 
   return (
     <div className="gate">
-      <Rosette size={220} />
+      <MedaillonArbre variant="gate" />
       <h1 className="gate-titre">
         Virginie <em>&amp;</em> François
       </h1>
