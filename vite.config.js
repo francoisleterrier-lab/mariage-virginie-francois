@@ -2,10 +2,12 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
 
-// base: './' => chemins relatifs dans dist/, uploadable tel quel sur
-// n'importe quel serveur statique (racine ou sous-dossier).
+// base : '/mariage-virginie-francois/' sur GitHub Pages (via BASE_PATH dans le
+// workflow), sinon './' → dist/ uploadable tel quel sur n'importe quel serveur.
+const base = process.env.BASE_PATH || "./";
+
 export default defineConfig({
-  base: "./",
+  base,
   plugins: [
     react(),
     VitePWA({
@@ -28,10 +30,9 @@ export default defineConfig({
         lang: "fr",
         display: "standalone",
         orientation: "portrait",
-        start_url: "./",
-        scope: "./",
         background_color: "#22382C",
         theme_color: "#22382C",
+        // start_url / scope sont dérivés automatiquement de `base` par le plugin.
         icons: [
           { src: "icons/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
           { src: "icons/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
