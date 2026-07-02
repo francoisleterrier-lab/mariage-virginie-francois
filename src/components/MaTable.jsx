@@ -1,51 +1,178 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "../lib/supabase.js";
 
 /* ============================================================
    « Ma table » côté invité.
-   - Invisible (carte mystère) tant que le paramètre plan_visible
-     n'est pas activé par l'admin.
-   - Une fois activé : nom de sa table, voisins, mini-plan de salle
-     avec sa table mise en évidence (or).
+   - Réservations fermées + plan non publié → carte mystère.
+   - Réservations ouvertes → l'invité choisit / change sa table
+     (comptage en adultes ; tables bloquées = mariés/enfants).
+   - Plan publié (admin) → sa table + voisins + mini-plan.
    ============================================================ */
-export default function MaTable({ profile }) {
-  const [visible, setVisible] = useState(null); // null = chargement
+export default function MaTable({ profile, onReload }) {
+  const [prets, setPrets] = useState(false);
+  const [planVisible, setPlanVisible] = useState(false);
+  const [reservationOuverte, setReservationOuverte] = useState(false);
   const [tables, setTables] = useState([]);
   const [voisins, setVoisins] = useState([]);
+  const [choix, setChoix] = useState(false); // afficher la liste de tables
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+
+  const charger = useCallback(async () => {
+    const [{ data: params }, { data: t }, { data: v }] = await Promise.all([
+      supabase.from("parametres").select("cle, valeur").in("cle", ["plan_visible", "reservation_ouverte"]),
+      supabase.rpc("tables_dispo"),
+      supabase.rpc("mes_voisins"),
+    ]);
+    const p = Object.fromEntries((params || []).map((r) => [r.cle, r.valeur === true]));
+    setPlanVisible(!!p.plan_visible);
+    setReservationOuverte(!!p.reservation_ouverte);
+    setTables(t || []);
+    setVoisins((v || []).map((r) => r.nom));
+    setPrets(true);
+  }, []);
 
   useEffect(() => {
-    (async () => {
-      const { data: param } = await supabase
-        .from("parametres")
-        .select("valeur")
-        .eq("cle", "plan_visible")
-        .maybeSingle();
-      const actif = param?.valeur === true;
-      setVisible(actif);
-      if (!actif) return;
+    charger();
+  }, [charger, profile.table_id]);
 
-      const [{ data: t }, { data: v }] = await Promise.all([
-        supabase.from("tables_plan").select("id, nom, forme, pos_x, pos_y"),
-        supabase.rpc("mes_voisins"),
-      ]);
-      setTables(t || []);
-      setVoisins((v || []).map((r) => r.nom));
-    })();
-  }, [profile.table_id]);
-
-  if (visible === null) return null;
+  if (!prets) return null;
 
   const maTable = tables.find((t) => t.id === profile.table_id);
 
+  async function rejoindre(tableId) {
+    setBusy(true);
+    setErr("");
+    const { error } = await supabase.rpc("reserver_table", { p_table: tableId });
+    setBusy(false);
+    if (error) return setErr(error.message || "Réservation impossible.");
+    setChoix(false);
+    await onReload?.(); // recharge le profil (table_id) → l'effet relance charger()
+  }
+
+  async function seRetirer() {
+    setBusy(true);
+    setErr("");
+    const { error } = await supabase.rpc("liberer_table");
+    setBusy(false);
+    if (error) return setErr(error.message || "Impossible de se retirer.");
+    await onReload?.();
+  }
+
+  /* Liste des tables à choisir (rejoindre / changer). */
+  const liste = (
+    <div className="tables-choix">
+      {err && <p className="gate-err" style={{ color: "#b06a4f" }}>{err}</p>}
+      {tables.map((t) => {
+        const restantes = t.capacite - t.pris;
+        const complet = restantes <= 0;
+        const ici = t.id === profile.table_id;
+        return (
+          <div key={t.id} className={"table-carte" + (t.bloquee ? " bloquee" : "") + (ici ? " ici" : "")}>
+            <div className="table-info">
+              <strong>{t.nom}</strong>
+              {t.bloquee ? (
+                <span className="table-etat verrou">🔒 Réservée</span>
+              ) : ici ? (
+                <span className="table-etat ok">Votre table</span>
+              ) : complet ? (
+                <span className="table-etat complet">Complet</span>
+              ) : (
+                <span className="table-etat">
+                  {restantes} place{restantes > 1 ? "s" : ""} sur {t.capacite}
+                </span>
+              )}
+            </div>
+            {!t.bloquee && !ici && !complet && (
+              <button className="btn-vert table-btn" disabled={busy} onClick={() => rejoindre(t.id)}>
+                Rejoindre
+              </button>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+
+  const miniPlan = (
+    <div className="miniplan" role="img" aria-label="Plan de salle">
+      {tables.map((t) => {
+        const moi = t.id === profile.table_id;
+        return (
+          <div
+            key={t.id}
+            className={"miniplan-t" + (moi ? " moi" : "") + (t.forme === "rectangle" ? " rect" : "") + (t.bloquee ? " verr" : "")}
+            style={{ left: `${t.pos_x}%`, top: `${t.pos_y}%` }}
+            title={t.nom}
+          >
+            <span>{moi ? "★" : t.bloquee ? "🔒" : ""}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+
   return (
     <section className="matable" id="matable">
-      {/* pas de classe `reveal` : cette section est rendue après un chargement
-          async, or l'observateur de scroll est posé au montage → elle resterait
-          invisible (opacity:0). On l'affiche donc directement. */}
       <div className="wrap center">
         <p className="eyebrow">Votre place</p>
 
-        {!visible || !profile.table_id ? (
+        {/* 1) Réservations ouvertes */}
+        {reservationOuverte ? (
+          maTable && !choix ? (
+            <>
+              <h2>
+                Vous êtes à la <em>{maTable.nom}</em>
+              </h2>
+              {voisins.length > 0 && (
+                <p className="matable-voisins">
+                  À vos côtés : <strong>{voisins.join(", ")}</strong>
+                </p>
+              )}
+              {miniPlan}
+              <p className="miniplan-legende">★ votre table · 🔒 réservée</p>
+              <div className="matable-actions">
+                <button className="btn-lien" onClick={() => setChoix(true)}>
+                  Changer de table
+                </button>
+                <button className="btn-lien" disabled={busy} onClick={seRetirer}>
+                  Me retirer
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <h2>
+                Choisissez <em>votre table</em>
+              </h2>
+              <p>
+                Installez-vous où vous voulez — la table des mariés et la table des enfants sont réservées.
+                {profile.rsvp?.adultes ? ` Votre réservation prend ${profile.rsvp.adultes} place(s) adulte(s).` : ""}
+              </p>
+              {liste}
+              {maTable && (
+                <button className="btn-lien" style={{ marginTop: "1rem" }} onClick={() => setChoix(false)}>
+                  Annuler
+                </button>
+              )}
+            </>
+          )
+        ) : planVisible && maTable ? (
+          /* 2) Plan publié par l'admin (placement imposé) */
+          <>
+            <h2>
+              Vous êtes à la <em>{maTable.nom}</em>
+            </h2>
+            {voisins.length > 0 && (
+              <p className="matable-voisins">
+                À vos côtés : <strong>{voisins.join(", ")}</strong>
+              </p>
+            )}
+            {miniPlan}
+            <p className="miniplan-legende">★ votre table · 🔒 réservée</p>
+          </>
+        ) : (
+          /* 3) Rien encore : carte mystère */
           <>
             <h2>
               Votre place se <em>prépare</em>…
@@ -53,39 +180,10 @@ export default function MaTable({ profile }) {
             <div className="matable-mystere">
               <div className="q">🌿</div>
               <p>
-                Le plan de salle est en cours de dessin. Votre table et vos voisins de tablée vous seront
-                révélés ici quelques jours avant le grand jour.
+                Le plan de salle arrive bientôt. Vous pourrez choisir votre table ici — on vous préviendra le
+                moment venu.
               </p>
             </div>
-          </>
-        ) : (
-          <>
-            <h2>
-              Vous êtes à la <em>{maTable?.nom || "table à venir"}</em>
-            </h2>
-
-            {voisins.length > 0 && (
-              <p className="matable-voisins">
-                À vos côtés : <strong>{voisins.join(", ")}</strong>
-              </p>
-            )}
-
-            <div className="miniplan" role="img" aria-label={`Plan de salle, votre place : ${maTable?.nom}`}>
-              {tables.map((t) => {
-                const moi = t.id === profile.table_id;
-                return (
-                  <div
-                    key={t.id}
-                    className={"miniplan-t" + (moi ? " moi" : "") + (t.forme === "rectangle" ? " rect" : "")}
-                    style={{ left: `${t.pos_x}%`, top: `${t.pos_y}%` }}
-                    title={t.nom}
-                  >
-                    <span>{moi ? "★" : ""}</span>
-                  </div>
-                );
-              })}
-            </div>
-            <p className="miniplan-legende">★ votre table</p>
           </>
         )}
       </div>

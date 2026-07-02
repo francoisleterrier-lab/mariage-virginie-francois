@@ -1557,3 +1557,100 @@ footer p {
   color: var(--or);
   font-weight: 500;
 }
+
+/* === Réservation de table (invité) === */
+.tables-choix {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 0.8rem;
+  max-width: 720px;
+  margin: 1.8rem auto 0;
+  text-align: left;
+}
+.table-carte {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+  background: var(--blanc);
+  border: 1px solid rgba(126, 150, 120, 0.48);
+  border-radius: 14px;
+  padding: 0.9rem 1.1rem;
+  box-shadow: var(--ombre);
+}
+.table-carte.bloquee {
+  background: var(--fond2);
+  opacity: 0.85;
+}
+.table-carte.ici {
+  border-color: var(--or);
+  box-shadow: 0 0 0 2px rgba(198, 154, 63, 0.35), var(--ombre);
+}
+.table-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.table-info strong {
+  font-weight: 500;
+  font-size: 1.05rem;
+}
+.table-etat {
+  font-size: 0.82rem;
+  color: var(--sauge);
+}
+.table-etat.ok {
+  color: var(--or);
+  font-weight: 500;
+}
+.table-etat.complet {
+  color: #b06a4f;
+}
+.table-etat.verrou {
+  color: var(--encre2);
+}
+.table-btn {
+  margin: 0 !important;
+  width: auto !important;
+  padding: 0.6rem 1.2rem !important;
+  font-size: 0.72rem !important;
+}
+.matable-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1.2rem;
+  flex-wrap: wrap;
+}
+.matable-actions .btn-lien {
+  width: auto;
+}
+.miniplan-t.verr {
+  border-style: dashed;
+  color: var(--or);
+}
+
+/* === Admin : interrupteurs & tables bloquées === */
+.plan-switches {
+  display: flex;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+.plan-t.bloquee {
+  background: var(--or);
+  border-color: var(--orc);
+}
+.plan-lock {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  background: var(--fond2);
+  font-size: 0.72rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 2px 6px -2px rgba(0, 0, 0, 0.4);
+}
