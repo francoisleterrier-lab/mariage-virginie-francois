@@ -101,7 +101,7 @@ begin
   update public.invites set couple_id = moi_id       where id = partner_id;
 end;
 $$;
-grant execute on public.lier_couple(uuid) to authenticated;
+grant execute on function public.lier_couple(uuid) to authenticated;
 
 create or replace function public.delier_couple()
 returns void
@@ -120,7 +120,7 @@ begin
   update public.invites set couple_id = null where id = autre_id;
 end;
 $$;
-grant execute on public.delier_couple() to authenticated;
+grant execute on function public.delier_couple() to authenticated;
 
 -- ============================================================
 --  Affectation d'un invité à une table (admin uniquement)
@@ -137,7 +137,7 @@ begin
   update public.invites set table_id = p_table where id = p_invite;
 end;
 $$;
-grant execute on public.affecter_table(uuid, uuid) to authenticated;
+grant execute on function public.affecter_table(uuid, uuid) to authenticated;
 
 -- ============================================================
 --  « Ma table » côté invité : voisins de table.
@@ -159,7 +159,7 @@ as $$
     and i.user_id <> auth.uid()
   order by i.nom;
 $$;
-grant execute on public.mes_voisins() to authenticated;
+grant execute on function public.mes_voisins() to authenticated;
 
 -- ============================================================
 --  Nombre d'abonnés push (admin uniquement).
@@ -177,7 +177,7 @@ as $$
               then (select count(*)::int from public.push_subscriptions)
               else 0 end;
 $$;
-grant execute on public.nb_abonnes() to authenticated;
+grant execute on function public.nb_abonnes() to authenticated;
 
 -- ============================================================
 --  POLITIQUES RLS
