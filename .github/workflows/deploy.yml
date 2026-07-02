@@ -36,10 +36,9 @@ jobs:
         env:
           # Chemin GitHub Pages = /<nom-du-depot>/
           BASE_PATH: /${{ github.event.repository.name }}/
-          # Clés à définir dans Settings > Secrets and variables > Actions
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-          VITE_VAPID_PUBLIC_KEY: ${{ secrets.VITE_VAPID_PUBLIC_KEY }}
+          # Les clés publiques (URL, anon/publishable, VAPID public) sont dans
+          # .env.production (commité). RLS protège les données ; aucun secret
+          # sensible n'est exposé ici.
 
       - name: Configurer Pages
         uses: actions/configure-pages@v5

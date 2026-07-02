@@ -1,0 +1,12 @@
+# Configuration Supabase — reliée au projet via l'intégration GitHub.
+# Le project_id permet à l'intégration d'appliquer les migrations de
+# supabase/migrations/ au merge sur la branche de production (main).
+project_id = "lmmnbtcolboomdpfprxs"
+
+[auth]
+site_url = "https://francoisleterrier-lab.github.io/mariage-virginie-francois/"
+additional_redirect_urls = ["https://francoisleterrier-lab.github.io/mariage-virginie-francois/"]
+
+[auth.email]
+# Faire-part privé : les invités entrent immédiatement après inscription.
+enable_confirmations = false
