@@ -1654,3 +1654,43 @@ footer p {
   cursor: pointer;
   box-shadow: 0 2px 6px -2px rgba(0, 0, 0, 0.4);
 }
+
+/* === Portail : vidéo d'ambiance en fond, fondue === */
+.gate {
+  position: relative;
+  overflow: hidden;
+}
+.gate-fond {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  opacity: 0.5; /* léger fondu */
+  pointer-events: none;
+}
+.gate-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  /* mêmes dégradés or/sauge que le portail + voile vert pour la lisibilité */
+  background: radial-gradient(60vmin 60vmin at 12% 8%, rgba(176, 141, 79, 0.18), transparent 70%),
+    radial-gradient(50vmin 50vmin at 88% 92%, rgba(173, 194, 164, 0.16), transparent 70%),
+    linear-gradient(rgba(34, 56, 44, 0.72), rgba(31, 48, 38, 0.82));
+}
+.gate-inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gate-fond {
+    display: none;
+  }
+}
