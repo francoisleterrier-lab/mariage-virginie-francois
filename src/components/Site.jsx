@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { supabase } from "../lib/supabase.js";
 import Rosette from "./Rosette.jsx";
 import Countdown from "./Countdown.jsx";
+import MaTable from "./MaTable.jsx";
+import PushOptIn from "./PushOptIn.jsx";
 
 import videoArbre from "../assets/arbre-de-vie.mp4";
 import photoCouple from "../assets/couple.jpg";
@@ -153,6 +155,9 @@ export default function Site({ profile, onReload, onLogout }) {
             <a href="#infos">Infos</a>
           </li>
           <li>
+            <a href="#matable">Ma table</a>
+          </li>
+          <li>
             <a href="#rsvp">RSVP</a>
           </li>
           <li>
@@ -200,6 +205,11 @@ export default function Site({ profile, onReload, onLogout }) {
       {/* COMPTE À REBOURS */}
       <div className="countdown" id="compte">
         <Countdown />
+      </div>
+
+      {/* ENCART PUSH (doux, masquable, s'auto-cache si déjà abonné) */}
+      <div className="push-band">
+        <PushOptIn inviteId={profile.id} />
       </div>
 
       {/* NOUS */}
@@ -396,6 +406,9 @@ export default function Site({ profile, onReload, onLogout }) {
           </div>
         </div>
       </section>
+
+      {/* MA TABLE (mystère tant que l'admin n'a pas publié le plan) */}
+      <MaTable profile={profile} />
 
       {/* RSVP */}
       <section className="rsvp" id="rsvp">

@@ -3,6 +3,7 @@ import { supabase } from "./lib/supabase.js";
 import Gate from "./components/Gate.jsx";
 import Site from "./components/Site.jsx";
 import Admin from "./components/Admin.jsx";
+import InstallBanner from "./components/InstallBanner.jsx";
 
 /* ============================================================
    RACINE — machine à états d'accès
@@ -26,7 +27,7 @@ export default function App() {
     }
     const { data } = await supabase
       .from("invites")
-      .select("id, nom, email, couple_id, role, rsvp, rsvp_date")
+      .select("id, nom, email, couple_id, table_id, role, rsvp, rsvp_date")
       .eq("user_id", user.id)
       .maybeSingle();
     setProfile(data || null);
@@ -73,7 +74,12 @@ export default function App() {
   }
 
   if (phase === "gate") {
-    return <Gate onEnter={entrer} />;
+    return (
+      <>
+        <Gate onEnter={entrer} />
+        <InstallBanner />
+      </>
+    );
   }
 
   // phase === 'app'
@@ -95,5 +101,10 @@ export default function App() {
     return <Admin onLogout={deconnexion} />;
   }
 
-  return <Site profile={profile} onReload={chargerProfil} onLogout={deconnexion} />;
+  return (
+    <>
+      <Site profile={profile} onReload={chargerProfil} onLogout={deconnexion} />
+      <InstallBanner />
+    </>
+  );
 }

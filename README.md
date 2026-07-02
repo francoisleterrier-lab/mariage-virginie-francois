@@ -24,10 +24,12 @@ npm run dev
 ## 3. Configuration Supabase
 
 1. Créez un projet sur supabase.com.
-2. **SQL** : ouvrez `SQL Editor`, collez le contenu de
-   [`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sql) et exécutez.
-   Cela crée la table `invites`, la vue publique `invites_public`, les policies RLS
-   et les fonctions `lier_couple` / `delier_couple` / `is_admin`.
+2. **SQL** : ouvrez `SQL Editor`, collez et exécutez **dans l'ordre** :
+   - [`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sql) — table `invites`,
+     vue publique `invites_public`, policies RLS, fonctions `lier_couple` / `delier_couple` / `is_admin`.
+   - [`supabase/migrations/0002_pwa_push_plan.sql`](supabase/migrations/0002_pwa_push_plan.sql) —
+     tables `push_subscriptions`, `tables_plan`, `parametres`, `notifications_log`,
+     colonne `invites.table_id`, fonctions `affecter_table` / `mes_voisins` et garde-fou colonnes.
 3. **Auth** : `Authentication > Providers > Email` → activé.
    - **Recommandé pour un faire-part privé** : `Authentication > Sign In / Providers`
      → désactivez **« Confirm email »**. Les invités entrent alors immédiatement
@@ -43,9 +45,10 @@ Dans `.env.local` (jamais commité) :
 ```
 VITE_SUPABASE_URL=https://votre-projet.supabase.co
 VITE_SUPABASE_ANON_KEY=votre-cle-anon-publique
+VITE_VAPID_PUBLIC_KEY=votre-cle-publique-vapid   # voir §7 (push)
 ```
 
-N'utilisez **jamais** la clé `service_role` côté front.
+N'utilisez **jamais** la clé `service_role` ni la clé **privée** VAPID côté front.
 
 ## 5. Désigner l'administrateur
 
@@ -87,24 +90,89 @@ npm run preview    # prévisualise le build localement
 2. `Settings > Environment Variables` : ajoutez `VITE_SUPABASE_URL` et
    `VITE_SUPABASE_ANON_KEY`.
 3. Déployez. Build command `npm run build`, output `dist`.
+   Ajoutez aussi `VITE_VAPID_PUBLIC_KEY` (§7).
+
+## 7.bis PWA (application installable)
+
+Le build génère automatiquement le `manifest.webmanifest` et le service worker
+(`vite-plugin-pwa`). Rien à configurer :
+
+- **Installation** : une bannière maison invite à ajouter le site à l'écran
+  d'accueil (bouton natif sur Android ; instructions **Partager → Sur l'écran
+  d'accueil** sur iPhone, qui n'a pas de prompt automatique).
+- **Hors-ligne** : le shell (HTML/CSS/JS/polices) est précaché ; les médias
+  (photos, vidéo, icônes) sont en *stale-while-revalidate*. Les sections
+  statiques (histoire, programme) s'ouvrent sans réseau ; les données Supabase
+  affichent un état vide propre hors-ligne.
+- ⚠️ La PWA n'est active que **servie en HTTPS** (ou `localhost`).
+
+## 7.ter Notifications push (VAPID + Edge Function)
+
+1. **Générer les clés VAPID** (une seule fois) :
+
+   ```bash
+   npx web-push generate-vapid-keys
+   ```
+
+   Mettez la clé **publique** dans `VITE_VAPID_PUBLIC_KEY` (front) et gardez la
+   **privée** pour l'Edge Function.
+
+2. **Déployer l'Edge Function** :
+
+   ```bash
+   supabase functions deploy envoyer-notification
+   supabase secrets set \
+     VAPID_PUBLIC_KEY="<clé publique>" \
+     VAPID_PRIVATE_KEY="<clé privée>" \
+     VAPID_SUBJECT="mailto:francois.leterrier@gmail.com"
+   ```
+
+   (`SUPABASE_URL`, `SUPABASE_ANON_KEY` et `SUPABASE_SERVICE_ROLE_KEY` sont
+   injectés automatiquement dans la fonction.)
+
+3. **Usage** : côté invité, un encart doux propose l'abonnement après connexion
+   (jamais de demande brutale). Côté admin, l'onglet **Notifications** envoie un
+   titre + message à tous les abonnés (révélation du lieu, programme du samedi,
+   rappel RSVP…) ; chaque envoi est journalisé.
+   - Sur iPhone, le push exige la **PWA installée** (iOS ≥ 16.4) — l'UI le
+     rappelle et incite à installer d'abord.
+   - La clé **privée** VAPID reste dans l'Edge Function (secret), jamais dans le front.
+
+## 7.quater Plan de table
+
+- **Admin** (onglet *Plan de table*) : créer des tables (nom, forme, capacité),
+  les glisser sur le canevas, affecter chaque invité, basculer la visibilité
+  invité (`plan_visible`). Une **alerte** signale tout couple séparé.
+- **Invité** (section *Ma table*) : carte mystère tant que le plan n'est pas
+  publié ; ensuite nom de sa table, voisins de tablée et mini-plan avec sa table
+  en **or**.
 
 ## 8. Structure
 
 ```
 index.html                     Entrée Vite (noindex, polices Google)
+public/icons/                  Icônes PWA (arbre de vie 192/512/maskable)
 src/
-  main.jsx                     Montage React
+  main.jsx                     Montage React + enregistrement du service worker
+  sw.js                        Service worker (précache + SWR + push)
   App.jsx                      Machine à états d'accès (boot/gate/app)
   styles.css                   Design system complet (couleurs, typo, responsive)
   lib/supabase.js              Client Supabase + messages d'erreur FR
+  lib/push.js                  Helpers Web Push (VAPID, abonnement)
   components/
     Gate.jsx                   Portail : inscription / connexion / couple
     Site.jsx                   Faire-part (héro vidéo+SVG, RSVP, couple tardif)
-    Admin.jsx                  Tableau de bord + export CSV
+    Admin.jsx                  Tableau de bord (onglets) + export CSV
+    PushAdmin.jsx              Envoi de notifications + historique
+    PlanEditor.jsx             Éditeur de plan de table (drag, affectation)
+    MaTable.jsx                Vue « Ma table » invité (mystère / publiée)
+    InstallBanner.jsx          Bannière d'installation PWA (parcours iOS)
+    PushOptIn.jsx              Encart doux d'abonnement aux notifications
     Rosette.jsx                Arbre de vie SVG (secours vidéo)
     Countdown.jsx              Compte à rebours
   assets/                      Vidéo + photos (hashées par Vite au build)
-supabase/migrations/0001_init.sql   Schéma, RLS, vue, fonctions
+supabase/migrations/           0001 (base) + 0002 (push/plan/paramètres)
+supabase/functions/envoyer-notification/   Edge Function d'envoi push
 ```
 
 ## 9. Modèle de sécurité (résumé)

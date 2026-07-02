@@ -162,6 +162,24 @@ $$;
 grant execute on public.mes_voisins() to authenticated;
 
 -- ============================================================
+--  Nombre d'abonnés push (admin uniquement).
+--  Évite d'exposer push_subscriptions en lecture globale au front :
+--  seule cette fonction (security definer) renvoie le total.
+-- ============================================================
+create or replace function public.nb_abonnes()
+returns integer
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select case when public.is_admin()
+              then (select count(*)::int from public.push_subscriptions)
+              else 0 end;
+$$;
+grant execute on public.nb_abonnes() to authenticated;
+
+-- ============================================================
 --  POLITIQUES RLS
 -- ============================================================
 

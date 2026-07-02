@@ -1082,3 +1082,422 @@ footer p {
     scroll-behavior: auto;
   }
 }
+
+/* ============================================================
+   v2.1 — PWA (bannière install), push, plan de table
+   ============================================================ */
+
+/* bannière d'installation */
+.install-banner {
+  position: fixed;
+  left: 50%;
+  bottom: 1rem;
+  transform: translateX(-50%);
+  z-index: 200;
+  width: min(560px, calc(100% - 1.6rem));
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.9rem 1rem;
+  background: var(--encre);
+  color: var(--fond);
+  border: 1px solid rgba(203, 177, 131, 0.5);
+  border-radius: 14px;
+  box-shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.5);
+}
+.install-emoji {
+  font-size: 1.5rem;
+}
+.install-txt {
+  flex: 1;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.install-txt strong {
+  font-weight: 500;
+  color: var(--blanc);
+}
+.install-txt b {
+  color: var(--orc);
+  font-weight: 500;
+}
+.install-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.install-oui {
+  background: var(--orc);
+  color: var(--encre);
+  border: none;
+  border-radius: 999px;
+  padding: 0.5rem 1rem;
+  font: inherit;
+  font-size: 0.74rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.install-non {
+  background: transparent;
+  color: var(--aloe);
+  border: none;
+  font: inherit;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+/* encart push (côté invité) */
+.push-band {
+  background: var(--fond2);
+  padding: 0 1.5rem 3rem;
+  display: flex;
+  justify-content: center;
+}
+.push-optin {
+  width: min(560px, 100%);
+  background: var(--blanc);
+  border: 1px solid rgba(126, 150, 120, 0.35);
+  border-radius: 16px;
+  padding: 1.6rem 1.8rem;
+  text-align: center;
+}
+.push-titre {
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  font-size: 1.4rem;
+  color: var(--or);
+  margin-bottom: 0.4rem;
+}
+.push-optin p {
+  font-size: 0.92rem;
+  color: var(--encre2);
+}
+.push-actions {
+  display: flex;
+  gap: 0.8rem;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+.push-oui {
+  margin-top: 0 !important;
+  width: auto !important;
+  padding: 0.75rem 1.4rem !important;
+}
+
+/* ma table (invité) */
+.matable {
+  background: radial-gradient(60vmin 60vmin at 15% 10%, rgba(176, 141, 79, 0.1), transparent 70%), var(--fond);
+}
+.matable-mystere {
+  max-width: 520px;
+  margin: 2rem auto 0;
+  padding: 2.4rem 2rem;
+  border: 1px dashed rgba(176, 141, 79, 0.5);
+  border-radius: 16px;
+  background: var(--blanc);
+}
+.matable-mystere .q {
+  font-size: 2.6rem;
+  line-height: 1;
+  margin-bottom: 0.6rem;
+}
+.matable-voisins {
+  font-size: 1.05rem;
+  margin-top: 0.4rem;
+}
+.miniplan {
+  position: relative;
+  width: min(560px, 100%);
+  aspect-ratio: 3 / 2;
+  margin: 2rem auto 0.6rem;
+  background: var(--blanc);
+  border: 1px solid rgba(126, 150, 120, 0.35);
+  border-radius: 16px;
+}
+.miniplan-t {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1.5px solid var(--sauge);
+  background: var(--fond2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--or);
+  font-size: 0.9rem;
+}
+.miniplan-t.rect {
+  border-radius: 8px;
+  width: 58px;
+  height: 34px;
+}
+.miniplan-t.moi {
+  border-color: var(--or);
+  background: var(--orc);
+  box-shadow: 0 0 0 4px rgba(203, 177, 131, 0.3);
+  color: var(--encre);
+}
+.miniplan-legende {
+  font-size: 0.78rem;
+  color: var(--sauge);
+}
+
+/* admin — onglets & blocs */
+.admin-onglets {
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+.admin-onglets button {
+  background: transparent;
+  border: 1px solid rgba(126, 150, 120, 0.5);
+  color: var(--encre);
+  font: inherit;
+  font-size: 0.74rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.55rem 1.1rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.admin-onglets button.on {
+  background: var(--encre);
+  color: var(--blanc);
+  border-color: var(--encre);
+}
+.admin-bloc {
+  background: var(--blanc);
+  border: 1px solid rgba(126, 150, 120, 0.35);
+  border-radius: 16px;
+  padding: 1.8rem clamp(1rem, 3vw, 2rem);
+}
+.admin-h2 {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 500;
+  font-size: 1.7rem;
+  margin-bottom: 0.3rem;
+}
+.admin-h3 {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 500;
+  font-size: 1.25rem;
+  margin: 1.8rem 0 0.8rem;
+}
+.admin-sous {
+  font-size: 0.9rem;
+  color: var(--encre2);
+  margin-bottom: 1.2rem;
+}
+
+/* push admin */
+.push-form label {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sauge);
+  margin: 1rem 0 0.4rem;
+}
+.push-form input,
+.push-form textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(126, 150, 120, 0.45);
+  border-radius: 10px;
+  background: var(--fond);
+  font: inherit;
+  color: var(--encre);
+}
+.push-form input:focus,
+.push-form textarea:focus {
+  outline: 2px solid var(--or);
+  outline-offset: 1px;
+}
+.push-log {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.push-log li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid rgba(126, 150, 120, 0.25);
+  border-radius: 10px;
+  background: var(--fond);
+}
+.push-log strong {
+  display: block;
+  font-weight: 500;
+}
+.push-log span {
+  font-size: 0.88rem;
+  color: var(--encre2);
+}
+.push-log em {
+  font-size: 0.74rem;
+  color: var(--sauge);
+  white-space: nowrap;
+  font-style: normal;
+}
+
+/* plan de table (admin) */
+.plan-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--encre2);
+  cursor: pointer;
+}
+.switch input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--or);
+}
+.alerte-couple {
+  background: #f5e7d8;
+  border: 1px solid var(--orc);
+  color: #7a5a2a;
+  border-radius: 10px;
+  padding: 0.7rem 1rem;
+  font-size: 0.88rem;
+  margin: 1rem 0;
+}
+.plan-add {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 1.2rem;
+}
+.plan-add input,
+.plan-add select {
+  padding: 0.65rem 0.9rem;
+  border: 1px solid rgba(126, 150, 120, 0.45);
+  border-radius: 10px;
+  background: var(--fond);
+  font: inherit;
+  color: var(--encre);
+}
+.plan-add input:first-child {
+  flex: 1;
+  min-width: 180px;
+}
+.plan-canvas {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  background: repeating-linear-gradient(0deg, var(--fond) 0 24px, var(--fond2) 24px 25px),
+    repeating-linear-gradient(90deg, var(--fond) 0 24px, var(--fond2) 24px 25px);
+  border: 1px solid rgba(126, 150, 120, 0.4);
+  border-radius: 14px;
+  overflow: hidden;
+  touch-action: none;
+}
+.plan-vide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sauge);
+  font-style: italic;
+  text-align: center;
+  padding: 1rem;
+}
+.plan-t {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  min-width: 88px;
+  padding: 0.5rem 0.6rem 0.55rem;
+  background: var(--encre);
+  color: var(--fond);
+  border: 1px solid var(--orc);
+  border-radius: 50%;
+  text-align: center;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+.plan-t.rect {
+  border-radius: 10px;
+}
+.plan-t:active {
+  cursor: grabbing;
+}
+.plan-t strong {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.1;
+}
+.plan-t span {
+  font-size: 0.7rem;
+  color: var(--aloe);
+  font-variant-numeric: tabular-nums;
+}
+.plan-del {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+  background: var(--or);
+  color: var(--blanc);
+  font-size: 0.9rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.plan-affect {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 0.6rem;
+}
+.affect-ligne {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid rgba(126, 150, 120, 0.25);
+  border-radius: 10px;
+  background: var(--fond);
+}
+.affect-couple {
+  color: var(--or);
+  font-style: normal;
+  font-size: 0.82rem;
+}
+.affect-ligne select {
+  padding: 0.45rem 0.6rem;
+  border: 1px solid rgba(126, 150, 120, 0.45);
+  border-radius: 8px;
+  background: var(--blanc);
+  font: inherit;
+  color: var(--encre);
+  max-width: 45%;
+}
