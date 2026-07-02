@@ -1,0 +1,67 @@
+/// <reference lib="webworker" />
+/* Service worker (stratégie injectManifest) :
+   - précache du shell (HTML/CSS/JS/fonts) via Workbox
+   - stale-while-revalidate pour les médias (images, vidéo) et Google Fonts
+   - réception des notifications push (Web Push / VAPID)
+*/
+import { precacheAndRoute, cleanupOutdatedCaches } from "workbox-precaching";
+import { registerRoute } from "workbox-routing";
+import { StaleWhileRevalidate } from "workbox-strategies";
+import { ExpirationPlugin } from "workbox-expiration";
+
+// eslint-disable-next-line no-undef
+precacheAndRoute(self.__WB_MANIFEST || []);
+cleanupOutdatedCaches();
+
+// Médias (photos, vidéo arbre de vie, icônes) : SWR => dispo hors-ligne
+// après la 1re visite, mais rafraîchis en arrière-plan.
+registerRoute(
+  ({ request }) => ["image", "video", "audio", "font"].includes(request.destination),
+  new StaleWhileRevalidate({
+    cacheName: "medias-vf",
+    plugins: [new ExpirationPlugin({ maxEntries: 60, maxAgeSeconds: 60 * 60 * 24 * 30 })],
+  })
+);
+
+// Google Fonts (feuille + fichiers woff2).
+registerRoute(
+  ({ url }) => url.origin === "https://fonts.googleapis.com" || url.origin === "https://fonts.gstatic.com",
+  new StaleWhileRevalidate({ cacheName: "google-fonts" })
+);
+
+// ---------- Web Push ----------
+self.addEventListener("push", (event) => {
+  let data = { title: "Virginie & François", body: "", url: "./" };
+  try {
+    if (event.data) data = { ...data, ...event.data.json() };
+  } catch {
+    if (event.data) data.body = event.data.text();
+  }
+  const options = {
+    body: data.body,
+    icon: "icons/icon-192.png",
+    badge: "icons/icon-192.png",
+    tag: "vf-2028",
+    data: { url: data.url || "./" },
+    vibrate: [80, 40, 80],
+  };
+  event.waitUntil(self.registration.showNotification(data.title, options));
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const cible = event.notification.data?.url || "./";
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((liste) => {
+      for (const client of liste) {
+        if ("focus" in client) return client.focus();
+      }
+      if (self.clients.openWindow) return self.clients.openWindow(cible);
+    })
+  );
+});
+
+// Permet à la page de forcer l'activation d'une nouvelle version.
+self.addEventListener("message", (event) => {
+  if (event.data?.type === "SKIP_WAITING") self.skipWaiting();
+});
