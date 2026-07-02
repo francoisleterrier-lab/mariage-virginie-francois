@@ -28,10 +28,12 @@ export default function Gate({ onEnter }) {
     setBusy(true);
     const key = email.trim().toLowerCase();
 
-    // 1) Création du compte Auth
+    // 1) Création du compte Auth (le nom est stocké dans les métadonnées :
+    // il sert de secours si la ligne invité doit être recréée plus tard).
     const { data: signUp, error: errSignUp } = await supabase.auth.signUp({
       email: key,
       password: pass,
+      options: { data: { nom: nom.trim() } },
     });
     if (errSignUp) {
       setBusy(false);
