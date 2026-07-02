@@ -16,7 +16,7 @@ function csvCell(v) {
    ADMIN : réponses (stats + tableau + CSV), plan de table, notifications.
    RLS : is_admin() autorise la lecture de toutes les lignes.
    ============================================================ */
-export default function Admin({ onLogout }) {
+export default function Admin({ onLogout, onApercuInvite }) {
   const [invites, setInvites] = useState(null);
   const [erreur, setErreur] = useState("");
   const [onglet, setOnglet] = useState("reponses"); // reponses | plan | notifications
@@ -89,6 +89,11 @@ export default function Admin({ onLogout }) {
           {onglet === "reponses" && (
             <button className="btn-ghost" onClick={exporterCsv} disabled={invites.length === 0}>
               Exporter en CSV
+            </button>
+          )}
+          {onApercuInvite && (
+            <button className="btn-ghost" onClick={onApercuInvite}>
+              👁 Voir le site en invité
             </button>
           )}
           <button className="btn-ghost" onClick={onLogout}>

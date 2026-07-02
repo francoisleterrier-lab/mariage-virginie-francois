@@ -12,7 +12,7 @@ import photoTemoins from "../assets/temoins.jpg";
 /* ============================================================
    LE SITE FAIRE-PART (contenu identique à la v1 statique)
    ============================================================ */
-export default function Site({ profile, onReload, onLogout }) {
+export default function Site({ profile, onReload, onLogout, retourAdmin }) {
   const [secret, setSecret] = useState(false);
   const [partenaire, setPartenaire] = useState(null);
 
@@ -104,6 +104,11 @@ export default function Site({ profile, onReload, onLogout }) {
 
   return (
     <div>
+      {retourAdmin && (
+        <button className="retour-admin" onClick={retourAdmin}>
+          ← Retour admin <span>· aperçu invité</span>
+        </button>
+      )}
       <nav>
         <a className="logo" href="#accueil">
           V <span>&amp;</span> F
