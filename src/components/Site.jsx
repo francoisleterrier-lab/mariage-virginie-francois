@@ -1,11 +1,10 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase.js";
-import Rosette from "./Rosette.jsx";
 import Countdown from "./Countdown.jsx";
+import MedaillonArbre from "./MedaillonArbre.jsx";
 import MaTable from "./MaTable.jsx";
 import PushOptIn from "./PushOptIn.jsx";
 
-import videoArbre from "../assets/arbre-de-vie.mp4";
 import photoCouple from "../assets/couple.jpg";
 import photoEden from "../assets/eden.jpg";
 import photoTemoins from "../assets/temoins.jpg";
@@ -15,9 +14,7 @@ import photoTemoins from "../assets/temoins.jpg";
    ============================================================ */
 export default function Site({ profile, onReload, onLogout }) {
   const [secret, setSecret] = useState(false);
-  const [videoOk, setVideoOk] = useState(true);
   const [partenaire, setPartenaire] = useState(null);
-  const vidRef = useRef(null);
 
   // Liaison couple tardive (bonus)
   const [candidats, setCandidats] = useState(null); // null = pas encore ouvert
@@ -38,28 +35,6 @@ export default function Site({ profile, onReload, onLogout }) {
   const [busy, setBusy] = useState(false);
 
   const prenom = (profile.nom || "").split(" ")[0];
-
-  /* ---------- Vidéo : lecture, secours SVG ---------- */
-  useEffect(() => {
-    const v = vidRef.current;
-    if (!v) return;
-    let vivant = true;
-    const echec = () => {
-      if (vivant) setVideoOk(false);
-    };
-    v.addEventListener("error", echec);
-    const p = v.play();
-    if (p && p.catch) p.catch(echec);
-    // Si après 2,5 s la lecture n'a jamais démarré, on bascule sur le SVG.
-    const t = setTimeout(() => {
-      if (vivant && (v.readyState < 2 || (v.paused && v.currentTime === 0))) echec();
-    }, 2500);
-    return () => {
-      vivant = false;
-      clearTimeout(t);
-      v.removeEventListener("error", echec);
-    };
-  }, []);
 
   /* ---------- Nom du partenaire (via vue publique) ---------- */
   useEffect(() => {
@@ -127,14 +102,6 @@ export default function Site({ profile, onReload, onLogout }) {
     onReload?.();
   }
 
-  const rejouer = () => {
-    const v = vidRef.current;
-    if (v) {
-      v.currentTime = 0;
-      v.play();
-    }
-  };
-
   return (
     <div>
       <nav>
@@ -170,27 +137,7 @@ export default function Site({ profile, onReload, onLogout }) {
 
       {/* HÉRO */}
       <header className="hero" id="accueil">
-        {videoOk ? (
-          <>
-            <div
-              className="medaillon"
-              role="button"
-              tabIndex={0}
-              aria-label="Arbre de vie animé — cliquer pour rejouer"
-              onClick={rejouer}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") rejouer();
-              }}
-            >
-              <video ref={vidRef} src={videoArbre} autoPlay muted playsInline preload="auto" />
-            </div>
-            <div className="mono-hero">
-              V <em>&amp;</em> F
-            </div>
-          </>
-        ) : (
-          <Rosette />
-        )}
+        <MedaillonArbre variant="hero" withMono />
         <p className="annonce">{prenom ? `${prenom}, nous` : "Nous"} nous marions</p>
         <h1>
           Virginie <span className="et">&amp;</span> François
