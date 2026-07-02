@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { supabase, messageErreurAuth } from "../lib/supabase.js";
 import MedaillonArbre from "./MedaillonArbre.jsx";
+import fondVideo from "../assets/fond-inscription.mp4";
 
 /* ============================================================
    PORTAIL : inscription / connexion / proposition couple
@@ -106,6 +107,10 @@ export default function Gate({ onEnter }) {
 
   return (
     <div className="gate">
+      {/* Vidéo d'ambiance en fond, légèrement fondue (calque vert par-dessus) */}
+      <video className="gate-fond" src={fondVideo} autoPlay muted loop playsInline preload="auto" aria-hidden="true" />
+      <div className="gate-overlay" aria-hidden="true" />
+      <div className="gate-inner">
       <MedaillonArbre variant="gate" />
       <h1 className="gate-titre">
         Virginie <em>&amp;</em> François
@@ -189,6 +194,7 @@ export default function Gate({ onEnter }) {
           </button>
         </div>
       )}
+      </div>
     </div>
   );
 }
