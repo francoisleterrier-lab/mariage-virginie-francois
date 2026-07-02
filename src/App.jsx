@@ -16,6 +16,7 @@ import InstallBanner from "./components/InstallBanner.jsx";
 export default function App() {
   const [phase, setPhase] = useState("boot");
   const [profile, setProfile] = useState(null);
+  const [apercuInvite, setApercuInvite] = useState(false); // admin : aperçu du site invité
 
   const chargerProfil = useCallback(async () => {
     const {
@@ -103,13 +104,18 @@ export default function App() {
     );
   }
 
-  if (profile.role === "admin") {
-    return <Admin onLogout={deconnexion} />;
+  if (profile.role === "admin" && !apercuInvite) {
+    return <Admin onLogout={deconnexion} onApercuInvite={() => setApercuInvite(true)} />;
   }
 
   return (
     <>
-      <Site profile={profile} onReload={chargerProfil} onLogout={deconnexion} />
+      <Site
+        profile={profile}
+        onReload={chargerProfil}
+        onLogout={deconnexion}
+        retourAdmin={profile.role === "admin" ? () => setApercuInvite(false) : null}
+      />
       <InstallBanner />
     </>
   );
