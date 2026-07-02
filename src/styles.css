@@ -2,13 +2,16 @@
 :root {
   --encre: #22382c;
   --encre2: #2e4a3a;
-  --sauge: #7e9678;
+  --sauge: #5f7457; /* assombri : meilleur contraste des labels/textes secondaires */
+  --sauge-clair: #7e9678; /* ancienne sauge, réservée au décoratif */
   --aloe: #adc2a4;
-  --fond: #f5f4ec;
-  --fond2: #eceee0;
-  --or: #b08d4f;
-  --orc: #cbb183;
-  --blanc: #fdfdf9;
+  --fond: #f6f5ee;
+  --fond2: #e6ead6; /* plus vert : sépare nettement les sections */
+  --or: #a67c2b; /* or plus riche et saturé */
+  --orc: #c99a3f; /* or clair plus vif (sur fonds sombres & accents) */
+  --blanc: #ffffff;
+  --ligne: rgba(95, 116, 87, 0.42); /* bordures plus présentes */
+  --ombre: 0 20px 44px -26px rgba(31, 53, 41, 0.5);
 }
 * {
   margin: 0;
@@ -569,7 +572,7 @@ nav ul a:focus-visible::after {
 }
 .pola {
   background: var(--blanc);
-  border: 1px solid rgba(126, 150, 120, 0.3);
+  border: 1px solid rgba(126, 150, 120, 0.45);
   padding: 8px 8px 12px;
   border-radius: 6px;
   box-shadow: 0 14px 34px -18px rgba(34, 56, 44, 0.4);
@@ -647,7 +650,7 @@ nav ul a:focus-visible::after {
 }
 .jour {
   background: var(--blanc);
-  border: 1px solid rgba(126, 150, 120, 0.35);
+  border: 1px solid rgba(126, 150, 120, 0.48);
   border-radius: 16px;
   padding: 2.4rem 2.2rem;
 }
@@ -795,7 +798,7 @@ nav ul a:focus-visible::after {
 }
 .infos .carte {
   background: var(--blanc);
-  border: 1px solid rgba(126, 150, 120, 0.3);
+  border: 1px solid rgba(126, 150, 120, 0.45);
   border-radius: 16px;
   padding: 2rem 1.8rem;
 }
@@ -818,7 +821,7 @@ nav ul a:focus-visible::after {
   max-width: 640px;
   margin: 2.6rem auto 0;
   background: var(--blanc);
-  border: 1px solid rgba(126, 150, 120, 0.35);
+  border: 1px solid rgba(126, 150, 120, 0.48);
   border-radius: 18px;
   padding: 2.6rem clamp(1.4rem, 4vw, 2.6rem);
   text-align: left;
@@ -977,7 +980,7 @@ nav ul a:focus-visible::after {
 }
 .admin-stats div {
   background: var(--blanc);
-  border: 1px solid rgba(126, 150, 120, 0.35);
+  border: 1px solid rgba(126, 150, 120, 0.48);
   border-radius: 14px;
   padding: 1.4rem;
   text-align: center;
@@ -998,7 +1001,7 @@ nav ul a:focus-visible::after {
 .admin-table-wrap {
   overflow-x: auto;
   background: var(--blanc);
-  border: 1px solid rgba(126, 150, 120, 0.35);
+  border: 1px solid rgba(126, 150, 120, 0.48);
   border-radius: 14px;
 }
 .admin table {
@@ -1015,11 +1018,11 @@ nav ul a:focus-visible::after {
   text-transform: uppercase;
   color: var(--sauge);
   padding: 1rem 0.9rem;
-  border-bottom: 1px solid rgba(126, 150, 120, 0.35);
+  border-bottom: 1px solid rgba(126, 150, 120, 0.48);
 }
 .admin td {
   padding: 0.85rem 0.9rem;
-  border-bottom: 1px solid rgba(126, 150, 120, 0.18);
+  border-bottom: 1px solid rgba(126, 150, 120, 0.3);
   vertical-align: top;
 }
 .admin .attente {
@@ -1160,7 +1163,7 @@ footer p {
 .push-optin {
   width: min(560px, 100%);
   background: var(--blanc);
-  border: 1px solid rgba(126, 150, 120, 0.35);
+  border: 1px solid rgba(126, 150, 120, 0.48);
   border-radius: 16px;
   padding: 1.6rem 1.8rem;
   text-align: center;
@@ -1217,7 +1220,7 @@ footer p {
   aspect-ratio: 3 / 2;
   margin: 2rem auto 0.6rem;
   background: var(--blanc);
-  border: 1px solid rgba(126, 150, 120, 0.35);
+  border: 1px solid rgba(126, 150, 120, 0.48);
   border-radius: 16px;
 }
 .miniplan-t {
@@ -1277,7 +1280,7 @@ footer p {
 }
 .admin-bloc {
   background: var(--blanc);
-  border: 1px solid rgba(126, 150, 120, 0.35);
+  border: 1px solid rgba(126, 150, 120, 0.48);
   border-radius: 16px;
   padding: 1.8rem clamp(1rem, 3vw, 2rem);
 }
@@ -1334,7 +1337,7 @@ footer p {
   justify-content: space-between;
   gap: 1rem;
   padding: 0.7rem 0.9rem;
-  border: 1px solid rgba(126, 150, 120, 0.25);
+  border: 1px solid rgba(126, 150, 120, 0.4);
   border-radius: 10px;
   background: var(--fond);
 }
@@ -1483,7 +1486,7 @@ footer p {
   align-items: center;
   gap: 0.8rem;
   padding: 0.6rem 0.8rem;
-  border: 1px solid rgba(126, 150, 120, 0.25);
+  border: 1px solid rgba(126, 150, 120, 0.4);
   border-radius: 10px;
   background: var(--fond);
 }
@@ -1532,4 +1535,25 @@ footer p {
 }
 .retour-admin:hover {
   background: var(--encre2);
+}
+
+/* === Contraste & harmonie renforcés (clair mais vibrant) === */
+.jour,
+.infos .carte,
+.rsvp form,
+.admin-bloc,
+.admin-stats div {
+  box-shadow: var(--ombre);
+}
+/* les blocs sur fond crème gagnent une fine ligne verte en tête */
+.jour {
+  border-top: 3px solid var(--or);
+}
+.infos .carte h3 {
+  color: var(--encre);
+}
+/* l'or des intertitres, plus lisible et vibrant */
+.eyebrow {
+  color: var(--or);
+  font-weight: 500;
 }
