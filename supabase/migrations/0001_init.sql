@@ -122,7 +122,7 @@ begin
 end;
 $$;
 
-grant execute on public.lier_couple(uuid) to authenticated;
+grant execute on function public.lier_couple(uuid) to authenticated;
 
 -- ============================================================
 --  (Optionnel) délier un couple — utile si erreur de liaison.
@@ -150,7 +150,7 @@ begin
 end;
 $$;
 
-grant execute on public.delier_couple() to authenticated;
+grant execute on function public.delier_couple() to authenticated;
 
 -- ============================================================
 --  DÉSIGNER UN ADMIN
