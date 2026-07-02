@@ -25,11 +25,17 @@ export default function App() {
       setProfile(null);
       return null;
     }
-    const { data } = await supabase
-      .from("invites")
-      .select("id, nom, email, couple_id, table_id, role, rsvp, rsvp_date")
-      .eq("user_id", user.id)
-      .maybeSingle();
+    const cols = "id, nom, email, couple_id, table_id, role, rsvp, rsvp_date";
+    let { data } = await supabase.from("invites").select(cols).eq("user_id", user.id).maybeSingle();
+
+    // Secours : compte authentifié sans ligne invité (ex. e-mail confirmé
+    // après coup) → on la crée depuis le nom stocké dans les métadonnées.
+    if (!data) {
+      const nom = user.user_metadata?.nom || (user.email || "").split("@")[0];
+      await supabase.from("invites").insert({ user_id: user.id, nom, email: user.email });
+      ({ data } = await supabase.from("invites").select(cols).eq("user_id", user.id).maybeSingle());
+    }
+
     setProfile(data || null);
     return data;
   }, []);
