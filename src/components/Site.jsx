@@ -359,8 +359,8 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
         </div>
       </section>
 
-      {/* MA TABLE (mystère tant que l'admin n'a pas publié le plan) */}
-      <MaTable profile={profile} />
+      {/* MA TABLE : réservation libre / plan publié / mystère */}
+      <MaTable profile={profile} onReload={onReload} />
 
       {/* RSVP */}
       <section className="rsvp" id="rsvp">

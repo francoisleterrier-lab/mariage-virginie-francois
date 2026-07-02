@@ -12,6 +12,7 @@ import { supabase } from "../lib/supabase.js";
 export default function PlanEditor({ invites, onReloadInvites }) {
   const [tables, setTables] = useState([]);
   const [planVisible, setPlanVisible] = useState(false);
+  const [reservationOuverte, setReservationOuverte] = useState(false);
   const [nom, setNom] = useState("");
   const [forme, setForme] = useState("ronde");
   const [capacite, setCapacite] = useState(8);
@@ -20,12 +21,14 @@ export default function PlanEditor({ invites, onReloadInvites }) {
   const drag = useRef(null);
 
   async function charger() {
-    const [{ data: t }, { data: p }] = await Promise.all([
+    const [{ data: t }, { data: params }] = await Promise.all([
       supabase.from("tables_plan").select("*").order("nom"),
-      supabase.from("parametres").select("valeur").eq("cle", "plan_visible").maybeSingle(),
+      supabase.from("parametres").select("cle, valeur").in("cle", ["plan_visible", "reservation_ouverte"]),
     ]);
     setTables(t || []);
-    setPlanVisible(p?.valeur === true);
+    const p = Object.fromEntries((params || []).map((r) => [r.cle, r.valeur === true]));
+    setPlanVisible(!!p.plan_visible);
+    setReservationOuverte(!!p.reservation_ouverte);
   }
 
   useEffect(() => {
@@ -54,6 +57,18 @@ export default function PlanEditor({ invites, onReloadInvites }) {
     const nouvelle = !planVisible;
     setPlanVisible(nouvelle);
     await supabase.from("parametres").upsert({ cle: "plan_visible", valeur: nouvelle });
+  }
+
+  async function toggleReservation() {
+    const nouvelle = !reservationOuverte;
+    setReservationOuverte(nouvelle);
+    await supabase.from("parametres").upsert({ cle: "reservation_ouverte", valeur: nouvelle });
+  }
+
+  async function toggleBloquee(t) {
+    const val = !t.bloquee;
+    setTables((ts) => ts.map((x) => (x.id === t.id ? { ...x, bloquee: val } : x)));
+    await supabase.from("tables_plan").update({ bloquee: val }).eq("id", t.id);
   }
 
   async function ajouterTable(e) {
@@ -107,14 +122,23 @@ export default function PlanEditor({ invites, onReloadInvites }) {
     <div className="admin-bloc">
       <div className="plan-head">
         <h2 className="admin-h2">Plan de table</h2>
-        <label className="switch">
-          <input type="checkbox" checked={planVisible} onChange={toggleVisible} />
-          <span>Visible par les invités</span>
-        </label>
+        <div className="plan-switches">
+          <label className="switch">
+            <input type="checkbox" checked={reservationOuverte} onChange={toggleReservation} />
+            <span>Réservations ouvertes</span>
+          </label>
+          <label className="switch">
+            <input type="checkbox" checked={planVisible} onChange={toggleVisible} />
+            <span>Plan visible (placement imposé)</span>
+          </label>
+        </div>
       </div>
       <p className="admin-sous">
-        Tant que « Visible par les invités » est décoché, chacun voit une carte mystère. Une fois coché, chaque
-        invité découvre sa table, ses voisins et le mini-plan.
+        <strong>Réservations ouvertes</strong> : les invités choisissent eux-mêmes leur table (comptage en
+        adultes ; les tables 🔒 <em>bloquées</em> — mariés, enfants — ne sont pas réservables). Utilise le
+        cadenas sur une table pour la bloquer. <br />
+        <strong>Plan visible</strong> : à utiliser si tu préfères placer toi-même les invités (via l'affectation
+        ci-dessous) et leur montrer le résultat.
       </p>
 
       {couplesSepares.length > 0 && (
@@ -153,7 +177,7 @@ export default function PlanEditor({ invites, onReloadInvites }) {
         {tables.map((t) => (
           <div
             key={t.id}
-            className={"plan-t" + (t.forme === "rectangle" ? " rect" : "")}
+            className={"plan-t" + (t.forme === "rectangle" ? " rect" : "") + (t.bloquee ? " bloquee" : "")}
             style={{ left: `${t.pos_x}%`, top: `${t.pos_y}%` }}
             onPointerDown={(e) => onPointerDown(e, t)}
             title="Glisser pour positionner"
@@ -162,6 +186,16 @@ export default function PlanEditor({ invites, onReloadInvites }) {
             <span>
               {compteParTable[t.id] || 0}/{t.capacite}
             </span>
+            <button
+              type="button"
+              className="plan-lock"
+              onPointerDown={(e) => e.stopPropagation()}
+              onClick={() => toggleBloquee(t)}
+              aria-label={t.bloquee ? `Débloquer ${t.nom}` : `Bloquer ${t.nom} (non réservable)`}
+              title={t.bloquee ? "Table bloquée (non réservable) — cliquer pour débloquer" : "Bloquer cette table"}
+            >
+              {t.bloquee ? "🔒" : "🔓"}
+            </button>
             <button
               type="button"
               className="plan-del"
