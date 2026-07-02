@@ -39,7 +39,10 @@ export default function MaTable({ profile }) {
 
   return (
     <section className="matable" id="matable">
-      <div className="wrap center reveal">
+      {/* pas de classe `reveal` : cette section est rendue après un chargement
+          async, or l'observateur de scroll est posé au montage → elle resterait
+          invisible (opacity:0). On l'affiche donc directement. */}
+      <div className="wrap center">
         <p className="eyebrow">Votre place</p>
 
         {!visible || !profile.table_id ? (
