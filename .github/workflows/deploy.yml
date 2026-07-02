@@ -16,7 +16,7 @@ permissions:
 # Un seul déploiement à la fois.
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
