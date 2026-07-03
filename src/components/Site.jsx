@@ -5,6 +5,7 @@ import MedaillonArbre from "./MedaillonArbre.jsx";
 import MaTable from "./MaTable.jsx";
 import PushOptIn from "./PushOptIn.jsx";
 
+import fondVideo from "../assets/fond-inscription.mp4";
 import photoCouple from "../assets/couple.jpg";
 import photoEden from "../assets/eden.jpg";
 import photoTemoins from "../assets/temoins.jpg";
@@ -142,6 +143,8 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
 
       {/* HÉRO */}
       <header className="hero" id="accueil">
+        <video className="hero-fond" src={fondVideo} autoPlay muted loop playsInline preload="auto" aria-hidden="true" />
+        <div className="hero-overlay" aria-hidden="true" />
         <MedaillonArbre variant="hero" withMono />
         <p className="annonce">{prenom ? `${prenom}, nous` : "Nous"} nous marions</p>
         <h1>

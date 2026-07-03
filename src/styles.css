@@ -1670,7 +1670,7 @@ footer p {
   height: 100%;
   object-fit: cover;
   z-index: 0;
-  opacity: 1; /* vidéo pleinement visible */
+  opacity: 0.82; /* visible mais assez sombre pour la lisibilité du texte */
   pointer-events: none;
 }
 .gate-overlay {
@@ -1680,10 +1680,10 @@ footer p {
   pointer-events: none;
   /* voile vert plus léger : la vidéo transparaît clairement, mais un peu plus
      dense en haut et en bas pour garder les contrastes */
-  background: radial-gradient(78vmin 78vmin at 50% 42%, rgba(16, 27, 21, 0.55), transparent 72%),
-    radial-gradient(60vmin 60vmin at 12% 8%, rgba(176, 141, 79, 0.2), transparent 70%),
-    radial-gradient(50vmin 50vmin at 88% 92%, rgba(173, 194, 164, 0.18), transparent 70%),
-    linear-gradient(rgba(34, 56, 44, 0.42), rgba(34, 56, 44, 0.2) 45%, rgba(31, 48, 38, 0.52));
+  background: radial-gradient(92vmin 92vmin at 50% 46%, rgba(11, 19, 14, 0.68), transparent 74%),
+    radial-gradient(60vmin 60vmin at 12% 8%, rgba(176, 141, 79, 0.18), transparent 70%),
+    radial-gradient(50vmin 50vmin at 88% 92%, rgba(173, 194, 164, 0.16), transparent 70%),
+    linear-gradient(rgba(34, 56, 44, 0.58), rgba(34, 56, 44, 0.4) 45%, rgba(31, 48, 38, 0.66));
 }
 .gate-inner {
   position: relative;
@@ -1698,4 +1698,62 @@ footer p {
   .gate-fond {
     display: none;
   }
+}
+
+/* === Héro : vidéo d'ambiance en fond (comme le portail) === */
+.hero-fond {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  pointer-events: none;
+}
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(82vmin 82vmin at 50% 42%, rgba(16, 27, 21, 0.5), transparent 72%),
+    linear-gradient(rgba(34, 56, 44, 0.52), rgba(34, 56, 44, 0.32) 45%, rgba(31, 48, 38, 0.72));
+}
+/* texte clair et contrasté sur le héro vidéo */
+.hero h1 {
+  color: var(--blanc);
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+.hero h1 .et {
+  color: var(--orc);
+}
+.hero .annonce {
+  color: #cfe0c6;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.55);
+}
+.hero .date {
+  color: #eef1e6;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.55);
+}
+.hero .lieu-teaser {
+  color: #d7e0cf;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.55);
+}
+.hero .mono-hero {
+  color: #eef1e6;
+}
+.hero .mono-hero em {
+  color: var(--orc);
+}
+.hero .scroll-cue {
+  color: var(--aloe);
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-fond {
+    display: none;
+  }
+}
+
+/* héro sombre : secours SVG de l'arbre en or (lisible sur la vidéo) */
+.hero .rosette {
+  color: var(--orc);
 }
