@@ -80,42 +80,24 @@ export default function App() {
     // le listener SIGNED_OUT bascule sur 'gate'
   }, []);
 
+  // Contenu selon la phase (rendu SOUS l'intro, qui charge en avant-plan).
+  let contenu;
   if (phase === "boot") {
-    return (
+    contenu = (
       <div className="gate">
         <p className="gate-note">Chargement…</p>
       </div>
     );
-  }
-
-  if (phase === "gate") {
-    // Vidéo d'intro avant la page de connexion (une fois par session).
-    if (!introVue) {
-      return (
-        <Intro
-          onFinish={() => {
-            try {
-              sessionStorage.setItem("vf-intro", "1");
-            } catch {
-              /* stockage indisponible : on continue quand même */
-            }
-            setIntroVue(true);
-          }}
-        />
-      );
-    }
-    return (
+  } else if (phase === "gate") {
+    contenu = (
       <>
         <Gate onEnter={entrer} />
         <InstallBanner />
       </>
     );
-  }
-
-  // phase === 'app'
-  if (!profile) {
+  } else if (!profile) {
     // Session valide mais aucune ligne invité (cas limite) : on propose de sortir.
-    return (
+    contenu = (
       <div className="gate">
         <p className="gate-note">
           Votre compte n'est associé à aucun profil invité. Reconnectez-vous ou contactez les mariés.
@@ -125,21 +107,39 @@ export default function App() {
         </button>
       </div>
     );
-  }
-
-  if (profile.role === "admin" && !apercuInvite) {
-    return <Admin onLogout={deconnexion} onApercuInvite={() => setApercuInvite(true)} />;
+  } else if (profile.role === "admin" && !apercuInvite) {
+    contenu = <Admin onLogout={deconnexion} onApercuInvite={() => setApercuInvite(true)} />;
+  } else {
+    contenu = (
+      <>
+        <Site
+          profile={profile}
+          onReload={chargerProfil}
+          onLogout={deconnexion}
+          retourAdmin={profile.role === "admin" ? () => setApercuInvite(false) : null}
+        />
+        <InstallBanner />
+      </>
+    );
   }
 
   return (
     <>
-      <Site
-        profile={profile}
-        onReload={chargerProfil}
-        onLogout={deconnexion}
-        retourAdmin={profile.role === "admin" ? () => setApercuInvite(false) : null}
-      />
-      <InstallBanner />
+      {contenu}
+      {/* Intro affichée dès le 1er rendu (une fois par session), la vidéo
+          se charge en avant-plan pendant que l'app démarre derrière. */}
+      {!introVue && (
+        <Intro
+          onFinish={() => {
+            try {
+              sessionStorage.setItem("vf-intro", "1");
+            } catch {
+              /* stockage indisponible */
+            }
+            setIntroVue(true);
+          }}
+        />
+      )}
     </>
   );
 }
