@@ -1796,3 +1796,36 @@ footer p {
 .countdown .cd-done {
   color: var(--orc);
 }
+
+/* ============================================================
+   FONDUS ENTRE SECTIONS — plus de coutures nettes
+   Sections claires unifiées sur --fond ; sections sombres avec
+   dégradés de transition (crème) en haut/bas.
+   ============================================================ */
+.programme,
+.rsvp,
+.push-band,
+.matable {
+  background: var(--fond);
+}
+
+/* compte à rebours (sombre) : fond bas vers le crème */
+.countdown {
+  background: linear-gradient(transparent calc(100% - 130px), var(--fond) 100%),
+    radial-gradient(60vmin 60vmin at 15% 12%, rgba(176, 141, 79, 0.22), transparent 70%),
+    radial-gradient(55vmin 55vmin at 85% 88%, rgba(173, 194, 164, 0.16), transparent 70%),
+    var(--encre);
+}
+
+/* lieu mystère (sombre) : fondu crème en haut ET en bas */
+.mystere {
+  background: linear-gradient(var(--fond) 0, transparent 130px, transparent calc(100% - 130px), var(--fond) 100%),
+    radial-gradient(60vmin 60vmin at 12% 8%, rgba(176, 141, 79, 0.16), transparent 70%),
+    radial-gradient(50vmin 50vmin at 88% 92%, rgba(173, 194, 164, 0.14), transparent 70%),
+    var(--encre);
+}
+
+/* pied de page (sombre) : fondu crème en haut */
+footer {
+  background: linear-gradient(var(--fond) 0, transparent 130px), var(--encre);
+}
