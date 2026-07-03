@@ -4,10 +4,16 @@
    - stale-while-revalidate pour les médias (images, vidéo) et Google Fonts
    - réception des notifications push (Web Push / VAPID)
 */
+import { clientsClaim } from "workbox-core";
 import { precacheAndRoute, cleanupOutdatedCaches } from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
 import { StaleWhileRevalidate } from "workbox-strategies";
 import { ExpirationPlugin } from "workbox-expiration";
+
+// Mise à jour immédiate : le nouveau SW s'active et prend le contrôle des
+// pages sans attendre la fermeture de tous les onglets → plus de version figée.
+self.skipWaiting();
+clientsClaim();
 
 // eslint-disable-next-line no-undef
 precacheAndRoute(self.__WB_MANIFEST || []);
