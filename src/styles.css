@@ -1829,3 +1829,141 @@ footer p {
 footer {
   background: linear-gradient(var(--fond) 0, transparent 40px), var(--encre);
 }
+
+/* === Prénoms enfants (RSVP) === */
+.enfants-noms {
+  margin-top: 0.4rem;
+}
+.enfants-noms input {
+  margin-bottom: 0.5rem;
+}
+.enfants-hint {
+  font-size: 0.82rem;
+  color: var(--encre2);
+  background: var(--fond2);
+  border-radius: 10px;
+  padding: 0.6rem 0.9rem;
+}
+.enfants-liste {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--sauge);
+  font-style: italic;
+}
+
+/* === Admin : bouton éditer + modale === */
+.btn-editer {
+  background: transparent;
+  border: 1px solid var(--sauge);
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  font: inherit;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--encre);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn-editer:hover {
+  border-color: var(--or);
+  color: var(--or);
+}
+.modal-fond {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  background: rgba(20, 32, 25, 0.55);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 4vh 1rem;
+  overflow-y: auto;
+}
+.modal {
+  width: min(560px, 100%);
+  background: var(--blanc);
+  border: 1px solid rgba(126, 150, 120, 0.5);
+  border-radius: 16px;
+  padding: 1.6rem clamp(1rem, 3vw, 1.8rem) 1.4rem;
+  box-shadow: var(--ombre);
+}
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.modal-head h3 {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 500;
+  font-size: 1.5rem;
+}
+.modal-x {
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--sauge);
+  cursor: pointer;
+}
+.modal-form label {
+  display: block;
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--sauge);
+  margin: 0.8rem 0 0.3rem;
+}
+.modal-form input,
+.modal-form select,
+.modal-form textarea {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid rgba(126, 150, 120, 0.5);
+  border-radius: 10px;
+  background: var(--fond);
+  font: inherit;
+  color: var(--encre);
+}
+.modal-form input:focus,
+.modal-form select:focus,
+.modal-form textarea:focus {
+  outline: 2px solid var(--or);
+  outline-offset: 1px;
+}
+.modal-duo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem;
+}
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.6rem;
+  flex-wrap: wrap;
+}
+.modal-actions-droite {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+}
+.modal-suppr {
+  background: transparent;
+  border: 1px solid #c98a6a;
+  color: #b06a4f;
+  border-radius: 999px;
+  padding: 0.6rem 1.1rem;
+  font: inherit;
+  font-size: 0.74rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.modal-suppr:hover {
+  background: #b06a4f;
+  color: var(--blanc);
+}

@@ -28,10 +28,25 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
       presence: "Les deux jours 🌿",
       adultes: profile.couple_id ? "2" : "1",
       enfants: "0",
+      enfantsNoms: [],
       regime: "",
       mot: "",
     }
   );
+
+  // Synchronise la liste des prénoms d'enfants avec le nombre choisi.
+  function setEnfants(n) {
+    const nb = parseInt(n) || 0;
+    const noms = [...(rsvp.enfantsNoms || [])];
+    noms.length = nb; // tronque ou étend
+    for (let i = 0; i < nb; i++) if (noms[i] == null) noms[i] = "";
+    setRsvp({ ...rsvp, enfants: n, enfantsNoms: noms });
+  }
+  function setEnfantNom(i, val) {
+    const noms = [...(rsvp.enfantsNoms || [])];
+    noms[i] = val;
+    setRsvp({ ...rsvp, enfantsNoms: noms });
+  }
   const [saved, setSaved] = useState(!!profile.rsvp);
   const [busy, setBusy] = useState(false);
 
@@ -397,14 +412,32 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
                 </select>
               </div>
               <div>
-                <label htmlFor="r-en">Enfants</label>
-                <select id="r-en" value={rsvp.enfants} onChange={(e) => setRsvp({ ...rsvp, enfants: e.target.value })}>
-                  {["0", "1", "2", "3", "4"].map((n) => (
+                <label htmlFor="r-en">Enfants / ados</label>
+                <select id="r-en" value={rsvp.enfants} onChange={(e) => setEnfants(e.target.value)}>
+                  {["0", "1", "2", "3", "4", "5"].map((n) => (
                     <option key={n}>{n}</option>
                   ))}
                 </select>
               </div>
             </div>
+
+            {parseInt(rsvp.enfants) > 0 && (
+              <div className="enfants-noms">
+                <label>Prénom (et âge) de chaque enfant / ado</label>
+                {Array.from({ length: parseInt(rsvp.enfants) }).map((_, i) => (
+                  <input
+                    key={i}
+                    value={(rsvp.enfantsNoms && rsvp.enfantsNoms[i]) || ""}
+                    onChange={(e) => setEnfantNom(i, e.target.value)}
+                    placeholder={`Enfant ${i + 1} — ex. Léa, 8 ans`}
+                    aria-label={`Prénom et âge de l'enfant ${i + 1}`}
+                  />
+                ))}
+                <p className="enfants-hint">
+                  Ils seront placés à une table dédiée aux enfants — pas besoin de leur choisir une place.
+                </p>
+              </div>
+            )}
 
             {partenaire ? (
               <p className="couple-hint">
