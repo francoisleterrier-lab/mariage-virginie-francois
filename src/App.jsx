@@ -3,6 +3,7 @@ import { supabase } from "./lib/supabase.js";
 import Gate from "./components/Gate.jsx";
 import Site from "./components/Site.jsx";
 import Admin from "./components/Admin.jsx";
+import Intro from "./components/Intro.jsx";
 import InstallBanner from "./components/InstallBanner.jsx";
 
 /* ============================================================
@@ -17,6 +18,13 @@ export default function App() {
   const [phase, setPhase] = useState("boot");
   const [profile, setProfile] = useState(null);
   const [apercuInvite, setApercuInvite] = useState(false); // admin : aperçu du site invité
+  const [introVue, setIntroVue] = useState(() => {
+    try {
+      return sessionStorage.getItem("vf-intro") === "1";
+    } catch {
+      return false;
+    }
+  });
 
   const chargerProfil = useCallback(async () => {
     const {
@@ -81,6 +89,21 @@ export default function App() {
   }
 
   if (phase === "gate") {
+    // Vidéo d'intro avant la page de connexion (une fois par session).
+    if (!introVue) {
+      return (
+        <Intro
+          onFinish={() => {
+            try {
+              sessionStorage.setItem("vf-intro", "1");
+            } catch {
+              /* stockage indisponible : on continue quand même */
+            }
+            setIntroVue(true);
+          }}
+        />
+      );
+    }
     return (
       <>
         <Gate onEnter={entrer} />
