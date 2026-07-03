@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "../lib/supabase.js";
 import PushAdmin from "./PushAdmin.jsx";
 import PlanEditor from "./PlanEditor.jsx";
+import EditInvite from "./EditInvite.jsx";
 
 const fmtDate = (iso) =>
   iso ? new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" }) : "—";
@@ -18,16 +19,22 @@ function csvCell(v) {
    ============================================================ */
 export default function Admin({ onLogout, onApercuInvite }) {
   const [invites, setInvites] = useState(null);
+  const [tables, setTables] = useState([]);
   const [erreur, setErreur] = useState("");
   const [onglet, setOnglet] = useState("reponses"); // reponses | plan | notifications
+  const [edit, setEdit] = useState(null); // invité en cours d'édition
 
   const charger = useCallback(async () => {
-    const { data, error } = await supabase
-      .from("invites")
-      .select("id, nom, email, couple_id, table_id, rsvp, rsvp_date, created_at")
-      .order("created_at", { ascending: true });
+    const [{ data, error }, { data: t }] = await Promise.all([
+      supabase
+        .from("invites")
+        .select("id, nom, email, couple_id, table_id, role, rsvp, rsvp_date, created_at")
+        .order("created_at", { ascending: true }),
+      supabase.from("tables_plan").select("id, nom").order("nom"),
+    ]);
     if (error) setErreur(error.message);
     else setInvites(data || []);
+    setTables(t || []);
   }, []);
 
   useEffect(() => {
@@ -58,7 +65,7 @@ export default function Admin({ onLogout, onApercuInvite }) {
   const totalEnfants = presents.reduce((s, g) => s + (parseInt(g.rsvp.enfants) || 0), 0);
 
   function exporterCsv() {
-    const entetes = ["Invité", "E-mail", "Inscrit le", "Couple", "Présence", "Adultes", "Enfants", "Régime", "Message", "Réponse le"];
+    const entetes = ["Invité", "E-mail", "Inscrit le", "Couple", "Présence", "Adultes", "Enfants", "Prénoms enfants", "Régime", "Message", "Réponse le"];
     const lignes = invites.map((g) => [
       g.nom,
       g.email,
@@ -67,6 +74,7 @@ export default function Admin({ onLogout, onApercuInvite }) {
       g.rsvp?.presence || "",
       g.rsvp?.adultes || "",
       g.rsvp?.enfants || "",
+      (g.rsvp?.enfantsNoms || []).filter(Boolean).join(", "),
       g.rsvp?.regime || "",
       g.rsvp?.mot || "",
       g.rsvp_date ? fmtDate(g.rsvp_date) : "",
@@ -147,24 +155,36 @@ export default function Admin({ onLogout, onApercuInvite }) {
                   <th>Adultes / Enfants</th>
                   <th>Régime</th>
                   <th>Message</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
-                {invites.map((g) => (
-                  <tr key={g.id}>
-                    <td>{g.nom}</td>
-                    <td>{g.email}</td>
-                    <td>{fmtDate(g.created_at)}</td>
-                    <td>{g.couple_id ? nomParId[g.couple_id] || "—" : "—"}</td>
-                    <td>{g.rsvp ? g.rsvp.presence : <em className="attente">en attente</em>}</td>
-                    <td>{g.rsvp ? `${g.rsvp.adultes} / ${g.rsvp.enfants}` : "—"}</td>
-                    <td>{g.rsvp?.regime || "—"}</td>
-                    <td className="msg">{g.rsvp?.mot || "—"}</td>
-                  </tr>
-                ))}
+                {invites.map((g) => {
+                  const noms = (g.rsvp?.enfantsNoms || []).filter(Boolean);
+                  return (
+                    <tr key={g.id}>
+                      <td>{g.nom}</td>
+                      <td>{g.email}</td>
+                      <td>{fmtDate(g.created_at)}</td>
+                      <td>{g.couple_id ? nomParId[g.couple_id] || "—" : "—"}</td>
+                      <td>{g.rsvp ? g.rsvp.presence : <em className="attente">en attente</em>}</td>
+                      <td>
+                        {g.rsvp ? `${g.rsvp.adultes} / ${g.rsvp.enfants}` : "—"}
+                        {noms.length > 0 && <span className="enfants-liste">{noms.join(", ")}</span>}
+                      </td>
+                      <td>{g.rsvp?.regime || "—"}</td>
+                      <td className="msg">{g.rsvp?.mot || "—"}</td>
+                      <td>
+                        <button className="btn-editer" onClick={() => setEdit(g)}>
+                          Éditer
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
                 {invites.length === 0 && (
                   <tr>
-                    <td colSpan="8" className="attente">
+                    <td colSpan="9" className="attente">
                       Personne ne s'est encore inscrit. Partagez le lien à vos invités !
                     </td>
                   </tr>
@@ -177,6 +197,19 @@ export default function Admin({ onLogout, onApercuInvite }) {
 
       {onglet === "plan" && <PlanEditor invites={invites} onReloadInvites={charger} />}
       {onglet === "notifications" && <PushAdmin />}
+
+      {edit && (
+        <EditInvite
+          invite={edit}
+          invites={invites}
+          tables={tables}
+          onClose={() => setEdit(null)}
+          onSaved={() => {
+            setEdit(null);
+            charger();
+          }}
+        />
+      )}
     </div>
   );
 }
