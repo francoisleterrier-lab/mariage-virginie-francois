@@ -2036,3 +2036,28 @@ footer {
     transition: none;
   }
 }
+
+/* === Bouton bande-son (flottant) === */
+.musique-btn {
+  position: fixed;
+  z-index: 1100; /* au-dessus de l'intro pour rester accessible */
+  bottom: 1.1rem;
+  left: 1.1rem;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid var(--orc);
+  background: rgba(24, 40, 31, 0.72);
+  color: var(--blanc);
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s, background 0.3s;
+}
+.musique-btn:hover {
+  transform: scale(1.06);
+  background: var(--orc);
+  color: var(--encre);
+}

@@ -4,6 +4,7 @@ import Gate from "./components/Gate.jsx";
 import Site from "./components/Site.jsx";
 import Admin from "./components/Admin.jsx";
 import Intro from "./components/Intro.jsx";
+import Musique from "./components/Musique.jsx";
 import InstallBanner from "./components/InstallBanner.jsx";
 
 /* ============================================================
@@ -126,6 +127,8 @@ export default function App() {
   return (
     <>
       {contenu}
+      {/* Bande-son (démarre au 1er geste, persiste sur tout le site). */}
+      <Musique />
       {/* Intro affichée dès le 1er rendu (une fois par session), la vidéo
           se charge en avant-plan pendant que l'app démarre derrière. */}
       {!introVue && (
