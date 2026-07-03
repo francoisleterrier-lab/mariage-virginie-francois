@@ -1998,8 +1998,15 @@ footer {
   z-index: 1;
   width: 100%;
   height: 100%;
-  object-fit: contain; /* vidéo entière, nette (pas de sur-zoom) */
+  object-fit: cover; /* mobile : remplit l'écran, net */
   cursor: pointer;
+}
+/* PC (paysage) : vidéo verticale affichée entière (pas de sur-zoom),
+   le fond flouté comble les côtés. */
+@media (min-width: 760px) {
+  .intro-fg {
+    object-fit: contain;
+  }
 }
 .intro-skip {
   position: absolute;
