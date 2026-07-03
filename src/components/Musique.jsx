@@ -3,57 +3,56 @@ import piste from "../assets/musique.mp3";
 
 /* ============================================================
    Bande-son du site.
-   - Démarre au 1er geste de l'invité (les navigateurs bloquent le
-     son en autoplay) — donc dès le tap sur l'intro / « Entrer ».
-   - Continue sur tout le site (un seul lecteur, au niveau racine).
-   - Bouton flottant pour couper / réactiver le son.
+   Les navigateurs bloquent le son en autoplay sans interaction.
+   Stratégie « au plus tôt » :
+   1) tenter la lecture AVEC son (OK en PWA installée / après engagement) ;
+   2) sinon lecture EN SOURDINE auto (autorisée) + on retire le mute au
+      tout premier contact (effleurement / clic / touche) → son quasi immédiat.
+   Un seul lecteur au niveau racine, en boucle, avec bouton couper/activer.
    ============================================================ */
 export default function Musique() {
   const audioRef = useRef(null);
-  const [joue, setJoue] = useState(false);
-  const demarre = useRef(false);
+  const [actif, setActif] = useState(false);
+  const coupeManuel = useRef(false);
 
   useEffect(() => {
     const a = audioRef.current;
     if (!a) return;
     a.volume = 0.55;
 
-    const lancer = () => {
-      if (demarre.current) return;
-      a
-        .play()
-        .then(() => {
-          demarre.current = true;
-          setJoue(true);
-          retirer();
-        })
-        .catch(() => {
-          /* toujours bloqué : on réessaiera au prochain geste */
-        });
+    const evenements = ["pointerdown", "touchstart", "keydown", "click", "scroll"];
+    const activerSon = () => {
+      if (coupeManuel.current) return;
+      a.muted = false;
+      a.play().then(() => setActif(true)).catch(() => {});
+      nettoyer();
     };
-    const retirer = () => {
-      ["pointerdown", "keydown", "touchstart", "click"].forEach((e) =>
-        window.removeEventListener(e, lancer)
-      );
-    };
+    const nettoyer = () => evenements.forEach((e) => window.removeEventListener(e, activerSon));
 
-    // tentative immédiate (marche si l'utilisateur a déjà interagi avec le site)
-    lancer();
-    // sinon, au 1er geste
-    ["pointerdown", "keydown", "touchstart", "click"].forEach((e) =>
-      window.addEventListener(e, lancer, { passive: true })
-    );
-    return retirer;
+    a.muted = false;
+    a
+      .play()
+      .then(() => setActif(true))
+      .catch(() => {
+        a.muted = true;
+        a.play().catch(() => {});
+        evenements.forEach((e) => window.addEventListener(e, activerSon, { passive: true }));
+      });
+
+    return nettoyer;
   }, []);
 
   function basculer() {
     const a = audioRef.current;
     if (!a) return;
-    if (a.paused) {
-      a.play().then(() => setJoue(true)).catch(() => {});
+    if (a.paused || a.muted || !actif) {
+      coupeManuel.current = false;
+      a.muted = false;
+      a.play().then(() => setActif(true)).catch(() => {});
     } else {
+      coupeManuel.current = true;
       a.pause();
-      setJoue(false);
+      setActif(false);
     }
   }
 
@@ -63,10 +62,10 @@ export default function Musique() {
       <button
         className="musique-btn"
         onClick={basculer}
-        aria-label={joue ? "Couper la musique" : "Activer la musique"}
-        title={joue ? "Couper la musique" : "Activer la musique"}
+        aria-label={actif ? "Couper la musique" : "Activer la musique"}
+        title={actif ? "Couper la musique" : "Activer la musique"}
       >
-        {joue ? "🔊" : "🔈"}
+        {actif ? "🔊" : "🔈"}
       </button>
     </>
   );
