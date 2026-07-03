@@ -159,6 +159,8 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
 
       {/* COMPTE À REBOURS */}
       <div className="countdown" id="compte">
+        <p className="eyebrow">Compte à rebours</p>
+        <h2 className="cd-titre">Avant de nous dire <em>oui</em></h2>
         <Countdown />
       </div>
 

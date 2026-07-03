@@ -1759,3 +1759,40 @@ footer p {
     display: none;
   }
 }
+
+/* === Compte à rebours mis en avant (bandeau vert profond, chiffres or) === */
+.countdown {
+  background: radial-gradient(60vmin 60vmin at 15% 12%, rgba(176, 141, 79, 0.22), transparent 70%),
+    radial-gradient(55vmin 55vmin at 85% 88%, rgba(173, 194, 164, 0.16), transparent 70%),
+    var(--encre);
+  color: var(--fond);
+  padding: 5rem 1.5rem;
+  text-align: center;
+}
+.countdown .eyebrow {
+  color: var(--orc);
+}
+.cd-titre {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 500;
+  font-size: clamp(1.7rem, 4.2vw, 2.6rem);
+  color: var(--blanc);
+  margin-bottom: 2rem;
+}
+.cd-titre em {
+  font-style: italic;
+  color: var(--orc);
+}
+.countdown .cd-num {
+  color: var(--orc);
+}
+.countdown .cd-lbl {
+  color: var(--aloe);
+}
+.countdown .cd-cell {
+  position: relative;
+  padding: 0 0.4rem;
+}
+.countdown .cd-done {
+  color: var(--orc);
+}
