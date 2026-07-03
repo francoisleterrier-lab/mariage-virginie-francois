@@ -1670,7 +1670,7 @@ footer p {
   height: 100%;
   object-fit: cover;
   z-index: 0;
-  opacity: 0.82; /* visible mais assez sombre pour la lisibilité du texte */
+  opacity: 0.68; /* discrète : priorité à la lisibilité du texte */
   pointer-events: none;
 }
 .gate-overlay {
@@ -1680,10 +1680,10 @@ footer p {
   pointer-events: none;
   /* voile vert plus léger : la vidéo transparaît clairement, mais un peu plus
      dense en haut et en bas pour garder les contrastes */
-  background: radial-gradient(92vmin 92vmin at 50% 46%, rgba(11, 19, 14, 0.68), transparent 74%),
-    radial-gradient(60vmin 60vmin at 12% 8%, rgba(176, 141, 79, 0.18), transparent 70%),
-    radial-gradient(50vmin 50vmin at 88% 92%, rgba(173, 194, 164, 0.16), transparent 70%),
-    linear-gradient(rgba(34, 56, 44, 0.58), rgba(34, 56, 44, 0.4) 45%, rgba(31, 48, 38, 0.66));
+  background: radial-gradient(100vmin 100vmin at 50% 46%, rgba(8, 14, 10, 0.82), transparent 76%),
+    radial-gradient(60vmin 60vmin at 12% 8%, rgba(176, 141, 79, 0.16), transparent 70%),
+    radial-gradient(50vmin 50vmin at 88% 92%, rgba(173, 194, 164, 0.14), transparent 70%),
+    linear-gradient(rgba(31, 48, 38, 0.72), rgba(31, 48, 38, 0.56) 45%, rgba(28, 43, 34, 0.78));
 }
 .gate-inner {
   position: relative;
