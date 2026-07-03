@@ -103,17 +103,26 @@ export default function PlanEditor({ invites, onReloadInvites }) {
     e.target.setPointerCapture?.(e.pointerId);
   }
   function onPointerMove(e) {
-    if (!drag.current) return;
+    const d = drag.current;
+    if (!d || !canvasRef.current) return;
     const rect = canvasRef.current.getBoundingClientRect();
     const x = Math.min(96, Math.max(4, ((e.clientX - rect.left) / rect.width) * 100));
     const y = Math.min(92, Math.max(6, ((e.clientY - rect.top) / rect.height) * 100));
-    setTables((ts) => ts.map((t) => (t.id === drag.current.id ? { ...t, pos_x: x, pos_y: y } : t)));
+    d.x = x;
+    d.y = y;
+    // On fige l'id dans `d` : l'updater de setTables peut s'exécuter APRÈS
+    // que le pointer soit relâché (drag.current remis à null) — lire
+    // drag.current.id à ce moment planterait tout l'arbre (page blanche).
+    setTables((ts) => ts.map((t) => (t.id === d.id ? { ...t, pos_x: x, pos_y: y } : t)));
   }
   async function onPointerUp() {
-    if (!drag.current) return;
-    const t = tables.find((x) => x.id === drag.current.id);
+    const d = drag.current;
     drag.current = null;
-    if (t) await supabase.from("tables_plan").update({ pos_x: t.pos_x, pos_y: t.pos_y }).eq("id", t.id);
+    // On persiste la dernière position mémorisée dans le ref (pas via `tables`
+    // en closure, qui peut être périmé) — uniquement si la table a bougé.
+    if (d && d.x != null) {
+      await supabase.from("tables_plan").update({ pos_x: d.x, pos_y: d.y }).eq("id", d.id);
+    }
   }
 
   const nonPlaces = invites.filter((g) => !g.table_id);
