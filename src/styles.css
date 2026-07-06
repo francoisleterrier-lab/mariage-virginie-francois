@@ -705,6 +705,38 @@ nav ul a:focus-visible::after {
 .jour-mystere {
   display: flex;
   flex-direction: column;
+  transform-origin: center;
+  animation: battement 1.8s ease-in-out infinite;
+  will-change: transform;
+}
+/* Battement de cœur : double pulsation « poum-poum » puis repos. */
+@keyframes battement {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 8px 26px rgba(34, 56, 44, 0.08);
+  }
+  8% {
+    transform: scale(1.03);
+    box-shadow: 0 14px 40px rgba(176, 141, 79, 0.28);
+  }
+  16% {
+    transform: scale(1);
+    box-shadow: 0 8px 26px rgba(34, 56, 44, 0.08);
+  }
+  26% {
+    transform: scale(1.022);
+    box-shadow: 0 12px 34px rgba(176, 141, 79, 0.2);
+  }
+  34%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 8px 26px rgba(34, 56, 44, 0.08);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .jour-mystere {
+    animation: none;
+  }
 }
 .j2-secret {
   flex: 1;
