@@ -667,7 +667,13 @@ nav ul a:focus-visible::after {
   font-family: "Cormorant Garamond", serif;
   font-weight: 500;
   font-size: 1.9rem;
-  margin: 0.5rem 0 1.6rem;
+  margin: 0.5rem 0 0.8rem;
+}
+.jour-note {
+  font-size: 0.85rem;
+  color: var(--sauge);
+  font-style: italic;
+  margin-bottom: 1.2rem;
 }
 .jour ol {
   list-style: none;
