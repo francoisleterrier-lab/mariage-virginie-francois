@@ -304,7 +304,7 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
                 💍 Vous êtes inscrit·e·s en couple avec <strong>{partenaire}</strong>
               </p>
             )}
-            <p className="signature">Virginie, François &amp; Eden</p>
+            <p className="signature">François, Virginie, Lou, Taïgo, Ugo &amp; Eden</p>
           </div>
         </div>
       </section>
