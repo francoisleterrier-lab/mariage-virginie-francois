@@ -594,6 +594,12 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
       <footer>
         <div className="mono">V &amp; F</div>
         <p>26 &amp; 27 mai 2028 — Sud-Toulousain</p>
+        <p className="credit">
+          Réalisation du site faire-part par{" "}
+          <a href="https://francoisleterrier.fr/" target="_blank" rel="noopener noreferrer">
+            francoisleterrier.fr
+          </a>
+        </p>
       </footer>
     </div>
   );

@@ -1132,6 +1132,20 @@ footer p {
   font-size: 0.85rem;
   letter-spacing: 0.12em;
 }
+footer .credit {
+  margin-top: 1.1rem;
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  color: rgba(245, 244, 236, 0.55);
+}
+footer .credit a {
+  color: var(--orc);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(201, 154, 63, 0.4);
+}
+footer .credit a:hover {
+  color: var(--or);
+}
 .reveal {
   opacity: 0;
   transform: translateY(26px);
