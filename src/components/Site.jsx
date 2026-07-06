@@ -429,8 +429,7 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
               <h3>🌿 Thème : Jungle chic</h3>
               <p>
                 Pas de dress code imposé : venez comme vous avez envie d'être ! Le thème « jungle chic » est une simple
-                invitation à la couleur et au feuillage si le cœur vous en dit. Un petit conseil tout de même : prévoyez
-                des chaussures qui aiment l'herbe.
+                invitation à la couleur et au feuillage, si le cœur vous en dit.
               </p>
             </div>
             <div className="carte">
