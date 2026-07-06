@@ -426,10 +426,11 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
           </h2>
           <div className="cartes">
             <div className="carte">
-              <h3>👗 Dress code</h3>
+              <h3>🌿 Thème : Jungle chic</h3>
               <p>
-                Élégance champêtre : tons naturels, lin, sauge, ivoire ou doré. Le blanc reste réservé à la mariée — et
-                prévoyez des chaussures qui aiment l'herbe.
+                Pas de dress code imposé : venez comme vous avez envie d'être ! Le thème « jungle chic » est une simple
+                invitation à la couleur et au feuillage si le cœur vous en dit. Une seule attention : le blanc reste
+                réservé à la mariée — et prévoyez des chaussures qui aiment l'herbe.
               </p>
             </div>
             <div className="carte">
