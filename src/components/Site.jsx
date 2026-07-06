@@ -321,46 +321,47 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
             <article className="jour">
               <p className="quand">Jour 1 — Vendredi 26 mai</p>
               <h3>Le grand jour</h3>
+              <p className="jour-note">Le déroulé de la journée — les horaires précis vous seront communiqués un peu avant le jour J.</p>
               <ol>
                 <li>
-                  <span className="h mystere-h">🔒</span>
+                  <span className="h">🌿</span>
                   <span className="t">
                     <strong>Mairie</strong>
-                    <span>Horaire &amp; lieu dévoilés plus tard…</span>
+                    <span>Lieu dévoilé plus tard…</span>
                   </span>
                 </li>
                 <li>
-                  <span className="h">16 h 00</span>
+                  <span className="h">🌿</span>
                   <span className="t">
                     <strong>Cérémonie laïque</strong>
                     <span>Sous les arbres, au cœur du parc</span>
                   </span>
                 </li>
                 <li>
-                  <span className="h">17 h 30</span>
+                  <span className="h">🌿</span>
                   <span className="t">
                     <strong>Vin d'honneur</strong>
                     <span>Avec une surprise musicale &amp; scénique ✨</span>
                   </span>
                 </li>
                 <li>
-                  <span className="h">20 h 00</span>
+                  <span className="h">🌿</span>
                   <span className="t">
                     <strong>Repas</strong>
                     <span>À table, en famille et entre amis</span>
                   </span>
                 </li>
                 <li>
-                  <span className="h">22 h 30</span>
+                  <span className="h">🌿</span>
                   <span className="t">
                     <strong>Dancefloor</strong>
                     <span>On vous attend au centre de la piste</span>
                   </span>
                 </li>
                 <li>
-                  <span className="h">3 h 00</span>
+                  <span className="h">🌿</span>
                   <span className="t">
-                    <strong>Coupure</strong>
+                    <strong>Fin de soirée</strong>
                     <span>Dernier morceau — demain, ça repart !</span>
                   </span>
                 </li>
