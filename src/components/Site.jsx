@@ -10,6 +10,81 @@ import photoCouple from "../assets/couple.jpg";
 import photoEden from "../assets/eden.jpg";
 import photoTemoins from "../assets/temoins.jpg";
 
+/* Hébergements à moins de ~15 min du lieu de la fête (Sud-Toulousain).
+   Liens fournis par les mariés — ordre indicatif, tout est proche. */
+const LOGEMENTS = [
+  {
+    nom: "Le Moulin de Rudelle",
+    type: "Hôtel de charme",
+    lieu: "Muret",
+    desc: "Domaine hôtelier du 16ᵉ siècle, chambres et cottages dans un parc de cinq hectares.",
+    url: "https://www.moulinderudelle.com/",
+  },
+  {
+    nom: "Le Domaine des Merveilles",
+    type: "Chambres d'hôtes & gîte",
+    lieu: "Lherm",
+    desc: "En parc boisé : chambres, un gîte, et un espace bien-être avec spa, sauna et piscine de saison.",
+    url: "https://www.domainedesmerveilles.fr/le-domaine-des-merveilles/plus-d-infos-sur-le-domaine-des-merveilles.html",
+  },
+  {
+    nom: "Le Parc aux Papillons",
+    type: "Chambres d'hôtes",
+    lieu: "Lherm",
+    desc: "13 couchages au cœur d'un jardin fleuri, atmosphère nature et sereine.",
+    url: "https://leparcauxpapillons.fr/",
+  },
+  {
+    nom: "Le Soubiran",
+    type: "Chambres d'hôtes",
+    lieu: "Bérat",
+    desc: "4 chambres jusqu'à 11 personnes, piscine, jardin et terrasse — ambiance familiale.",
+    url: "https://www.chambres-hotes.fr/chambres-hotes_le-soubiran_berat_h15400.htm",
+  },
+  {
+    nom: "Le Gîte du Prat",
+    type: "Gîte",
+    lieu: "Bérat",
+    desc: "Maison de vacances avec véranda et loisirs (billard, baby-foot, pétanque) — idéale pour un groupe.",
+    url: "https://www.gitedupratberat.com/",
+  },
+  {
+    nom: "Le Gîte du Fournil",
+    type: "Gîte",
+    lieu: "Sud-Toulousain",
+    desc: "Gîte de campagne à quelques minutes du lieu de la fête.",
+    url: "https://www.gite-du-fournil.com/tarifs/",
+  },
+  {
+    nom: "Borde Basse",
+    type: "Gîte · Gîtes de France",
+    lieu: "Haute-Garonne",
+    desc: "Gîte labellisé Gîtes de France, dans la campagne du Sud-Toulousain.",
+    url: "https://www.gites-de-france.com/fr/occitanie/haute-garonne/borde-basse-31g100307",
+  },
+  {
+    nom: "L'Atelier du Huchier",
+    type: "Gîte · Gîtes de France",
+    lieu: "Haute-Garonne",
+    desc: "Gîte de caractère labellisé Gîtes de France.",
+    url: "https://www.gites-de-france.com/fr/occitanie/haute-garonne/latelier-du-huchier-31g101275",
+  },
+  {
+    nom: "Le Gîte des Lauriers",
+    type: "Gîte · Gîtes de France",
+    lieu: "Haute-Garonne",
+    desc: "Gîte labellisé Gîtes de France, au calme.",
+    url: "https://www.gites-de-france.com/fr/occitanie/haute-garonne/gite-des-lauriers-31g101336",
+  },
+  {
+    nom: "Auberge Les Palmiers",
+    type: "Hôtel-restaurant",
+    lieu: "Rieumes",
+    desc: "Hôtel-restaurant sur la place du foirail, cuisine aux saveurs locales.",
+    url: "https://www.aubergelespalmiers.fr/",
+  },
+];
+
 /* ============================================================
    LE SITE FAIRE-PART (contenu identique à la v1 statique)
    ============================================================ */
@@ -141,6 +216,9 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
           </li>
           <li>
             <a href="#infos">Infos</a>
+          </li>
+          <li>
+            <a href="#loger">Se loger</a>
           </li>
           <li>
             <a href="#matable">Ma table</a>
@@ -357,8 +435,8 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
             <div className="carte">
               <h3>🏡 Hébergement</h3>
               <p>
-                De nombreuses possibilités autour de Muret et du sud de Toulouse. Une liste de suggestions arrivera avec la
-                révélation du lieu.
+                Une sélection de gîtes, chambres d'hôtes et hôtels à moins de 15 minutes du lieu vous attend juste en
+                dessous. <a href="#loger">Voir où se loger →</a>
               </p>
             </div>
             <div className="carte">
@@ -376,6 +454,35 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
               </p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* OÙ SE LOGER */}
+      <section className="loger" id="loger">
+        <div className="wrap center reveal">
+          <p className="eyebrow">Où se loger</p>
+          <h2>
+            Restez <em>tout près</em>
+          </h2>
+          <p>
+            Deux jours de fête, ça se savoure sans reprendre la route trop tôt. Voici quelques adresses à moins de
+            15 minutes du lieu — pensez à réserver assez tôt, le pont de l'Ascension est prisé.
+          </p>
+          <div className="loge-grid">
+            {LOGEMENTS.map((l) => (
+              <a key={l.url} className="loge-carte" href={l.url} target="_blank" rel="noopener noreferrer">
+                <span className="loge-type">{l.type}</span>
+                <h3>{l.nom}</h3>
+                <p className="loge-lieu">📍 {l.lieu}</p>
+                <p className="loge-desc">{l.desc}</p>
+                <span className="loge-lien">Réserver / en savoir plus →</span>
+              </a>
+            ))}
+          </div>
+          <p className="loge-note">
+            Ces adresses sont indépendantes des mariés : réservation, tarifs et disponibilités se gèrent directement
+            auprès de chaque hébergement.
+          </p>
         </div>
       </section>
 
