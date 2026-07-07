@@ -18,10 +18,12 @@ import arbreImg from "../assets/arbre-vie.png";
    un remplissage harmonieux. Coordonnées normalisées (0..1) de l'image. */
 const ANCRES = (() => {
   const n = 120;
+  // Ellipse resserrée sur le feuillage (haut du médaillon) pour que les
+  // lumières restent DANS la ramure et ne débordent pas.
   const cx = 0.5;
-  const cy = 0.37;
-  const rx = 0.3;
-  const ry = 0.26;
+  const cy = 0.33;
+  const rx = 0.26;
+  const ry = 0.2;
   const or = Math.PI * (3 - Math.sqrt(5));
   const pts = [];
   for (let i = 0; i < n; i++) {

@@ -2238,7 +2238,8 @@ footer {
    ============================================================ */
 .arbre-vivant .arbre-scene {
   position: relative;
-  max-width: 520px;
+  width: min(94vw, 720px);
+  max-width: 720px;
   margin: 2.4rem auto 0;
   isolation: isolate;
 }
