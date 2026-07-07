@@ -5,6 +5,14 @@ import { supabase } from "../lib/supabase.js";
    Admin — Suivi d'engagement : qui a répondu / joué / proposé, qui est
    abonné aux notifications, et relance personnelle par notification.
    ============================================================ */
+const RELANCES = [
+  { id: "general", label: "Message général", titre: "🌿 Virginie & François", message: "Des nouveautés vous attendent sur notre faire-part 🌿" },
+  { id: "rsvp", label: "Rappel RSVP", titre: "🌿 Votre réponse", message: "Petit rappel : n'oubliez pas de confirmer votre présence sur notre faire-part 🌿" },
+  { id: "quiz", label: "Quiz des mariés", titre: "🎯 Le quiz des mariés", message: "Le quiz des mariés vous attend — saurez-vous nous répondre ?" },
+  { id: "bandeson", label: "Bande-son", titre: "🎶 La bande-son", message: "Proposez les chansons qui doivent absolument passer le jour J 🎶" },
+  { id: "perso", label: "Message personnalisé…", titre: "🌿 Virginie & François", message: "" },
+];
+
 export default function Engagement({ invites }) {
   const [quiz, setQuiz] = useState(new Set());
   const [chansons, setChansons] = useState(new Set());
@@ -12,6 +20,7 @@ export default function Engagement({ invites }) {
   const [aRelancer, setARelancer] = useState(false);
   const [cible, setCible] = useState(null); // invité en cours de relance
   const [texte, setTexte] = useState("");
+  const [titre, setTitre] = useState(RELANCES[0].titre);
   const [msg, setMsg] = useState("");
 
   const charger = useCallback(async () => {
@@ -49,7 +58,7 @@ export default function Engagement({ invites }) {
     if (!texte.trim()) return;
     setMsg("");
     const { data, error } = await supabase.functions.invoke("relance-invite", {
-      body: { invite_id: l.id, titre: "🌿 Virginie & François", message: texte.trim() },
+      body: { invite_id: l.id, titre: titre || "🌿 Virginie & François", message: texte.trim() },
     });
     if (error) setMsg("Envoi impossible (fonction non déployée ?).");
     else setMsg(data.envoyes > 0 ? `Notification envoyée à ${l.nom}.` : `${l.nom} n'a pas activé les notifications.`);
@@ -95,6 +104,18 @@ export default function Engagement({ invites }) {
                 <td>
                   {cible === l.id ? (
                     <span className="eng-relance">
+                      <select
+                        aria-label="Type de relance"
+                        onChange={(e) => {
+                          const p = RELANCES.find((r) => r.id === e.target.value);
+                          if (p) { setTitre(p.titre); setTexte(p.message); }
+                        }}
+                        defaultValue="general"
+                      >
+                        {RELANCES.map((r) => (
+                          <option key={r.id} value={r.id}>{r.label}</option>
+                        ))}
+                      </select>
                       <input value={texte} onChange={(e) => setTexte(e.target.value)} placeholder="Votre message…" autoFocus />
                       <button className="btn-vert" style={{ margin: 0, width: "auto", padding: "0.4rem 0.9rem" }} onClick={() => relancer(l)}>
                         Envoyer
@@ -102,7 +123,7 @@ export default function Engagement({ invites }) {
                       <button className="btn-lien" onClick={() => setCible(null)}>Annuler</button>
                     </span>
                   ) : (
-                    <button className="btn-editer" disabled={!l.abonne} title={l.abonne ? "" : "Non abonné aux notifications"} onClick={() => { setCible(l.id); setTexte(""); }}>
+                    <button className="btn-editer" disabled={!l.abonne} title={l.abonne ? "" : "Non abonné aux notifications"} onClick={() => { setCible(l.id); setTitre(RELANCES[0].titre); setTexte(RELANCES[0].message); }}>
                       Relancer
                     </button>
                   )}
