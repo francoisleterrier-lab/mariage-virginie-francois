@@ -12,6 +12,7 @@ export default function AdminBandeSon({ invites }) {
   const [mode, setMode] = useState("moderation"); // moderation | console
   const [chansons, setChansons] = useState([]);
   const [ouverte, setOuverte] = useState(true);
+  const [aVenir, setAVenir] = useState(true);
   const [recherche, setRecherche] = useState("");
   const undo = useRef({});
 
@@ -20,12 +21,19 @@ export default function AdminBandeSon({ invites }) {
   const charger = useCallback(async () => {
     const [{ data }, { data: params }] = await Promise.all([
       supabase.from("chansons").select("*").order("created_at", { ascending: true }),
-      supabase.from("parametres").select("cle, valeur").eq("cle", "bandeson_ouverte"),
+      supabase.from("parametres").select("cle, valeur").in("cle", ["bandeson_ouverte", "bandeson_a_venir"]),
     ]);
     setChansons(data || []);
     const p = Object.fromEntries((params || []).map((r) => [r.cle, r.valeur]));
     setOuverte(p.bandeson_ouverte !== false);
+    setAVenir(p.bandeson_a_venir !== false);
   }, []);
+
+  async function toggleAVenir() {
+    const nv = !aVenir;
+    setAVenir(nv);
+    await supabase.from("parametres").upsert({ cle: "bandeson_a_venir", valeur: nv });
+  }
 
   useEffect(() => {
     charger();
@@ -159,6 +167,10 @@ export default function AdminBandeSon({ invites }) {
       {mode === "moderation" ? (
         <>
           <div className="bs-admin-actions">
+            <label className="switch">
+              <input type="checkbox" checked={aVenir} onChange={toggleAVenir} />
+              <span>« À venir » (teaser côté invité)</span>
+            </label>
             <label className="switch">
               <input type="checkbox" checked={ouverte} onChange={toggleOuverte} />
               <span>Soumissions ouvertes</span>

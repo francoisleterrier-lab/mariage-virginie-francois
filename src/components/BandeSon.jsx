@@ -16,6 +16,7 @@ export default function BandeSon({ profile }) {
 
   const [mes, setMes] = useState([]);
   const [ouverte, setOuverte] = useState(true);
+  const [aVenir, setAVenir] = useState(true);
   const [max, setMax] = useState(2);
   const [mur, setMur] = useState([]);
   const [f, setF] = useState({ titre: "", artiste: "", lien: "", souvenir: "", partage_jour_j: true, partage_apres: true });
@@ -25,11 +26,12 @@ export default function BandeSon({ profile }) {
   const charger = useCallback(async () => {
     const [{ data: chansons }, { data: params }] = await Promise.all([
       supabase.from("mes_chansons").select("*").order("created_at", { ascending: true }),
-      supabase.from("parametres").select("cle, valeur").in("cle", ["bandeson_ouverte", "bandeson_max"]),
+      supabase.from("parametres").select("cle, valeur").in("cle", ["bandeson_ouverte", "bandeson_max", "bandeson_a_venir"]),
     ]);
     setMes(chansons || []);
     const p = Object.fromEntries((params || []).map((r) => [r.cle, r.valeur]));
     setOuverte(p.bandeson_ouverte !== false);
+    setAVenir(p.bandeson_a_venir !== false);
     if (p.bandeson_max != null) setMax(Number(p.bandeson_max) || 2);
     if (estSouvenir) {
       const { data } = await supabase.rpc("mur_bande_son");
@@ -112,6 +114,24 @@ export default function BandeSon({ profile }) {
               </p>
             </div>
           )}
+        </div>
+      </section>
+    );
+  }
+
+  /* ---------- « À venir » : teaser, pas encore de collecte ---------- */
+  if (aVenir) {
+    return (
+      <section className="bandeson" id="bandeson">
+        <div className="wrap center reveal">
+          <p className="eyebrow">La bande-son</p>
+          <h2>
+            Bientôt : <em>votre bande-son</em>
+          </h2>
+          <p className="bs-pitch">
+            Très vite, vous pourrez proposer les chansons qui doivent absolument passer le jour J — et le souvenir
+            qui va avec. Revenez nous voir. 🎶
+          </p>
         </div>
       </section>
     );

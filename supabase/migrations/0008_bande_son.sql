@@ -25,6 +25,7 @@ create index if not exists idx_chansons_statut on public.chansons (statut);
 create index if not exists idx_chansons_invite on public.chansons (invite_id);
 
 insert into public.parametres (cle, valeur) values
+  ('bandeson_a_venir', 'true'::jsonb),   -- true = teaser « bientôt », pas encore de formulaire
   ('bandeson_ouverte', 'true'::jsonb),
   ('bandeson_max', '2'::jsonb)
 on conflict (cle) do nothing;
