@@ -34,13 +34,16 @@ export default function EditInvite({ invite, invites, tables, onClose, onSaved }
     onSaved();
   }
 
-  function majEnfants(n) {
-    const nb = parseInt(n) || 0;
-    const noms = [...enfantsNoms];
-    noms.length = nb;
-    for (let i = 0; i < nb; i++) if (noms[i] == null) noms[i] = "";
-    setEnfants(n);
+  // Intègre une personne (non inscrite) dans la catégorie enfant / ado du foyer.
+  function ajouterEnfant() {
+    const noms = [...enfantsNoms, ""];
     setEnfantsNoms(noms);
+    setEnfants(String(noms.length));
+  }
+  function retirerEnfant(i) {
+    const noms = enfantsNoms.filter((_, j) => j !== i);
+    setEnfantsNoms(noms);
+    setEnfants(String(noms.length));
   }
 
   async function majCouple(aId, oldPid, newPid) {
@@ -62,11 +65,12 @@ export default function EditInvite({ invite, invites, tables, onClose, onSaved }
     e.preventDefault();
     setBusy(true);
     setErr("");
+    const nomsPropres = enfantsNoms.map((s) => (s || "").trim()).filter(Boolean);
     const rsvp = {
       presence,
       adultes,
-      enfants,
-      enfantsNoms: enfantsNoms.slice(0, parseInt(enfants) || 0).map((s) => (s || "").trim()),
+      enfants: String(nomsPropres.length),
+      enfantsNoms: nomsPropres,
       regime,
       mot,
     };
@@ -150,31 +154,32 @@ export default function EditInvite({ invite, invites, tables, onClose, onSaved }
             </div>
             <div>
               <label>Enfants / ados</label>
-              <select value={enfants} onChange={(e) => majEnfants(e.target.value)}>
-                {["0", "1", "2", "3", "4", "5"].map((n) => (
-                  <option key={n}>{n}</option>
-                ))}
-              </select>
+              <input value={enfantsNoms.length} readOnly aria-label="Nombre d'enfants / ados (géré par la liste ci-dessous)" />
             </div>
           </div>
 
-          {parseInt(enfants) > 0 && (
-            <>
-              <label>Prénom (et âge) des enfants / ados</label>
-              {Array.from({ length: parseInt(enfants) }).map((_, i) => (
+          <div className="enfants-edit">
+            <label>Enfants / ados du foyer</label>
+            {enfantsNoms.map((nom, i) => (
+              <div className="enfant-ligne" key={i}>
                 <input
-                  key={i}
-                  value={enfantsNoms[i] || ""}
+                  value={nom || ""}
                   onChange={(e) => {
                     const noms = [...enfantsNoms];
                     noms[i] = e.target.value;
                     setEnfantsNoms(noms);
                   }}
-                  placeholder={`Enfant ${i + 1}`}
+                  placeholder="Prénom — enfant ou ado (ex. Léa, 8 ans)"
                 />
-              ))}
-            </>
-          )}
+                <button type="button" className="enfant-x" onClick={() => retirerEnfant(i)} aria-label={`Retirer ${nom || "cet enfant"}`}>
+                  ×
+                </button>
+              </div>
+            ))}
+            <button type="button" className="btn-lien" onClick={ajouterEnfant}>
+              ＋ Ajouter un enfant / ado
+            </button>
+          </div>
 
           <label>Allergies / régime</label>
           <input value={regime} onChange={(e) => setRegime(e.target.value)} />
