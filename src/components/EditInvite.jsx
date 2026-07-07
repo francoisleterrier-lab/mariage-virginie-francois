@@ -21,6 +21,18 @@ export default function EditInvite({ invite, invites, tables, onClose, onSaved }
   const [coupleId, setCoupleId] = useState(invite.couple_id || "");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
+  const [conjNom, setConjNom] = useState("");
+  const [conjOuvert, setConjOuvert] = useState(false);
+
+  async function creerConjoint() {
+    if (!conjNom.trim()) return;
+    setBusy(true);
+    setErr("");
+    const { error } = await supabase.rpc("admin_creer_conjoint", { p_invite: invite.id, p_nom: conjNom.trim() });
+    setBusy(false);
+    if (error) return setErr(error.message || "Création impossible.");
+    onSaved();
+  }
 
   function majEnfants(n) {
     const nb = parseInt(n) || 0;
@@ -194,6 +206,30 @@ export default function EditInvite({ invite, invites, tables, onClose, onSaved }
               </select>
             </div>
           </div>
+
+          {!coupleId && (
+            <div className="conjoint-manuel">
+              {!conjOuvert ? (
+                <button type="button" className="btn-lien" onClick={() => setConjOuvert(true)}>
+                  ＋ Ajouter un conjoint non inscrit
+                </button>
+              ) : (
+                <>
+                  <label>Conjoint·e non inscrit·e (prénom &amp; nom)</label>
+                  <div className="conjoint-ligne">
+                    <input value={conjNom} onChange={(e) => setConjNom(e.target.value)} placeholder="ex. Marie Dupont" />
+                    <button type="button" className="btn-vert" style={{ margin: 0, width: "auto", padding: "0.6rem 1.1rem" }} disabled={busy || !conjNom.trim()} onClick={creerConjoint}>
+                      Créer &amp; lier
+                    </button>
+                    <button type="button" className="btn-lien" onClick={() => { setConjOuvert(false); setConjNom(""); }}>
+                      Annuler
+                    </button>
+                  </div>
+                  <p className="pp-hint">Crée une personne sans compte, liée en couple. Utile si le/la conjoint·e ne s'inscrit pas.</p>
+                </>
+              )}
+            </div>
+          )}
 
           {err && <p className="gate-err" style={{ color: "#b06a4f" }}>{err}</p>}
 
