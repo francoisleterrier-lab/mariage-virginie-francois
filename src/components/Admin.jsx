@@ -35,7 +35,7 @@ export default function Admin({ onLogout, onApercuInvite }) {
     const [{ data, error }, { data: t }] = await Promise.all([
       supabase
         .from("invites")
-        .select("id, nom, email, couple_id, table_id, role, rsvp, rsvp_date, created_at, rattache_a")
+        .select("id, nom, email, couple_id, table_id, role, rsvp, rsvp_date, created_at, rattache_a, rattache_role")
         .order("created_at", { ascending: true }),
       supabase.from("tables_plan").select("id, nom").order("nom"),
     ]);
@@ -228,7 +228,7 @@ export default function Admin({ onLogout, onApercuInvite }) {
                         {membres.map((m) => m.nom).join(" & ")}
                         {adosFoyer.map((a) => (
                           <span key={a.id} className="foyer-ado">
-                            <span className="ado-tag">ado</span> {a.nom}
+                            <span className="ado-tag">{a.rattache_role === "enfant" ? "enfant" : "ado"}</span> {a.nom}
                           </span>
                         ))}
                       </td>

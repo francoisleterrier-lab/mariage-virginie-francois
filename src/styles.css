@@ -2994,6 +2994,15 @@ footer {
   border-radius: 8px;
   font: inherit;
 }
+.fam-seuls {
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: var(--encre);
+}
+.fam-compteur {
+  color: #6b7566;
+  font-weight: 400;
+}
 .fam-liste {
   display: flex;
   flex-direction: column;
