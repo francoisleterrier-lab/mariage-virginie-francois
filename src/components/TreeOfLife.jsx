@@ -1,90 +1,44 @@
 import { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import { supabase } from "../lib/supabase.js";
+import arbreImg from "../assets/arbre-vie.png";
 
 /* ============================================================
    ARBRE DE VIE VIVANT
-   Chaque personne inscrite fait pousser une feuille au bout d'une branche.
+   L'arbre de vie (illustration des mariés) s'illumine : chaque personne
+   inscrite dépose une petite lumière dorée nichée dans la ramure.
    - données : RPC security-definer `arbre_feuilles` → { leaf_rank, display_name }
-     (ne renvoie QUE le rang + le prénom du foyer, jamais l'e-mail/RSVP).
-   - la silhouette de l'arbre est GÉNÉRÉE par branchement récursif
-     (fractal déterministe) → vraie ramure organique, pas un tracé « à la main ».
+     (rang + prénom du foyer uniquement ; jamais e-mail/RSVP).
+   - survol/tap d'une lumière → prénom ; l'arbre rayonne d'autant plus
+     que le taux de confirmation approche l'objectif (halo doré).
    - rafraîchi au montage, au focus/retour d'onglet et toutes les 60 s.
    ============================================================ */
 
-/* ---------- Génération de l'arbre (déterministe) ----------
-   Un générateur pseudo-aléatoire à graine fixe garantit exactement le
-   même arbre à chaque rendu. On récursive depuis le tronc : chaque branche
-   se courbe, s'affine et se divise ; on collecte les segments (pour le
-   dessin) et les extrémités (pour poser les feuilles). */
-function construireArbre() {
-  let graine = 20280526; // clin d'œil à la date
-  const rnd = () => {
-    graine = (graine * 1664525 + 1013904223) % 4294967296;
-    return graine / 4294967296;
-  };
-  const segments = [];
-  const bouts = [];
-
-  function branche(x, y, angle, longueur, largeur, prof) {
-    // courbure douce : point de contrôle décalé perpendiculairement
-    const bx = x + Math.cos(angle) * longueur;
-    const by = y - Math.sin(angle) * longueur;
-    // le tronc et les grosses branches restent quasi droits ; seules les
-    // ramilles fines se courbent (évite un « pied » disgracieux à la base).
-    const courbe = (rnd() - 0.5) * longueur * 0.5 * (largeur > 4 ? 0.12 : 1);
-    const perp = angle + Math.PI / 2;
-    const cx = x + Math.cos(angle) * longueur * 0.5 + Math.cos(perp) * courbe;
-    const cy = y - Math.sin(angle) * longueur * 0.5 - Math.sin(perp) * courbe;
-    segments.push({ x1: x, y1: y, cx, cy, x2: bx, y2: by, w: largeur });
-
-    if (prof <= 0 || longueur < 4.5) {
-      bouts.push({ x: bx, y: by, angle });
-      return;
-    }
-
-    // nombre d'enfants : un rameau maître qui continue + des ramilles latérales
-    let enfants;
-    if (prof >= 6) enfants = 2;
-    else enfants = rnd() < 0.32 ? 3 : 2;
-
-    for (let i = 0; i < enfants; i++) {
-      // écart angulaire réparti, avec une branche plutôt continue
-      const base = (i - (enfants - 1) / 2);
-      const ecart = base * (0.36 + rnd() * 0.16) + (rnd() - 0.5) * 0.14;
-      const nl = longueur * (0.75 + rnd() * 0.12);
-      const nw = Math.max(0.5, largeur * (0.68 + rnd() * 0.07));
-      branche(bx, by, angle + ecart, nl, nw, prof - 1);
-    }
+/* Points d'ancrage des lumières, répartis dans la canopée (ellipse au-dessus
+   du tronc), distribution phyllotaxique déterministe puis mélange stable pour
+   un remplissage harmonieux. Coordonnées normalisées (0..1) de l'image. */
+const ANCRES = (() => {
+  const n = 120;
+  const cx = 0.5;
+  const cy = 0.37;
+  const rx = 0.3;
+  const ry = 0.26;
+  const or = Math.PI * (3 - Math.sqrt(5));
+  const pts = [];
+  for (let i = 0; i < n; i++) {
+    const t = (i + 0.5) / n;
+    const r = Math.sqrt(t);
+    const a = i * or;
+    pts.push({ x: cx + Math.cos(a) * r * rx, y: cy + Math.sin(a) * r * ry });
   }
-
-  // tronc : part du bas (base ancrée dans le cercle), monte tout droit
-  branche(100, 186, Math.PI / 2, 40, 7.5, 8);
-  return { segments, bouts };
-}
-
-const ARBRE = construireArbre();
-const SEGMENTS = ARBRE.segments;
-// Ordre de pose des feuilles : mélange déterministe des extrémités pour
-// que le feuillage se répartisse harmonieusement sur toute la ramure
-// (et non en paquets), tout en restant STABLE d'un chargement à l'autre.
-const BOUTS = (() => {
+  // mélange déterministe (stable d'un chargement à l'autre)
   let g = 987654321;
-  const rnd = () => {
-    g = (g * 1103515245 + 12345) % 2147483648;
-    return g / 2147483648;
-  };
-  const arr = [...ARBRE.bouts];
-  for (let i = arr.length - 1; i > 0; i--) {
+  const rnd = () => ((g = (g * 1103515245 + 12345) % 2147483648), g / 2147483648);
+  for (let i = pts.length - 1; i > 0; i--) {
     const j = Math.floor(rnd() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
+    [pts[i], pts[j]] = [pts[j], pts[i]];
   }
-  return arr;
+  return pts;
 })();
-
-function orienterFeuille(bout) {
-  const deg = 90 - (bout.angle * 180) / Math.PI;
-  return { transform: `translate(${bout.x} ${bout.y}) rotate(${deg})` };
-}
 
 export default function TreeOfLife() {
   const [feuilles, setFeuilles] = useState([]);
@@ -126,7 +80,7 @@ export default function TreeOfLife() {
   }, [charger]);
 
   const nombre = feuilles.length;
-  const ratio = objectif > 0 ? nombre / objectif : 0;
+  const ratio = objectif > 0 ? Math.min(1, nombre / objectif) : 0;
   const stade = ratio >= 1 ? 4 : ratio >= 0.75 ? 3 : ratio >= 0.5 ? 2 : ratio >= 0.25 ? 1 : 0;
 
   const nomPar = useMemo(() => {
@@ -140,7 +94,7 @@ export default function TreeOfLife() {
   useEffect(() => {
     if (actif == null) return;
     const fermer = (e) => {
-      if (!(e.target instanceof Element) || !e.target.closest(".feuille-hit")) setActif(null);
+      if (!(e.target instanceof Element) || !e.target.closest(".lumiere")) setActif(null);
     };
     document.addEventListener("pointerdown", fermer, true);
     return () => document.removeEventListener("pointerdown", fermer, true);
@@ -148,112 +102,62 @@ export default function TreeOfLife() {
 
   const compteur =
     nombre === 0
-      ? "L'arbre attend ses premières feuilles…"
+      ? "L'arbre attend ses premières lumières…"
       : nombre === 1
-      ? "1 feuille a poussé"
-      : `${nombre} feuilles ont poussé`;
+      ? "1 lumière s'est allumée"
+      : `${nombre} lumières se sont allumées`;
 
-  const boutActif = actif != null ? BOUTS[feuilles.findIndex((x) => x.leaf_rank === actif)] : null;
+  const idxActif = actif != null ? feuilles.findIndex((x) => x.leaf_rank === actif) : -1;
+  const ancreActif = idxActif >= 0 ? ANCRES[idxActif % ANCRES.length] : null;
 
   return (
     <section className="arbre-vivant" id="arbre">
       <div className="wrap center reveal">
         <p className="eyebrow">L'arbre de vie</p>
         <h2>
-          Chacun·e de vous fait <em>pousser une feuille</em>
+          Chacun·e de vous <em>illumine notre arbre</em>
         </h2>
         <p>
-          Vous, votre moitié, vos enfants : chaque personne inscrite fait grandir notre arbre. Passez sur une
-          feuille pour découvrir qui nous rejoint.
+          Vous, votre moitié, vos enfants : chaque personne inscrite allume une lumière dans notre arbre de vie.
+          Passez sur l'une d'elles pour découvrir qui nous rejoint.
         </p>
 
-        <div className={"arbre-scene stade-" + stade}>
-          <svg className="arbre-svg" viewBox="0 0 200 232" role="group" aria-label={`Arbre de vie — ${compteur}`}>
-            <defs>
-              <linearGradient id="ecorce" x1="0" y1="1" x2="0" y2="0">
-                <stop offset="0%" stopColor="#3a2a1c" />
-                <stop offset="55%" stopColor="#4a3826" />
-                <stop offset="100%" stopColor="#5f7457" />
-              </linearGradient>
-            </defs>
+        <div className={"arbre-scene stade-" + stade} style={{ "--lueur": ratio.toFixed(2) }}>
+          <div className="arbre-halo-glow" aria-hidden="true" />
+          <img className="arbre-photo" src={arbreImg} alt="Arbre de vie" draggable="false" />
 
-            {stade >= 4 && <circle className="arbre-halo" cx="100" cy="96" r="96" />}
-            <circle className="arbre-cercle" cx="100" cy="100" r="90" />
-
-            {/* ramure générée */}
-            <g className="arbre-ramure">
-              {SEGMENTS.map((s, i) => (
-                <path
-                  key={i}
-                  d={`M${s.x1} ${s.y1} Q${s.cx} ${s.cy} ${s.x2} ${s.y2}`}
-                  stroke="url(#ecorce)"
-                  strokeWidth={s.w}
-                  strokeLinecap="round"
-                  fill="none"
-                />
-              ))}
-            </g>
-
-            {/* feuilles au bout des branches */}
+          <div className="arbre-lumieres" role="group" aria-label={`Arbre de vie — ${compteur}`}>
             {feuilles.map((f, i) => {
-              const b = BOUTS[i % BOUTS.length];
+              const p = ANCRES[i % ANCRES.length];
               const nom = nomPar[f.leaf_rank];
-              const estBourgeon = stade >= 1 && i % 5 === 0;
-              const estFleur = stade >= 2 && estBourgeon;
-              const estOr = stade >= 3 && i % 7 === 3;
               const neuf = nouvelles.has(f.leaf_rank);
-              const label = tooltipsOk && nom ? `Feuille de ${nom}` : "Feuille confirmée";
+              const label = tooltipsOk && nom ? `Lumière de ${nom}` : "Lumière allumée";
               return (
-                <g
+                <button
                   key={f.leaf_rank}
-                  className={"feuille-g" + (neuf ? " feuille-neuve" : "")}
-                  style={{ transformOrigin: `${b.x}px ${b.y}px`, animationDelay: neuf ? "0ms" : `${Math.min(i * 14, 1500)}ms` }}
+                  type="button"
+                  className={"lumiere" + (neuf ? " lumiere-neuve" : "")}
+                  style={{
+                    left: `${p.x * 100}%`,
+                    top: `${p.y * 100}%`,
+                    animationDelay: neuf ? "0ms" : `${Math.min(i * 45, 2600)}ms`,
+                  }}
+                  aria-label={label}
+                  onClick={() => tooltipsOk && nom && setActif(actif === f.leaf_rank ? null : f.leaf_rank)}
+                  onMouseEnter={() => tooltipsOk && nom && setActif(f.leaf_rank)}
+                  onMouseLeave={() => setActif((a) => (a === f.leaf_rank ? null : a))}
                 >
-                  <g {...orienterFeuille(b)}>
-                    {estFleur ? (
-                      <g className="fleur">
-                        {[0, 72, 144, 216, 288].map((a) => (
-                          <ellipse key={a} className="fleur-petale" cx="0" cy="-3.2" rx="1.8" ry="3.1" transform={`rotate(${a})`} />
-                        ))}
-                        <circle className="fleur-coeur" cx="0" cy="0" r="1.5" />
-                      </g>
-                    ) : estBourgeon ? (
-                      <circle className="bourgeon" cx="0" cy="0" r="2.1" />
-                    ) : (
-                      <path className={"feuille" + (estOr ? " feuille-or" : "")} d="M0 0 C3.3 -3 3.3 -8.5 0 -12 C-3.3 -8.5 -3.3 -3 0 0 Z" />
-                    )}
-                  </g>
-                  <circle
-                    className="feuille-hit"
-                    cx={b.x}
-                    cy={b.y}
-                    r="8"
-                    role="button"
-                    tabIndex={0}
-                    aria-label={label}
-                    onClick={() => tooltipsOk && nom && setActif(actif === f.leaf_rank ? null : f.leaf_rank)}
-                    onMouseEnter={() => tooltipsOk && nom && setActif(f.leaf_rank)}
-                    onMouseLeave={() => setActif((a) => (a === f.leaf_rank ? null : a))}
-                    onKeyDown={(e) => {
-                      if ((e.key === "Enter" || e.key === " ") && tooltipsOk && nom) {
-                        e.preventDefault();
-                        setActif(actif === f.leaf_rank ? null : f.leaf_rank);
-                      }
-                    }}
-                  />
-                </g>
+                  <span className="lumiere-orbe" aria-hidden="true" />
+                </button>
               );
             })}
-          </svg>
 
-          {boutActif && tooltipsOk && nomPar[actif] && (
-            <div
-              className="feuille-tip"
-              style={{ left: `${(boutActif.x / 200) * 100}%`, top: `${(boutActif.y / 232) * 100}%` }}
-            >
-              {nomPar[actif]}
-            </div>
-          )}
+            {ancreActif && tooltipsOk && nomPar[actif] && (
+              <div className="feuille-tip" style={{ left: `${ancreActif.x * 100}%`, top: `${ancreActif.y * 100}%` }}>
+                {nomPar[actif]}
+              </div>
+            )}
+          </div>
         </div>
 
         <p className="arbre-compteur" aria-live="polite">
