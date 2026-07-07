@@ -2725,3 +2725,62 @@ footer {
 .bs-play { min-width: 88px; min-height: 48px; border: none; border-radius: 12px; background: var(--orc); color: #101d16; font: inherit; font-weight: 600; font-size: 0.95rem; cursor: pointer; }
 .bs-undo { min-height: 48px; padding: 0 1rem; border: 1px solid #c99a3f; border-radius: 12px; background: transparent; color: #f2d488; font: inherit; cursor: pointer; }
 .bs-joue { color: var(--orc); font-family: "Cormorant Garamond", serif; font-size: 1.1rem; min-width: 88px; text-align: center; }
+
+/* ============================================================
+   QUIZ DES MARIÉS
+   ============================================================ */
+.quiz { background: var(--fond); }
+.quiz-sceau { max-width: 520px; margin: 1.5rem auto 0; padding: 2.4rem 1.8rem; border: 1px solid rgba(166,124,43,0.4); border-radius: 18px; background: linear-gradient(180deg,#fbf8ef,#f4efe0); }
+.quiz-cadenas { font-size: 2.4rem; }
+.quiz-compte { margin-top: 0.8rem; color: var(--or); font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 1.2rem; }
+.quiz-regles { max-width: 560px; margin: 1.4rem auto; text-align: left; }
+.quiz-warning { background: #f4efe0; border: 1px solid rgba(166,124,43,0.4); border-radius: 12px; padding: 1rem 1.2rem; color: var(--encre2); }
+.quiz-regles ul { margin: 1rem 0 0 1.1rem; color: var(--encre2); }
+.quiz-regles li { margin-bottom: 0.3rem; }
+/* jeu */
+.quiz-jeu .wrap { max-width: 620px; }
+.quiz-haut { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.quiz-prog { font-family: "Cormorant Garamond", serif; font-size: 1.4rem; color: var(--sauge); }
+.quiz-timer { width: 64px; height: 64px; }
+.quiz-timer-bg { fill: none; stroke: rgba(95,116,87,0.25); stroke-width: 5; }
+.quiz-timer-fg { fill: none; stroke: var(--or); stroke-width: 5; stroke-linecap: round; transform: rotate(-90deg); transform-origin: center; transition: stroke-dashoffset 1s linear; }
+.quiz-timer-txt { font-family: "Cormorant Garamond", serif; font-size: 22px; fill: var(--encre); }
+.quiz-question { font-size: clamp(1.5rem, 4vw, 2.2rem); margin: 1rem 0 1.6rem; }
+.quiz-choix { display: grid; gap: 0.8rem; }
+.quiz-choix-btn { min-height: 56px; padding: 0.9rem 1.2rem; border: 1px solid var(--ligne); border-radius: 14px; background: var(--blanc); color: var(--encre); font: inherit; font-size: 1.05rem; cursor: pointer; transition: all 0.2s; }
+.quiz-choix-btn:hover:not(:disabled) { border-color: var(--orc); transform: translateY(-2px); box-shadow: var(--ombre); }
+.quiz-feedback { margin-top: 1.2rem; font-size: 0.85rem; color: var(--sauge); }
+/* podium */
+.quiz-podium { display: flex; justify-content: center; align-items: flex-end; gap: 0.8rem; margin: 2rem 0; }
+.quiz-marche { border-radius: 14px 14px 0 0; padding: 1rem 0.9rem 1.4rem; min-width: 92px; color: var(--encre); }
+.quiz-or { background: linear-gradient(180deg,#e7c56d,#c99a3f); order: 2; padding-top: 2.2rem; }
+.quiz-argent { background: linear-gradient(180deg,#cdd7c6,#9db091); order: 1; padding-top: 1.4rem; }
+.quiz-bronze { background: linear-gradient(180deg,#f0e9d8,#d8ccae); order: 3; }
+.quiz-rang { font-family: "Cormorant Garamond", serif; font-size: 1.8rem; }
+.quiz-nom { font-weight: 500; }
+.quiz-classement { max-width: 420px; margin: 0 auto; list-style: none; text-align: left; }
+.quiz-classement li { display: flex; justify-content: space-between; padding: 0.4rem 0; border-top: 1px dashed var(--ligne); }
+.quiz-surprise { margin-top: 1.4rem; font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 1.25rem; color: var(--or); }
+/* correction */
+.quiz-correction { max-width: 620px; margin: 2rem auto 0; text-align: left; }
+.quiz-cor-item { border-top: 1px solid var(--ligne); padding: 0.8rem 0; }
+.quiz-cor-q { font-family: "Cormorant Garamond", serif; font-size: 1.2rem; }
+.quiz-cor-r { color: var(--sauge); }
+.quiz-cor-stat { font-size: 0.82rem; color: var(--encre2); }
+/* témoin / duel */
+.quiz-temoin, .quiz-duel { max-width: 560px; margin: 2rem auto 0; padding: 1.4rem; border: 2px solid var(--orc); border-radius: 16px; background: #f7f2e6; }
+.quiz-temoin h3 { font-family: "Cormorant Garamond", serif; font-size: 1.5rem; }
+.quiz-versus { display: flex; justify-content: center; gap: 1.6rem; align-items: center; margin: 1rem 0; }
+.quiz-temoin-med { flex: 1; padding: 1rem; border-radius: 14px; background: var(--blanc); border: 1px solid var(--ligne); }
+.quiz-temoin-med.gagnant { border-color: var(--orc); box-shadow: 0 0 0 3px rgba(201,154,63,0.3); }
+.quiz-temoin-nom { font-family: "Cormorant Garamond", serif; font-size: 1.4rem; }
+.quiz-temoin-score { color: var(--or); font-weight: 600; }
+.quiz-temoin-forfait { color: var(--sauge); font-style: italic; font-size: 0.85rem; }
+.quiz-duel-verdict { font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 1.2rem; color: var(--encre); }
+/* admin quiz */
+.quiz-adm-etat { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
+.quiz-temoins-liste { display: grid; grid-template-columns: repeat(auto-fill,minmax(200px,1fr)); gap: 0.4rem; max-height: 260px; overflow: auto; }
+.quiz-temoin-choix { display: flex; gap: 0.5rem; padding: 0.4rem 0.6rem; border: 1px solid var(--ligne); border-radius: 8px; cursor: pointer; }
+.quiz-temoin-choix.on { border-color: var(--orc); }
+.quiz-q-ligne { display: flex; justify-content: space-between; gap: 1rem; padding: 0.5rem 0; border-top: 1px dashed var(--ligne); }
+.quiz-q-actions { display: flex; gap: 0.7rem; white-space: nowrap; }
