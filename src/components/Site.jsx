@@ -3,6 +3,8 @@ import { supabase } from "../lib/supabase.js";
 import Countdown from "./Countdown.jsx";
 import MedaillonArbre from "./MedaillonArbre.jsx";
 import TreeOfLife from "./TreeOfLife.jsx";
+import Citation from "./Citation.jsx";
+import BotanicalDecor from "./BotanicalDecor.jsx";
 import MaTable from "./MaTable.jsx";
 import PushOptIn from "./PushOptIn.jsx";
 
@@ -254,11 +256,14 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
         </a>
       </header>
 
-      {/* COMPTE À REBOURS */}
+      {/* COMPTE À REBOURS + citation évolutive (le site « vit ») */}
       <div className="countdown" id="compte">
+        <BotanicalDecor cote="g" />
+        <BotanicalDecor cote="d" />
         <p className="eyebrow">Compte à rebours</p>
         <h2 className="cd-titre">Avant de nous dire <em>oui</em></h2>
         <Countdown />
+        <Citation />
       </div>
 
       {/* ENCART PUSH (doux, masquable, s'auto-cache si déjà abonné) */}
