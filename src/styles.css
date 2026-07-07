@@ -2872,6 +2872,14 @@ footer {
   font-weight: 600;
 }
 
+/* Admin — foyers fusionnés : boutons d'édition par membre du couple */
+.foyer-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  align-items: stretch;
+}
+
 /* Où se loger — note camping-car (dormir sur place) */
 .loge-camping {
   display: flex;
