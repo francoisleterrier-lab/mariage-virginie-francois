@@ -2784,3 +2784,10 @@ footer {
 .quiz-temoin-choix.on { border-color: var(--orc); }
 .quiz-q-ligne { display: flex; justify-content: space-between; gap: 1rem; padding: 0.5rem 0; border-top: 1px dashed var(--ligne); }
 .quiz-q-actions { display: flex; gap: 0.7rem; white-space: nowrap; }
+
+/* Admin — suivi d'engagement */
+.eng-table { width: 100%; border-collapse: collapse; }
+.eng-table th, .eng-table td { padding: 0.5rem 0.6rem; text-align: left; border-bottom: 1px solid var(--ligne); white-space: nowrap; }
+.eng-table th { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sauge); }
+.eng-relance { display: inline-flex; gap: 0.5rem; align-items: center; }
+.eng-relance input { padding: 0.4rem 0.6rem; border: 1px solid var(--ligne); border-radius: 8px; font: inherit; min-width: 180px; }
