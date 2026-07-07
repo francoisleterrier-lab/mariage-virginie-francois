@@ -2212,7 +2212,11 @@ footer {
   fill: none;
   stroke: var(--encre);
   stroke-linecap: round;
-  opacity: 0.92;
+  stroke-linejoin: round;
+  opacity: 0.94;
+}
+.arbre-tronc {
+  fill: var(--encre);
 }
 .arbre-halo {
   fill: var(--orc);

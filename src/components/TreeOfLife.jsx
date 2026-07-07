@@ -15,38 +15,50 @@ import { supabase } from "../lib/supabase.js";
    ============================================================ */
 
 /* Tronc + branches + racines — repris à l'identique du logo (Rosette). */
-const BRANCHES = [
-  ["M100 142 C99 122 100 104 100 78", 5.5],
-  ["M100 104 C84 96 68 86 50 70", 3],
-  ["M100 104 C116 96 132 86 150 70", 3],
-  ["M100 90 C88 76 78 60 70 42", 2.6],
-  ["M100 90 C112 76 122 60 130 42", 2.6],
-  ["M100 80 C100 64 98 46 96 26", 2.6],
-  ["M76 92 C62 88 46 88 32 92", 1.8],
-  ["M124 92 C138 88 154 88 168 92", 1.8],
-  ["M64 78 C52 70 42 62 34 50", 1.6],
-  ["M136 78 C148 70 158 62 166 50", 1.6],
-  ["M50 70 C44 62 42 52 40 42", 1.4],
-  ["M150 70 C156 62 158 52 160 42", 1.4],
-  ["M78 62 C70 50 64 40 62 28", 1.5],
-  ["M122 62 C130 50 136 40 138 28", 1.5],
-  ["M98 50 C90 40 84 32 78 22", 1.4],
-  ["M98 50 C106 40 112 32 118 22", 1.4],
-  ["M100 142 C88 150 74 154 58 154", 2.6],
-  ["M100 142 C112 150 126 154 142 154", 2.6],
-  ["M100 142 C100 154 100 164 100 178", 2.4],
-  ["M100 142 C96 154 90 164 80 172", 2.2],
-  ["M100 142 C104 154 110 164 120 172", 2.2],
+/* Tronc plein, évasé à la base et effilé vers la ramure. */
+const TRONC =
+  "M90 164 C92 140 95 120 96 101 C96 95 104 95 104 101 C105 120 108 140 110 164 C104 168 96 168 90 164 Z";
+
+/* Branches maîtresses — moitié DROITE + centre uniquement ; la moitié
+   gauche est un miroir exact (symétrie parfaite). [tracé, épaisseur]. */
+const BRANCHES_D = [
+  ["M100 106 C112 98 122 86 126 68", 3.6],
+  ["M126 68 C129 58 128 48 123 40", 2.1],
+  ["M110 90 C121 84 130 75 135 62", 2.4],
+  ["M135 62 C138 54 138 47 135 41", 1.5],
+  ["M103 100 C112 87 118 73 119 57", 2.2],
+  ["M119 57 C120 49 118 43 114 38", 1.4],
+  ["M118 78 C127 73 134 66 138 57", 1.4],
+  ["M129 74 C137 69 143 63 146 56", 1.2],
+  ["M122 52 C126 46 127 40 125 34", 1.1],
+  ["M114 68 C119 61 121 55 120 48", 1.1],
 ];
 
-/* 120 ancres réparties harmonieusement dans la canopée (distribution
+/* Branche centrale montante qui se divise en Y (dessinée une seule fois). */
+const CENTRE_D = [
+  ["M100 106 C100 90 100 74 100 58", 3.0],
+  ["M100 66 C97 57 94 50 90 44", 1.6],
+  ["M100 66 C103 57 106 50 110 44", 1.6],
+  ["M100 56 C100 50 100 45 100 40", 1.3],
+];
+
+/* Racines gracieuses — moitié droite + centre, miroir à gauche. */
+const RACINES_D = [
+  ["M105 162 C118 166 130 170 143 168", 2.6],
+  ["M143 168 C149 169 154 170 159 169", 1.5],
+  ["M104 164 C112 172 121 178 131 182", 2.0],
+  ["M131 182 C136 184 141 186 146 187", 1.2],
+];
+const RACINE_CENTRE = ["M100 164 C100 174 100 183 100 193", 2.0];
+
+/* 120 ancres réparties harmonieusement dans la ramure (distribution
    phyllotaxique, déterministe), triées du tronc vers l'extérieur pour
    un remplissage « de l'intérieur vers la canopée ». */
 function genererAncres(n) {
   const cx = 100;
-  const cy = 70;
-  const rx = 72;
-  const ry = 60;
+  const cy = 62;
+  const rx = 64;
+  const ry = 50;
   const angleOr = Math.PI * (3 - Math.sqrt(5));
   const pts = [];
   for (let i = 0; i < n; i++) {
@@ -55,13 +67,13 @@ function genererAncres(n) {
     const a = i * angleOr;
     const x = cx + Math.cos(a) * r * rx;
     let y = cy + Math.sin(a) * r * ry;
-    if (y > 116) y = 116;
+    if (y > 108) y = 108;
     pts.push({ x, y });
   }
-  // tronc (100,124) → nearest first
+  // fourche du tronc (100,106) → plus proche d'abord
   pts.sort((p, q) => {
-    const dp = (p.x - 100) ** 2 + (p.y - 124) ** 2;
-    const dq = (q.x - 100) ** 2 + (q.y - 124) ** 2;
+    const dp = (p.x - 100) ** 2 + (p.y - 106) ** 2;
+    const dq = (q.x - 100) ** 2 + (q.y - 106) ** 2;
     return dp - dq;
   });
   return pts;
@@ -69,9 +81,9 @@ function genererAncres(n) {
 
 const ANCRES = genererAncres(120);
 
-/* Petite feuille orientée vers l'extérieur de la canopée. */
+/* Petite feuille orientée vers l'extérieur de la ramure. */
 function cheminFeuille(x, y) {
-  const ang = (Math.atan2(y - 70, x - 100) * 180) / Math.PI + 90;
+  const ang = (Math.atan2(y - 62, x - 100) * 180) / Math.PI + 90;
   return { transform: `translate(${x} ${y}) rotate(${ang})` };
 }
 
@@ -151,11 +163,11 @@ export default function TreeOfLife() {
       <div className="wrap center reveal">
         <p className="eyebrow">L'arbre de vie</p>
         <h2>
-          Chaque « oui » fait <em>pousser une feuille</em>
+          Chacun·e de vous fait <em>pousser une feuille</em>
         </h2>
         <p>
-          À mesure que vous confirmez votre présence, notre arbre se couvre de feuilles. Passez sur l'une d'elles
-          pour découvrir qui a répondu.
+          Vous, votre moitié, vos enfants : chaque personne inscrite fait grandir notre arbre. Passez sur une
+          feuille pour découvrir qui nous rejoint.
         </p>
 
         <div className={"arbre-scene stade-" + stade}>
@@ -165,11 +177,32 @@ export default function TreeOfLife() {
             role="group"
             aria-label={`Arbre de vie — ${compteur}`}
           >
-            {stade >= 4 && <circle className="arbre-halo" cx="100" cy="86" r="92" />}
+            {stade >= 4 && <circle className="arbre-halo" cx="100" cy="82" r="92" />}
             <circle className="arbre-cercle" cx="100" cy="100" r="88" />
-            {BRANCHES.map(([d, w], i) => (
-              <path key={i} className="arbre-branche" d={d} style={{ strokeWidth: w }} />
+            {/* racines (derrière le tronc) */}
+            <path className="arbre-branche" d={RACINE_CENTRE[0]} style={{ strokeWidth: RACINE_CENTRE[1] }} />
+            {RACINES_D.map(([d, w], i) => (
+              <path key={"rac" + i} className="arbre-branche" d={d} style={{ strokeWidth: w }} />
             ))}
+            <g transform="translate(200 0) scale(-1 1)">
+              {RACINES_D.map(([d, w], i) => (
+                <path key={"racm" + i} className="arbre-branche" d={d} style={{ strokeWidth: w }} />
+              ))}
+            </g>
+            {/* branches : centre + droite + miroir gauche */}
+            {CENTRE_D.map(([d, w], i) => (
+              <path key={"c" + i} className="arbre-branche" d={d} style={{ strokeWidth: w }} />
+            ))}
+            {BRANCHES_D.map(([d, w], i) => (
+              <path key={"r" + i} className="arbre-branche" d={d} style={{ strokeWidth: w }} />
+            ))}
+            <g transform="translate(200 0) scale(-1 1)">
+              {BRANCHES_D.map(([d, w], i) => (
+                <path key={"l" + i} className="arbre-branche" d={d} style={{ strokeWidth: w }} />
+              ))}
+            </g>
+            {/* tronc plein par-dessus la base des branches/racines */}
+            <path className="arbre-tronc" d={TRONC} />
 
             {feuilles.map((f, i) => {
               const p = ANCRES[i] || ANCRES[ANCRES.length - 1];
@@ -178,7 +211,7 @@ export default function TreeOfLife() {
               const estFleur = stade >= 2 && estBourgeon;
               const estOr = stade >= 3 && i % 7 === 3;
               const neuf = nouvelles.has(f.leaf_rank);
-              const label = tooltipsOk && nom ? `Feuille de ${nom}` : "Feuille confirmée";
+              const label = tooltipsOk && nom ? `Feuille de ${nom}` : "Une feuille de l'arbre";
               return (
                 <g
                   key={f.leaf_rank}
