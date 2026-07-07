@@ -2445,3 +2445,74 @@ footer {
     animation: none;
   }
 }
+
+/* Admin — éditeur des paliers du site */
+.phases-liste {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-top: 1.2rem;
+}
+.phase-carte {
+  border: 1px solid var(--ligne);
+  border-radius: 14px;
+  padding: 1rem 1.1rem;
+  background: var(--fond);
+}
+.phase-active {
+  border-color: var(--orc);
+  box-shadow: 0 0 0 2px rgba(201, 154, 63, 0.25);
+}
+.phase-tete {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-transform: capitalize;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.3rem;
+  margin-bottom: 0.6rem;
+}
+.phase-badge {
+  font-family: "Jost", sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--or);
+  font-style: normal;
+}
+.phase-champs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-bottom: 0.6rem;
+}
+.phase-carte label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.72rem;
+  color: var(--sauge);
+}
+.phase-quote {
+  margin-top: 0.4rem;
+}
+.phase-carte input,
+.phase-carte select,
+.phase-carte textarea {
+  font: inherit;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid var(--ligne);
+  border-radius: 8px;
+  color: var(--encre);
+  background: var(--blanc);
+}
+.phase-champs input,
+.phase-champs select {
+  width: 100%;
+}
+.phase-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 0.7rem;
+}
