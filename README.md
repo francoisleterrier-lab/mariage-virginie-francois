@@ -185,3 +185,26 @@ supabase/functions/envoyer-notification/   Edge Function d'envoi push
   (met à jour 2 lignes atomiquement, refuse si déjà lié).
 - Admin : lecture globale via `is_admin()` (rôle en base, contrôlé serveur).
 - Session persistante gérée par Supabase (refresh token).
+
+## Pages personnalisées par foyer
+
+Chaque foyer (couple lié par `couple_id`, sinon invité seul) peut recevoir une
+page d'accueil dédiée : « Bonjour {nom} », un mot des mariés (markdown léger
+**gras**/*italique*, rendu **sûr** sans HTML injecté), une photo souvenir
+(bucket **privé** `household-photos`, URL signée 1 h) et un rappel RSVP.
+
+- Table `pages_foyer` (clé = foyer canonique), RLS : l'invité ne lit **que** sa
+  page et seulement si `published`. Écriture réservée à l'admin (`is_admin()`).
+- Fonction `mon_foyer_id()` (security definer) : foyer de l'utilisateur courant,
+  utilisée par la RLS de la table et la policy Storage (lecture limitée au
+  dossier `{foyer_id}/`).
+- Admin → onglet **Pages perso** : suivi d'avancement (⬜/✏️/✅), éditeur,
+  compression photo client (max 1600 px, JPEG 0.82), aperçu « comme l'invité ».
+- Sans page publiée : l'invité voit l'accueil habituel (aucun état vide).
+
+## Arbre de vie vivant & « le site qui vit »
+
+- Arbre de vie (illustration) qui s'illumine d'une lumière par personne inscrite
+  (RPC `arbre_feuilles`, prénom au survol) — voir `TreeOfLife.jsx`.
+- Paliers temporels (`site_phases`) : citation, décor botanique et teinte qui
+  évoluent jusqu'au 26/05/2028 — hook `usePhase`, admin onglet « Le site ».
