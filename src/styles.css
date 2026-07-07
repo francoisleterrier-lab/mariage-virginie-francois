@@ -2869,3 +2869,8 @@ footer {
   text-transform: uppercase;
   font-weight: 600;
 }
+
+/* Engagement — relance inline plus lisible */
+.eng-relance { flex-wrap: wrap; max-width: 440px; }
+.eng-relance select { padding: 0.4rem 0.5rem; border: 1px solid var(--ligne); border-radius: 8px; font: inherit; }
+.eng-warn { flex-basis: 100%; color: #b06a4f; font-size: 0.8rem; }
