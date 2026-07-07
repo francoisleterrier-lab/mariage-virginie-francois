@@ -64,6 +64,25 @@ export default function Admin({ onLogout, onApercuInvite }) {
     );
 
   const nomParId = Object.fromEntries(invites.map((g) => [g.id, g.nom]));
+
+  /* Regroupe les invités par foyer : un couple (lien réciproque couple_id)
+     forme un seul « foyer » → une seule ligne dans le tableau. */
+  const vus = new Set();
+  const foyers = [];
+  for (const g of invites) {
+    if (vus.has(g.id)) continue;
+    const partenaire = g.couple_id ? invites.find((x) => x.id === g.couple_id && x.couple_id === g.id) : null;
+    if (partenaire) {
+      vus.add(g.id);
+      vus.add(partenaire.id);
+      const membres = [g, partenaire].sort((a, b) => new Date(a.created_at || 0) - new Date(b.created_at || 0));
+      foyers.push({ key: g.id, membres });
+    } else {
+      vus.add(g.id);
+      foyers.push({ key: g.id, membres: [g] });
+    }
+  }
+
   const repondu = invites.filter((g) => g.rsvp);
   const presents = repondu.filter((g) => g.rsvp && !String(g.rsvp.presence || "").startsWith("Hélas"));
   const totalAdultes = presents.reduce((s, g) => s + (parseInt(g.rsvp.adultes) || 0), 0);
@@ -179,25 +198,50 @@ export default function Admin({ onLogout, onApercuInvite }) {
                 </tr>
               </thead>
               <tbody>
-                {invites.map((g) => {
-                  const noms = (g.rsvp?.enfantsNoms || []).filter(Boolean);
+                {foyers.map(({ key, membres }) => {
+                  const prenom = (n) => (n || "").split(" ")[0];
+                  const couple = membres.length > 1;
+                  const emails = membres.map((m) => m.email).filter((e) => e && !e.endsWith("@vf2028.local"));
+                  const reps = membres.filter((m) => m.rsvp);
+                  // représentant pour les compteurs : celui qui a saisi le plus d'adultes
+                  const lead = reps.slice().sort((a, b) => (parseInt(b.rsvp.adultes) || 0) - (parseInt(a.rsvp.adultes) || 0))[0] || null;
+                  const presences = [...new Set(reps.map((m) => m.rsvp.presence).filter(Boolean))];
+                  const regimes = [...new Set(membres.map((m) => m.rsvp?.regime).filter(Boolean))];
+                  const messages = membres.map((m) => m.rsvp?.mot).filter(Boolean);
+                  const noms = lead ? (lead.rsvp.enfantsNoms || []).filter(Boolean) : [];
                   return (
-                    <tr key={g.id}>
-                      <td>{g.nom}</td>
-                      <td>{g.email}</td>
-                      <td>{fmtDate(g.created_at)}</td>
-                      <td>{g.couple_id ? nomParId[g.couple_id] || "—" : "—"}</td>
-                      <td>{g.rsvp ? g.rsvp.presence : <em className="attente">en attente</em>}</td>
+                    <tr key={key}>
+                      <td>{membres.map((m) => m.nom).join(" & ")}</td>
+                      <td>{emails.length ? emails.join(" · ") : "—"}</td>
+                      <td>{fmtDate(membres[0].created_at)}</td>
+                      <td>{couple ? "💍" : "—"}</td>
                       <td>
-                        {g.rsvp ? `${g.rsvp.adultes} / ${g.rsvp.enfants}` : "—"}
+                        {reps.length === 0 ? (
+                          <em className="attente">en attente</em>
+                        ) : presences.length <= 1 ? (
+                          presences[0] || "—"
+                        ) : (
+                          reps.map((m) => (
+                            <div key={m.id}>
+                              {prenom(m.nom)} : {m.rsvp.presence}
+                            </div>
+                          ))
+                        )}
+                      </td>
+                      <td>
+                        {lead ? `${lead.rsvp.adultes} / ${lead.rsvp.enfants}` : "—"}
                         {noms.length > 0 && <span className="enfants-liste">{noms.join(", ")}</span>}
                       </td>
-                      <td>{g.rsvp?.regime || "—"}</td>
-                      <td className="msg">{g.rsvp?.mot || "—"}</td>
+                      <td>{regimes.length ? regimes.join(" · ") : "—"}</td>
+                      <td className="msg">{messages.length ? messages.join(" · ") : "—"}</td>
                       <td>
-                        <button className="btn-editer" onClick={() => setEdit(g)}>
-                          Éditer
-                        </button>
+                        <div className="foyer-edit">
+                          {membres.map((m) => (
+                            <button key={m.id} className="btn-editer" onClick={() => setEdit(m)}>
+                              {couple ? `Éditer ${prenom(m.nom)}` : "Éditer"}
+                            </button>
+                          ))}
+                        </div>
                       </td>
                     </tr>
                   );
