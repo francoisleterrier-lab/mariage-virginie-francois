@@ -4,6 +4,7 @@ import Countdown from "./Countdown.jsx";
 import MedaillonArbre from "./MedaillonArbre.jsx";
 import TreeOfLife from "./TreeOfLife.jsx";
 import PersonalWelcome from "./PersonalWelcome.jsx";
+import BandeSon from "./BandeSon.jsx";
 import Citation from "./Citation.jsx";
 import BotanicalDecor from "./BotanicalDecor.jsx";
 import MaTable from "./MaTable.jsx";
@@ -229,6 +230,9 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
           </li>
           <li>
             <a href="#matable">Ma table</a>
+          </li>
+          <li>
+            <a href="#bandeson">Bande-son</a>
           </li>
           <li>
             <a href="#rsvp">RSVP</a>
@@ -505,6 +509,9 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
 
       {/* MA TABLE : réservation libre / plan publié / mystère */}
       <MaTable profile={profile} onReload={onReload} />
+
+      {/* BANDE-SON FANTÔME (collecte / mur souvenir selon la phase) */}
+      <BandeSon profile={profile} />
 
       {/* RSVP */}
       <section className="rsvp" id="rsvp">
