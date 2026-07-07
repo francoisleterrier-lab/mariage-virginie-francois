@@ -124,7 +124,8 @@ export default function BandeSon({ profile }) {
     return (
       <section className="bandeson" id="bandeson">
         <div className="wrap center reveal">
-          <p className="eyebrow">La bande-son</p>
+          <p className="eyebrow">À venir · La bande-son</p>
+          <span className="bs-pill">À venir</span>
           <h2>
             Bientôt : <em>votre bande-son</em>
           </h2>

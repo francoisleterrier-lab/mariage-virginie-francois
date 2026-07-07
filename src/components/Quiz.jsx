@@ -134,8 +134,9 @@ export default function Quiz({ profile }) {
     return (
       <section className="quiz" id="quiz">
         <div className="wrap center reveal">
-          <p className="eyebrow">Le quiz des mariés</p>
+          <p className="eyebrow">À venir · Le quiz des mariés</p>
           <div className="quiz-sceau">
+            <span className="bs-pill" aria-hidden="true">À venir</span>
             <div className="quiz-cadenas" aria-hidden="true">🔒</div>
             <h2>Bientôt : <em>saurez-vous nous répondre ?</em></h2>
             <p className="bs-pitch">{teaser || "Quelque chose se prépare…"}</p>
