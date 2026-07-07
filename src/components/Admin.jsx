@@ -4,6 +4,7 @@ import PushAdmin from "./PushAdmin.jsx";
 import PlanEditor from "./PlanEditor.jsx";
 import PhasesEditor from "./PhasesEditor.jsx";
 import PagesPerso from "./PagesPerso.jsx";
+import AdminBandeSon from "./AdminBandeSon.jsx";
 import EditInvite from "./EditInvite.jsx";
 
 const fmtDate = (iso) =>
@@ -128,6 +129,9 @@ export default function Admin({ onLogout, onApercuInvite }) {
         <button role="tab" aria-selected={onglet === "pages"} className={onglet === "pages" ? "on" : ""} onClick={() => setOnglet("pages")}>
           Pages perso
         </button>
+        <button role="tab" aria-selected={onglet === "bandeson"} className={onglet === "bandeson" ? "on" : ""} onClick={() => setOnglet("bandeson")}>
+          Bande-son
+        </button>
       </div>
 
       {onglet === "reponses" && (
@@ -207,6 +211,7 @@ export default function Admin({ onLogout, onApercuInvite }) {
       {onglet === "notifications" && <PushAdmin />}
       {onglet === "site" && <PhasesEditor />}
       {onglet === "pages" && <PagesPerso invites={invites} />}
+      {onglet === "bandeson" && <AdminBandeSon invites={invites} />}
 
       {edit && (
         <EditInvite

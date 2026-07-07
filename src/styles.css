@@ -2678,3 +2678,50 @@ footer {
 .pp-actions { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: 1.1rem; }
 .pp-msg { margin-top: 0.8rem; color: var(--or); font-size: 0.9rem; }
 .pp-apercu { border: 1px dashed var(--ligne); border-radius: 14px; margin-top: 0.8rem; overflow: hidden; }
+
+/* ============================================================
+   BANDE-SON FANTÔME
+   ============================================================ */
+.bandeson { background: var(--fond); }
+.bs-pitch { font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 1.25rem; color: var(--sauge); }
+.bs-form { width: min(560px, 100%); margin: 2rem auto 0; text-align: left; }
+.bs-form label { display: block; font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--sauge); margin: 1rem 0 0.35rem; }
+.bs-form input, .bs-form textarea {
+  width: 100%; padding: 0.7rem 0.9rem; border: 1px solid var(--ligne); border-radius: 10px;
+  font: inherit; color: var(--encre); background: var(--blanc);
+}
+.bs-consent { margin-top: 1rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.bs-consent .switch span { font-size: 0.85rem; color: var(--encre2); text-transform: none; letter-spacing: 0; }
+.bs-scelle, .bs-quota { font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 1.35rem; color: var(--or); margin-top: 1.6rem; }
+.bs-mes, .bs-mur { width: min(620px, 100%); margin: 2.4rem auto 0; text-align: left; }
+.bs-item { background: var(--blanc); border: 1px solid var(--ligne); border-radius: 14px; padding: 1rem 1.2rem; margin-bottom: 0.8rem; }
+.bs-titre { font-family: "Cormorant Garamond", serif; font-size: 1.35rem; }
+.bs-titre a { color: var(--or); text-decoration: none; }
+.bs-artiste { color: var(--sauge); font-size: 1rem; }
+.bs-etat { float: right; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--sauge); font-family: "Jost", sans-serif; }
+.bs-etat.joue { color: var(--or); }
+.bs-souvenir { font-family: "Cormorant Garamond", serif; font-style: italic; color: var(--encre2); margin-top: 0.4rem; }
+.bs-auteur { font-size: 0.8rem; color: var(--sauge); margin-top: 0.3rem; }
+.bs-autres { margin-top: 2rem; color: var(--sauge); }
+
+/* Admin — modération */
+.bs-admin-actions { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin: 0.8rem 0 1.2rem; }
+.bs-mod { border: 1px solid var(--ligne); border-radius: 12px; padding: 0.9rem 1.1rem; margin-bottom: 0.7rem; background: var(--fond); }
+.bs-mod-tete { font-family: "Cormorant Garamond", serif; font-size: 1.2rem; }
+.bs-mod-auteur { color: var(--sauge); font-style: normal; font-size: 0.9rem; }
+.bs-doublon { color: var(--or); font-size: 0.82rem; }
+.bs-note { width: 100%; margin-top: 0.5rem; padding: 0.5rem 0.7rem; border: 1px solid var(--ligne); border-radius: 8px; font: inherit; }
+.bs-mod-actions { display: flex; gap: 0.9rem; align-items: center; margin-top: 0.6rem; }
+
+/* Admin — console soirée (thème sombre, mobile une main) */
+.bs-console { background: #101d16; margin: 1rem -1rem -1rem; padding: 1rem; border-radius: 14px; }
+.bs-search { width: 100%; padding: 0.9rem 1rem; border-radius: 12px; border: 1px solid #2e4a3a; background: #16261d; color: #ece7d6; font: inherit; font-size: 1rem; margin-bottom: 0.9rem; }
+.bs-live { display: flex; align-items: center; gap: 1rem; padding: 0.9rem 1rem; border-radius: 12px; background: #16261d; margin-bottom: 0.7rem; }
+.bs-live.joue { opacity: 0.55; }
+.bs-live-info { flex: 1; min-width: 0; color: #ece7d6; }
+.bs-live-info strong { display: block; font-family: "Cormorant Garamond", serif; font-size: 1.3rem; }
+.bs-live-info span { font-size: 0.85rem; color: #adc2a4; }
+.bs-live-souvenir { font-family: "Cormorant Garamond", serif; font-style: italic; color: #cfe0c6; margin-top: 0.3rem; font-size: 0.95rem; }
+.bs-play { min-width: 88px; min-height: 48px; border: none; border-radius: 12px; background: var(--orc); color: #101d16; font: inherit; font-weight: 600; font-size: 0.95rem; cursor: pointer; }
+.bs-undo { min-height: 48px; padding: 0 1rem; border: 1px solid #c99a3f; border-radius: 12px; background: transparent; color: #f2d488; font: inherit; cursor: pointer; }
+.bs-joue { color: var(--orc); font-family: "Cormorant Garamond", serif; font-size: 1.1rem; min-width: 88px; text-align: center; }
