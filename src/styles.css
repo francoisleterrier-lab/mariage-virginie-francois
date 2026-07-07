@@ -2874,3 +2874,8 @@ footer {
 .eng-relance { flex-wrap: wrap; max-width: 440px; }
 .eng-relance select { padding: 0.4rem 0.5rem; border: 1px solid var(--ligne); border-radius: 8px; font: inherit; }
 .eng-warn { flex-basis: 100%; color: #b06a4f; font-size: 0.8rem; }
+
+/* Éditeur invité — conjoint manuel */
+.conjoint-manuel { margin-top: 0.4rem; }
+.conjoint-ligne { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
+.conjoint-ligne input { flex: 1; min-width: 160px; }
