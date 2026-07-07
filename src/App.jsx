@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "./lib/supabase.js";
+import { PhaseProvider } from "./lib/phase.jsx";
 import Gate from "./components/Gate.jsx";
 import Site from "./components/Site.jsx";
 import Admin from "./components/Admin.jsx";
@@ -125,7 +126,7 @@ export default function App() {
   }
 
   return (
-    <>
+    <PhaseProvider>
       {contenu}
       {/* Bande-son (démarre au 1er geste, persiste sur tout le site). */}
       <Musique />
@@ -143,6 +144,6 @@ export default function App() {
           }}
         />
       )}
-    </>
+    </PhaseProvider>
   );
 }

@@ -2349,3 +2349,99 @@ footer {
   border-radius: 8px;
   font: inherit;
 }
+
+/* ============================================================
+   « LE SITE QUI VIT » — décor botanique + citation évolutive
+   ============================================================ */
+.countdown {
+  position: relative;
+  overflow: hidden;
+}
+.countdown > * {
+  position: relative;
+  z-index: 1;
+}
+/* décor botanique (densité pilotée par le palier) */
+.deco-botanique {
+  position: absolute;
+  bottom: 0;
+  z-index: 0;
+  width: clamp(38px, 7vw, 66px);
+  height: auto;
+  pointer-events: none;
+  transition: opacity 1.2s ease;
+}
+.deco-g {
+  left: 2.5%;
+}
+.deco-d {
+  right: 2.5%;
+  transform: scaleX(-1);
+}
+.deco-tige {
+  fill: none;
+  stroke: var(--aloe);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  opacity: 0.85;
+}
+.deco-feuille {
+  fill: var(--aloe);
+}
+.deco-bourgeon {
+  fill: var(--orc);
+}
+.deco-petale {
+  fill: #faf6ea;
+}
+.deco-coeur {
+  fill: var(--orc);
+}
+@media (max-width: 560px) {
+  .deco-botanique {
+    width: 30px;
+    opacity: 0.55 !important;
+  }
+}
+/* citation évolutive (sous le compte à rebours, sur fond sombre) */
+.citation {
+  margin: 2.2rem auto 0;
+  max-width: 30rem;
+  animation: citation-apparait 1.2s ease both;
+}
+@keyframes citation-apparait {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.citation-orn {
+  display: block;
+  font-size: 1.1rem;
+  color: var(--accent-current, var(--orc));
+  margin-bottom: 0.5rem;
+  transition: color 1s ease;
+}
+.citation blockquote {
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+  line-height: 1.45;
+  color: #ece7d6;
+}
+.citation figcaption {
+  margin-top: 0.6rem;
+  font-size: 0.74rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--aloe);
+}
+@media (prefers-reduced-motion: reduce) {
+  .citation {
+    animation: none;
+  }
+}
