@@ -12,6 +12,7 @@ export default function MaTable({ profile, onReload }) {
   const [prets, setPrets] = useState(false);
   const [planVisible, setPlanVisible] = useState(false);
   const [reservationOuverte, setReservationOuverte] = useState(false);
+  const [aVenir, setAVenir] = useState(true);
   const [tables, setTables] = useState([]);
   const [voisins, setVoisins] = useState([]);
   const [choix, setChoix] = useState(false); // afficher la liste de tables
@@ -20,13 +21,15 @@ export default function MaTable({ profile, onReload }) {
 
   const charger = useCallback(async () => {
     const [{ data: params }, { data: t }, { data: v }] = await Promise.all([
-      supabase.from("parametres").select("cle, valeur").in("cle", ["plan_visible", "reservation_ouverte"]),
+      supabase.from("parametres").select("cle, valeur").in("cle", ["plan_visible", "reservation_ouverte", "tables_a_venir"]),
       supabase.rpc("tables_dispo"),
       supabase.rpc("mes_voisins"),
     ]);
     const p = Object.fromEntries((params || []).map((r) => [r.cle, r.valeur === true]));
+    const brut = Object.fromEntries((params || []).map((r) => [r.cle, r.valeur]));
     setPlanVisible(!!p.plan_visible);
     setReservationOuverte(!!p.reservation_ouverte);
+    setAVenir(brut.tables_a_venir !== false); // « à venir » par défaut
     setTables(t || []);
     setVoisins((v || []).map((r) => r.nom));
     setPrets(true);
@@ -37,6 +40,28 @@ export default function MaTable({ profile, onReload }) {
   }, [charger, profile.table_id]);
 
   if (!prets) return null;
+
+  /* « À venir » : le plan de table n'est pas encore ouvert aux invités. */
+  if (aVenir) {
+    return (
+      <section className="matable" id="matable">
+        <div className="wrap center">
+          <p className="eyebrow">À venir · Votre place</p>
+          <span className="pill-avenir">À venir</span>
+          <h2>
+            Votre place se <em>prépare</em>…
+          </h2>
+          <div className="matable-mystere">
+            <div className="q">🌿</div>
+            <p>
+              Le plan de salle arrive bientôt. Vous pourrez choisir votre table ici — on vous préviendra le
+              moment venu.
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   const maTable = tables.find((t) => t.id === profile.table_id);
 

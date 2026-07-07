@@ -2858,7 +2858,8 @@ footer {
 .ng-fini .btn-vert { max-width: 220px; margin: 1rem auto 0; }
 
 /* Pastille « À venir » (teasers quiz & bande-son) */
-.bs-pill {
+.bs-pill,
+.pill-avenir {
   display: inline-block;
   margin: 0 auto 0.8rem;
   padding: 0.3rem 0.9rem;
@@ -2869,6 +2870,29 @@ footer {
   letter-spacing: 0.22em;
   text-transform: uppercase;
   font-weight: 600;
+}
+
+/* Où se loger — note camping-car (dormir sur place) */
+.loge-camping {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  max-width: 640px;
+  margin: 0 auto 2rem;
+  padding: 1rem 1.2rem;
+  text-align: left;
+  border: 1px solid var(--ligne);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.55);
+}
+.loge-camping-ico {
+  font-size: 1.8rem;
+  line-height: 1;
+  flex: 0 0 auto;
+}
+.loge-camping p {
+  margin: 0;
+  font-size: 0.95rem;
 }
 
 /* Engagement — relance inline plus lisible */
