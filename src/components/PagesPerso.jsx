@@ -185,7 +185,7 @@ export default function PagesPerso({ invites }) {
               <label className="pp-label">Signature</label>
               <select value={form.signature_variant} onChange={(e) => setForm({ ...form, signature_variant: e.target.value })}>
                 <option value="vf">Virginie & François</option>
-                <option value="vfe">Virginie, François & Eden</option>
+                <option value="vfe">Virginie, François, Lou, Tiago, Ugo & Eden</option>
               </select>
 
               <div className="pp-actions">
