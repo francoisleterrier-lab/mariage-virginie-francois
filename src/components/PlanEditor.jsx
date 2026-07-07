@@ -17,18 +17,37 @@ export default function PlanEditor({ invites, onReloadInvites }) {
   const [forme, setForme] = useState("ronde");
   const [capacite, setCapacite] = useState(8);
   const [busy, setBusy] = useState(false);
+  const [arbreObjectif, setArbreObjectif] = useState(80);
+  const [arbrePrenoms, setArbrePrenoms] = useState(true);
   const canvasRef = useRef(null);
   const drag = useRef(null);
 
   async function charger() {
     const [{ data: t }, { data: params }] = await Promise.all([
       supabase.from("tables_plan").select("*").order("nom"),
-      supabase.from("parametres").select("cle, valeur").in("cle", ["plan_visible", "reservation_ouverte"]),
+      supabase
+        .from("parametres")
+        .select("cle, valeur")
+        .in("cle", ["plan_visible", "reservation_ouverte", "arbre_objectif", "arbre_prenoms"]),
     ]);
     setTables(t || []);
-    const p = Object.fromEntries((params || []).map((r) => [r.cle, r.valeur === true]));
-    setPlanVisible(!!p.plan_visible);
-    setReservationOuverte(!!p.reservation_ouverte);
+    const brut = Object.fromEntries((params || []).map((r) => [r.cle, r.valeur]));
+    setPlanVisible(brut.plan_visible === true);
+    setReservationOuverte(brut.reservation_ouverte === true);
+    if (brut.arbre_objectif != null) setArbreObjectif(Number(brut.arbre_objectif) || 80);
+    setArbrePrenoms(brut.arbre_prenoms !== false);
+  }
+
+  async function toggleArbrePrenoms() {
+    const nv = !arbrePrenoms;
+    setArbrePrenoms(nv);
+    await supabase.from("parametres").upsert({ cle: "arbre_prenoms", valeur: nv });
+  }
+
+  async function majArbreObjectif(v) {
+    const n = Math.max(1, parseInt(v, 10) || 80);
+    setArbreObjectif(n);
+    await supabase.from("parametres").upsert({ cle: "arbre_objectif", valeur: n });
   }
 
   useEffect(() => {
@@ -149,6 +168,33 @@ export default function PlanEditor({ invites, onReloadInvites }) {
         <strong>Plan visible</strong> : à utiliser si tu préfères placer toi-même les invités (via l'affectation
         ci-dessous) et leur montrer le résultat.
       </p>
+
+      {/* Arbre de vie vivant */}
+      <div className="arbre-admin">
+        <h3 className="admin-h3">🌿 Arbre de vie</h3>
+        <div className="arbre-admin-lignes">
+          <label className="switch">
+            <input type="checkbox" checked={arbrePrenoms} onChange={toggleArbrePrenoms} />
+            <span>Afficher les prénoms au survol des feuilles</span>
+          </label>
+          <label className="arbre-obj">
+            <span>Objectif de pleine floraison</span>
+            <input
+              type="number"
+              min="1"
+              max="500"
+              value={arbreObjectif}
+              onChange={(e) => setArbreObjectif(e.target.value)}
+              onBlur={(e) => majArbreObjectif(e.target.value)}
+            />
+          </label>
+        </div>
+        <p className="admin-sous">
+          Chaque foyer qui confirme sa présence fait pousser une feuille. Les invités ne voient jamais le
+          nombre cible — seulement la poésie des feuilles. Décoche les prénoms si certains ne souhaitent pas
+          apparaître.
+        </p>
+      </div>
 
       {couplesSepares.length > 0 && (
         <div className="alerte-couple">

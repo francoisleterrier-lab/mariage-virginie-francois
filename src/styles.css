@@ -1930,6 +1930,7 @@ footer .credit a:hover {
 .rsvp,
 .push-band,
 .loger,
+.arbre-vivant,
 .matable {
   background: var(--fond);
 }
@@ -2185,4 +2186,141 @@ footer {
   transform: scale(1.06);
   background: var(--orc);
   color: var(--encre);
+}
+
+/* ============================================================
+   ARBRE DE VIE VIVANT (compteur RSVP poétique)
+   ============================================================ */
+.arbre-vivant .arbre-scene {
+  position: relative;
+  max-width: 460px;
+  margin: 2.4rem auto 0;
+}
+.arbre-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+.arbre-cercle {
+  fill: none;
+  stroke: var(--or);
+  stroke-width: 2.2;
+  opacity: 0.8;
+}
+.arbre-branche {
+  fill: none;
+  stroke: var(--encre);
+  stroke-linecap: round;
+  opacity: 0.92;
+}
+.arbre-halo {
+  fill: var(--orc);
+  opacity: 0.16;
+  filter: blur(7px);
+}
+/* feuilles */
+.feuille-g {
+  animation: pousse-feuille 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.feuille-neuve {
+  animation: pousse-feuille 760ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes pousse-feuille {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(-24deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+.feuille {
+  fill: var(--sauge-clair);
+}
+.feuille-or {
+  fill: var(--orc);
+}
+.bourgeon {
+  fill: #f4efe0;
+  stroke: rgba(166, 124, 43, 0.35);
+  stroke-width: 0.5;
+}
+.fleur-petale {
+  fill: #faf6ea;
+}
+.fleur-coeur {
+  fill: var(--orc);
+}
+.feuille-hit {
+  fill: transparent;
+  cursor: pointer;
+  outline: none;
+}
+.feuille-hit:focus-visible {
+  stroke: var(--or);
+  stroke-width: 1.5;
+}
+/* tooltip prénom */
+.feuille-tip {
+  position: absolute;
+  transform: translate(-50%, -145%);
+  background: #faf6ea;
+  color: var(--encre);
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.05rem;
+  line-height: 1.2;
+  padding: 0.28rem 0.7rem;
+  border-radius: 10px;
+  border: 1px solid rgba(166, 124, 43, 0.35);
+  box-shadow: 0 8px 22px rgba(34, 56, 44, 0.18);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 3;
+}
+.arbre-compteur {
+  margin-top: 1.6rem;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.3rem;
+  color: var(--sauge);
+}
+.arbre-compteur em {
+  font-style: italic;
+}
+@media (prefers-reduced-motion: reduce) {
+  .feuille-g,
+  .feuille-neuve {
+    animation: none;
+  }
+}
+
+/* Admin — bloc Arbre de vie */
+.arbre-admin {
+  margin: 1.6rem 0 0.4rem;
+  padding: 1.2rem 1.3rem;
+  border: 1px solid var(--ligne);
+  border-radius: 14px;
+  background: var(--fond);
+}
+.arbre-admin-lignes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.4rem;
+  align-items: center;
+  margin: 0.6rem 0 0.4rem;
+}
+.arbre-obj {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+  color: var(--encre2);
+}
+.arbre-obj input {
+  width: 84px;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--ligne);
+  border-radius: 8px;
+  font: inherit;
 }
