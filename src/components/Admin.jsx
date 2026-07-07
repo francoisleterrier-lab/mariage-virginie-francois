@@ -6,6 +6,7 @@ import PhasesEditor from "./PhasesEditor.jsx";
 import PagesPerso from "./PagesPerso.jsx";
 import AdminBandeSon from "./AdminBandeSon.jsx";
 import QuizAdmin from "./QuizAdmin.jsx";
+import Engagement from "./Engagement.jsx";
 import EditInvite from "./EditInvite.jsx";
 
 const fmtDate = (iso) =>
@@ -136,6 +137,9 @@ export default function Admin({ onLogout, onApercuInvite }) {
         <button role="tab" aria-selected={onglet === "quiz"} className={onglet === "quiz" ? "on" : ""} onClick={() => setOnglet("quiz")}>
           Quiz
         </button>
+        <button role="tab" aria-selected={onglet === "engagement"} className={onglet === "engagement" ? "on" : ""} onClick={() => setOnglet("engagement")}>
+          Engagement
+        </button>
       </div>
 
       {onglet === "reponses" && (
@@ -217,6 +221,7 @@ export default function Admin({ onLogout, onApercuInvite }) {
       {onglet === "pages" && <PagesPerso invites={invites} />}
       {onglet === "bandeson" && <AdminBandeSon invites={invites} />}
       {onglet === "quiz" && <QuizAdmin invites={invites} />}
+      {onglet === "engagement" && <Engagement invites={invites} />}
 
       {edit && (
         <EditInvite
