@@ -219,6 +219,110 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
     onReload?.();
   }
 
+  /* Bloc RSVP — remonté en haut du site tant qu'il n'est pas rempli,
+     puis replacé en fin de page une fois la réponse enregistrée. */
+  const blocRsvp = (
+    <section className="rsvp" id="rsvp">
+      <div className="wrap center">
+        <p className="eyebrow">RSVP</p>
+        <h2>
+          Dites-nous <em>oui</em>
+        </h2>
+        <p>
+          {saved
+            ? "Votre réponse est bien enregistrée — vous pouvez la modifier à tout moment."
+            : "Confirmez votre présence en quelques secondes — nous avons hâte."}
+        </p>
+        <form onSubmit={envoyerRsvp}>
+          <label htmlFor="r-pres">Je serai présent·e</label>
+          <select id="r-pres" value={rsvp.presence} onChange={(e) => setRsvp({ ...rsvp, presence: e.target.value })}>
+            <option>Les deux jours 🌿</option>
+            <option>Vendredi 26 mai uniquement</option>
+            <option>Samedi 27 mai uniquement</option>
+            <option>Hélas, je ne pourrai pas venir</option>
+          </select>
+          <div className="duo">
+            <div>
+              <label htmlFor="r-ad">Adultes</label>
+              <select id="r-ad" value={rsvp.adultes} onChange={(e) => setRsvp({ ...rsvp, adultes: e.target.value })}>
+                {["1", "2", "3", "4", "5"].map((n) => (
+                  <option key={n}>{n}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="r-en">Enfants / ados</label>
+              <select id="r-en" value={rsvp.enfants} onChange={(e) => setEnfants(e.target.value)}>
+                {["0", "1", "2", "3", "4", "5"].map((n) => (
+                  <option key={n}>{n}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {parseInt(rsvp.enfants) > 0 && (
+            <div className="enfants-noms">
+              <label>Prénom (et âge) de chaque enfant / ado</label>
+              {Array.from({ length: parseInt(rsvp.enfants) }).map((_, i) => (
+                <input
+                  key={i}
+                  value={(rsvp.enfantsNoms && rsvp.enfantsNoms[i]) || ""}
+                  onChange={(e) => setEnfantNom(i, e.target.value)}
+                  placeholder={`Enfant ${i + 1} — ex. Léa, 8 ans`}
+                  aria-label={`Prénom et âge de l'enfant ${i + 1}`}
+                />
+              ))}
+              <p className="enfants-hint">
+                Ils seront placés à une table dédiée aux enfants — pas besoin de leur choisir une place.
+              </p>
+            </div>
+          )}
+
+          {partenaire ? (
+            <p className="couple-hint">
+              💍 Inscrit·e en couple avec {partenaire} — pensez à compter 2 adultes si vous répondez pour vous deux.
+            </p>
+          ) : (
+            <div className="couple-tard">
+              {candidats === null ? (
+                <button type="button" className="btn-lien" onClick={ouvrirCandidats}>
+                  💍 Vous venez en couple ? Lier mon compte à un autre invité
+                </button>
+              ) : candidats.length === 0 ? (
+                <p className="couple-hint">Aucun autre invité disponible pour l'instant.</p>
+              ) : (
+                <div className="couple-liste couple-liste-clair">
+                  {errCouple && <p className="gate-err">{errCouple}</p>}
+                  {candidats.map((c) => (
+                    <button type="button" key={c.id} className="couple-item couple-item-clair" disabled={busyCouple} onClick={() => lierTard(c.id)}>
+                      <span>{c.nom}</span>
+                      <em>Rejoindre en couple</em>
+                    </button>
+                  ))}
+                  <button type="button" className="btn-lien" onClick={() => setCandidats(null)}>
+                    Annuler
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          <label htmlFor="r-reg">Allergies ou régimes particuliers</label>
+          <input id="r-reg" value={rsvp.regime} onChange={(e) => setRsvp({ ...rsvp, regime: e.target.value })} placeholder="Végétarien, sans gluten…" />
+          <label htmlFor="r-mot">Un petit mot pour nous ?</label>
+          <textarea id="r-mot" rows={3} value={rsvp.mot} onChange={(e) => setRsvp({ ...rsvp, mot: e.target.value })} placeholder="On prend aussi les idées de chansons pour le dancefloor 🎶" />
+          <button className="btn-vert" disabled={busy}>
+            {busy ? "Envoi…" : saved ? "Mettre à jour ma réponse" : "Envoyer ma réponse"}
+          </button>
+          {saved && <p className="ok">🌿 Réponse enregistrée, merci !</p>}
+          <p className="deadline">
+            Réponse souhaitée avant le 1<sup>er</sup> mars 2028
+          </p>
+        </form>
+      </div>
+    </section>
+  );
+
   return (
     <div>
       {retourAdmin && (
@@ -315,6 +419,9 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
       <div className="push-band">
         <PushOptIn inviteId={profile.id} />
       </div>
+
+      {/* RSVP remonté ici tant qu'il n'est pas rempli (priorité à la réponse) */}
+      {!saved && blocRsvp}
 
       {/* ARBRE DE VIE VIVANT (une feuille par foyer confirmé) */}
       <TreeOfLife />
@@ -553,106 +660,8 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
       {/* QUIZ DES MARIÉS (teaser / jeu / podium selon quiz_state) */}
       <Quiz profile={profile} />
 
-      {/* RSVP */}
-      <section className="rsvp" id="rsvp">
-        <div className="wrap center reveal">
-          <p className="eyebrow">RSVP</p>
-          <h2>
-            Dites-nous <em>oui</em>
-          </h2>
-          <p>
-            {saved
-              ? "Votre réponse est bien enregistrée — vous pouvez la modifier à tout moment."
-              : "Confirmez votre présence en quelques secondes — nous avons hâte."}
-          </p>
-          <form onSubmit={envoyerRsvp}>
-            <label htmlFor="r-pres">Je serai présent·e</label>
-            <select id="r-pres" value={rsvp.presence} onChange={(e) => setRsvp({ ...rsvp, presence: e.target.value })}>
-              <option>Les deux jours 🌿</option>
-              <option>Vendredi 26 mai uniquement</option>
-              <option>Samedi 27 mai uniquement</option>
-              <option>Hélas, je ne pourrai pas venir</option>
-            </select>
-            <div className="duo">
-              <div>
-                <label htmlFor="r-ad">Adultes</label>
-                <select id="r-ad" value={rsvp.adultes} onChange={(e) => setRsvp({ ...rsvp, adultes: e.target.value })}>
-                  {["1", "2", "3", "4", "5"].map((n) => (
-                    <option key={n}>{n}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label htmlFor="r-en">Enfants / ados</label>
-                <select id="r-en" value={rsvp.enfants} onChange={(e) => setEnfants(e.target.value)}>
-                  {["0", "1", "2", "3", "4", "5"].map((n) => (
-                    <option key={n}>{n}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            {parseInt(rsvp.enfants) > 0 && (
-              <div className="enfants-noms">
-                <label>Prénom (et âge) de chaque enfant / ado</label>
-                {Array.from({ length: parseInt(rsvp.enfants) }).map((_, i) => (
-                  <input
-                    key={i}
-                    value={(rsvp.enfantsNoms && rsvp.enfantsNoms[i]) || ""}
-                    onChange={(e) => setEnfantNom(i, e.target.value)}
-                    placeholder={`Enfant ${i + 1} — ex. Léa, 8 ans`}
-                    aria-label={`Prénom et âge de l'enfant ${i + 1}`}
-                  />
-                ))}
-                <p className="enfants-hint">
-                  Ils seront placés à une table dédiée aux enfants — pas besoin de leur choisir une place.
-                </p>
-              </div>
-            )}
-
-            {partenaire ? (
-              <p className="couple-hint">
-                💍 Inscrit·e en couple avec {partenaire} — pensez à compter 2 adultes si vous répondez pour vous deux.
-              </p>
-            ) : (
-              <div className="couple-tard">
-                {candidats === null ? (
-                  <button type="button" className="btn-lien" onClick={ouvrirCandidats}>
-                    💍 Vous venez en couple ? Lier mon compte à un autre invité
-                  </button>
-                ) : candidats.length === 0 ? (
-                  <p className="couple-hint">Aucun autre invité disponible pour l'instant.</p>
-                ) : (
-                  <div className="couple-liste couple-liste-clair">
-                    {errCouple && <p className="gate-err">{errCouple}</p>}
-                    {candidats.map((c) => (
-                      <button type="button" key={c.id} className="couple-item couple-item-clair" disabled={busyCouple} onClick={() => lierTard(c.id)}>
-                        <span>{c.nom}</span>
-                        <em>Rejoindre en couple</em>
-                      </button>
-                    ))}
-                    <button type="button" className="btn-lien" onClick={() => setCandidats(null)}>
-                      Annuler
-                    </button>
-                  </div>
-                )}
-              </div>
-            )}
-
-            <label htmlFor="r-reg">Allergies ou régimes particuliers</label>
-            <input id="r-reg" value={rsvp.regime} onChange={(e) => setRsvp({ ...rsvp, regime: e.target.value })} placeholder="Végétarien, sans gluten…" />
-            <label htmlFor="r-mot">Un petit mot pour nous ?</label>
-            <textarea id="r-mot" rows={3} value={rsvp.mot} onChange={(e) => setRsvp({ ...rsvp, mot: e.target.value })} placeholder="On prend aussi les idées de chansons pour le dancefloor 🎶" />
-            <button className="btn-vert" disabled={busy}>
-              {busy ? "Envoi…" : saved ? "Mettre à jour ma réponse" : "Envoyer ma réponse"}
-            </button>
-            {saved && <p className="ok">🌿 Réponse enregistrée, merci !</p>}
-            <p className="deadline">
-              Réponse souhaitée avant le 1<sup>er</sup> mars 2028
-            </p>
-          </form>
-        </div>
-      </section>
+      {/* RSVP replacé en fin de site une fois la réponse enregistrée */}
+      {saved && blocRsvp}
 
       <footer>
         <div className="mono">V &amp; F</div>
