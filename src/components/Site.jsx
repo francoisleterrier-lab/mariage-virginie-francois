@@ -100,6 +100,7 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
   const [secret, setSecret] = useState(false);
   const [partenaire, setPartenaire] = useState(null);
   const [guideNotif, setGuideNotif] = useState(false);
+  const [menu, setMenu] = useState(false);
 
   // Propose le parcours guidé une fois par session si pas encore abonné.
   useEffect(() => {
@@ -229,7 +230,15 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
         <a className="logo" href="#accueil">
           V <span>&amp;</span> F
         </a>
-        <ul>
+        <button
+          className="nav-burger"
+          aria-label="Menu"
+          aria-expanded={menu}
+          onClick={() => setMenu((m) => !m)}
+        >
+          {menu ? "✕" : "☰"}
+        </button>
+        <ul className={menu ? "ouvert" : ""} onClick={(e) => e.target.closest("a") && setMenu(false)}>
           <li>
             <a href="#nous">Notre histoire</a>
           </li>
