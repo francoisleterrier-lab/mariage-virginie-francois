@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase.js";
 import Countdown from "./Countdown.jsx";
 import MedaillonArbre from "./MedaillonArbre.jsx";
+import TreeOfLife from "./TreeOfLife.jsx";
 import MaTable from "./MaTable.jsx";
 import PushOptIn from "./PushOptIn.jsx";
 
@@ -209,6 +210,9 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
             <a href="#nous">Notre histoire</a>
           </li>
           <li>
+            <a href="#arbre">L'arbre</a>
+          </li>
+          <li>
             <a href="#programme">Programme</a>
           </li>
           <li>
@@ -261,6 +265,9 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
       <div className="push-band">
         <PushOptIn inviteId={profile.id} />
       </div>
+
+      {/* ARBRE DE VIE VIVANT (une feuille par foyer confirmé) */}
+      <TreeOfLife />
 
       {/* NOUS */}
       <section className="nous" id="nous">
