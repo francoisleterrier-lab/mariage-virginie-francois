@@ -59,7 +59,7 @@ export default function Lieu() {
     const wazeUrl = lienWaze(waze);
     return (
       <section className="mystere lieu-revele" id="lieu">
-        <div className="wrap center reveal">
+        <div className="wrap center">
           <p className="eyebrow">Le lieu</p>
           <h2>{titre ? titre : <>Le <em>domaine</em></>}</h2>
           <p>{texte || "Voici enfin l'écrin qui nous accueillera. On vous y attend — le chemin est juste en dessous."}</p>
@@ -96,7 +96,7 @@ export default function Lieu() {
   /* ---------- « À venir » : le lieu reste secret ---------- */
   return (
     <section className="mystere" id="lieu">
-      <div className="wrap center reveal">
+      <div className="wrap center">
         <p className="eyebrow">À venir · Le lieu</p>
         <span className="pill-avenir">À venir</span>
         <h2>
