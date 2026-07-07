@@ -2951,6 +2951,76 @@ footer {
   color: #6b7566;
 }
 
+/* Admin — ados rattachés à un foyer */
+.foyer-ado {
+  display: block;
+  font-size: 0.9rem;
+  margin-top: 0.15rem;
+}
+.ado-tag {
+  display: inline-block;
+  padding: 0.05rem 0.4rem;
+  border-radius: 999px;
+  background: var(--orc, #c9a24b);
+  color: var(--encre, #24301f);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+/* Admin — onglet Familles */
+.fam-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.9rem;
+  margin: 0.6rem 0 0.4rem;
+}
+.fam-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex: 1 1 220px;
+}
+.fam-form label > span {
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.fam-form select {
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--ligne);
+  border-radius: 8px;
+  font: inherit;
+}
+.fam-liste {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-top: 0.6rem;
+}
+.fam-carte {
+  border: 1px solid var(--ligne);
+  border-radius: 12px;
+  padding: 0.8rem 1rem;
+  background: rgba(255, 255, 255, 0.5);
+}
+.fam-carte ul {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.fam-carte li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+}
+
 /* Admin — foyers fusionnés : boutons d'édition par membre du couple */
 .foyer-edit {
   display: flex;
