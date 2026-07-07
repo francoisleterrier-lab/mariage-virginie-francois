@@ -3097,6 +3097,27 @@ footer {
   background: #faf0ea;
 }
 
+/* Éditeur invité — rattacher une personne déjà inscrite comme enfant/ado */
+.rattacher-inscrit {
+  margin-top: 0.8rem;
+  padding-top: 0.8rem;
+  border-top: 1px dashed var(--ligne);
+}
+.rattacher-ligne {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin: 0.3rem 0;
+}
+.rattacher-ligne select {
+  flex: 1 1 140px;
+  padding: 0.55rem 0.6rem;
+  border: 1px solid var(--ligne);
+  border-radius: 8px;
+  font: inherit;
+}
+
 /* Éditeur invité — conjoint manuel */
 .conjoint-manuel { margin-top: 0.4rem; }
 .conjoint-ligne { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }

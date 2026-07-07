@@ -23,6 +23,8 @@ export default function EditInvite({ invite, invites, tables, onClose, onSaved }
   const [err, setErr] = useState("");
   const [conjNom, setConjNom] = useState("");
   const [conjOuvert, setConjOuvert] = useState(false);
+  const [ratId, setRatId] = useState("");
+  const [ratCat, setRatCat] = useState("ado");
 
   async function creerConjoint() {
     if (!conjNom.trim()) return;
@@ -31,6 +33,28 @@ export default function EditInvite({ invite, invites, tables, onClose, onSaved }
     const { error } = await supabase.rpc("admin_creer_conjoint", { p_invite: invite.id, p_nom: conjNom.trim() });
     setBusy(false);
     if (error) return setErr(error.message || "Création impossible.");
+    onSaved();
+  }
+
+  // Personnes déjà inscrites, seules (ni couple, ni déjà rattachées), rattachables ici.
+  const inscritsSeuls = (invites || []).filter(
+    (x) =>
+      x.id !== invite.id &&
+      !x.couple_id &&
+      !x.rattache_a &&
+      x.role !== "admin" &&
+      !(x.email || "").endsWith("@vf2028.local")
+  );
+
+  // Rattache une personne déjà inscrite (seule) à ce foyer en enfant / ado.
+  async function rattacherPersonne() {
+    if (!ratId) return;
+    setBusy(true);
+    setErr("");
+    const { error } = await supabase.from("invites").update({ rattache_a: invite.id, rattache_role: ratCat }).eq("id", ratId);
+    setBusy(false);
+    if (error) return setErr(error.message || "Rattachement impossible.");
+    setRatId("");
     onSaved();
   }
 
@@ -177,8 +201,34 @@ export default function EditInvite({ invite, invites, tables, onClose, onSaved }
               </div>
             ))}
             <button type="button" className="btn-lien" onClick={ajouterEnfant}>
-              ＋ Ajouter un enfant / ado
+              ＋ Ajouter un enfant / ado <span className="pp-hint">(personne non inscrite)</span>
             </button>
+
+            <div className="rattacher-inscrit">
+              <label>Ou rattacher une personne déjà inscrite (encore seule)</label>
+              {inscritsSeuls.length === 0 ? (
+                <p className="pp-hint">Aucune personne inscrite seule à rattacher pour le moment.</p>
+              ) : (
+                <div className="rattacher-ligne">
+                  <select value={ratId} onChange={(e) => setRatId(e.target.value)}>
+                    <option value="">— choisir une personne inscrite —</option>
+                    {inscritsSeuls.map((x) => (
+                      <option key={x.id} value={x.id}>
+                        {x.nom}
+                      </option>
+                    ))}
+                  </select>
+                  <select value={ratCat} onChange={(e) => setRatCat(e.target.value)} aria-label="Catégorie">
+                    <option value="ado">Ado</option>
+                    <option value="enfant">Enfant</option>
+                  </select>
+                  <button type="button" className="btn-vert" style={{ margin: 0, width: "auto", padding: "0.6rem 1.1rem" }} disabled={busy || !ratId} onClick={rattacherPersonne}>
+                    Rattacher
+                  </button>
+                </div>
+              )}
+              <p className="pp-hint">La personne apparaîtra dans ce foyer, sur une seule ligne, dans l'onglet « Réponses ».</p>
+            </div>
           </div>
 
           <label>Allergies / régime</label>
