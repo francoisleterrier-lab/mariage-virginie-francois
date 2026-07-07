@@ -2193,83 +2193,103 @@ footer {
    ============================================================ */
 .arbre-vivant .arbre-scene {
   position: relative;
-  max-width: 460px;
+  max-width: 520px;
   margin: 2.4rem auto 0;
+  isolation: isolate;
 }
-.arbre-svg {
+.arbre-photo {
+  position: relative;
+  z-index: 1;
+  display: block;
   width: 100%;
   height: auto;
-  display: block;
-  overflow: visible;
+  user-select: none;
+  -webkit-user-drag: none;
 }
-.arbre-cercle {
-  fill: none;
-  stroke: var(--or);
-  stroke-width: 2.2;
-  opacity: 0.8;
+/* halo doré qui s'intensifie avec le taux de confirmation (--lueur : 0→1) */
+.arbre-halo-glow {
+  position: absolute;
+  z-index: 0;
+  left: 50%;
+  top: 38%;
+  width: 62%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%) scale(calc(0.7 + var(--lueur, 0) * 0.5));
+  background: radial-gradient(circle, rgba(201, 154, 63, 0.55), rgba(201, 154, 63, 0) 68%);
+  opacity: calc(0.12 + var(--lueur, 0) * 0.5);
+  filter: blur(10px);
+  pointer-events: none;
+  transition: opacity 0.8s ease, transform 0.8s ease;
 }
-.arbre-branche {
-  fill: none;
-  stroke: var(--encre);
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  opacity: 0.94;
+/* lumières (une par personne inscrite), nichées dans la ramure */
+.arbre-lumieres {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
 }
-.arbre-tronc {
-  fill: var(--encre);
+.lumiere {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  transform: translate(-50%, -50%);
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  outline: none;
+  display: grid;
+  place-items: center;
+  animation: allume 700ms ease-out both;
 }
-.arbre-halo {
-  fill: var(--orc);
-  opacity: 0.16;
-  filter: blur(7px);
+.lumiere-neuve {
+  animation: allume 900ms ease-out both;
 }
-/* feuilles */
-.feuille-g {
-  animation: pousse-feuille 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-.feuille-neuve {
-  animation: pousse-feuille 760ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-@keyframes pousse-feuille {
+@keyframes allume {
   0% {
     opacity: 0;
-    transform: scale(0) rotate(-24deg);
+    transform: translate(-50%, -50%) scale(0.2);
+  }
+  60% {
+    opacity: 1;
   }
   100% {
     opacity: 1;
-    transform: scale(1) rotate(0);
+    transform: translate(-50%, -50%) scale(1);
   }
 }
-.feuille {
-  fill: var(--sauge-clair);
+.lumiere-orbe {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 45%, #fff6df 0%, #f2d488 38%, #c99a3f 72%, rgba(201, 154, 63, 0) 100%);
+  box-shadow: 0 0 8px 2px rgba(242, 212, 136, 0.85), 0 0 16px 5px rgba(201, 154, 63, 0.45);
+  animation: scintille 3.6s ease-in-out infinite;
 }
-.feuille-or {
-  fill: var(--orc);
+.lumiere:nth-child(3n) .lumiere-orbe {
+  animation-delay: 1.2s;
 }
-.bourgeon {
-  fill: #f4efe0;
-  stroke: rgba(166, 124, 43, 0.35);
-  stroke-width: 0.5;
+.lumiere:nth-child(3n + 1) .lumiere-orbe {
+  animation-delay: 2.1s;
 }
-.fleur-petale {
-  fill: #faf6ea;
+@keyframes scintille {
+  0%,
+  100% {
+    opacity: 0.82;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.18);
+  }
 }
-.fleur-coeur {
-  fill: var(--orc);
-}
-.feuille-hit {
-  fill: transparent;
-  cursor: pointer;
-  outline: none;
-}
-.feuille-hit:focus-visible {
-  stroke: var(--or);
-  stroke-width: 1.5;
+.lumiere:hover .lumiere-orbe,
+.lumiere:focus-visible .lumiere-orbe {
+  box-shadow: 0 0 10px 3px rgba(255, 246, 223, 0.95), 0 0 22px 8px rgba(201, 154, 63, 0.6);
 }
 /* tooltip prénom */
 .feuille-tip {
   position: absolute;
-  transform: translate(-50%, -145%);
+  transform: translate(-50%, -150%);
   background: #faf6ea;
   color: var(--encre);
   font-family: "Cormorant Garamond", serif;
@@ -2281,7 +2301,7 @@ footer {
   box-shadow: 0 8px 22px rgba(34, 56, 44, 0.18);
   white-space: nowrap;
   pointer-events: none;
-  z-index: 3;
+  z-index: 4;
 }
 .arbre-compteur {
   margin-top: 1.6rem;
@@ -2293,8 +2313,9 @@ footer {
   font-style: italic;
 }
 @media (prefers-reduced-motion: reduce) {
-  .feuille-g,
-  .feuille-neuve {
+  .lumiere,
+  .lumiere-neuve,
+  .lumiere-orbe {
     animation: none;
   }
 }
