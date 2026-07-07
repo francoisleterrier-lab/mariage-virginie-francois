@@ -133,7 +133,7 @@ export default function Quiz({ profile }) {
     const j = revealAt ? Math.max(0, Math.ceil((Date.parse(revealAt) - Date.now()) / 86400000)) : null;
     return (
       <section className="quiz" id="quiz">
-        <div className="wrap center reveal">
+        <div className="wrap center">
           <p className="eyebrow">À venir · Le quiz des mariés</p>
           <div className="quiz-sceau">
             <span className="bs-pill" aria-hidden="true">À venir</span>
@@ -175,7 +175,7 @@ export default function Quiz({ profile }) {
     if (fini != null) {
       return (
         <section className="quiz" id="quiz">
-          <div className="wrap center reveal">
+          <div className="wrap center">
             <p className="eyebrow">Le quiz des mariés</p>
             <h2>Votre score : <em>{fini} points</em></h2>
             <p>Le podium sera révélé à la clôture. 🌿</p>
@@ -187,7 +187,7 @@ export default function Quiz({ profile }) {
     // écran d'avertissement + Démarrer
     return (
       <section className="quiz" id="quiz">
-        <div className="wrap center reveal">
+        <div className="wrap center">
           <p className="eyebrow">Le quiz des mariés</p>
           <h2>Prêt·e à <em>jouer</em> ?</h2>
           <div className="quiz-regles">
@@ -219,7 +219,7 @@ export default function Quiz({ profile }) {
   const marches = ["quiz-or", "quiz-argent", "quiz-bronze"];
   return (
     <section className="quiz" id="quiz">
-      <div className="wrap center reveal">
+      <div className="wrap center">
         <p className="eyebrow">Le quiz des mariés</p>
         <h2>Le <em>podium</em></h2>
         <div className="quiz-podium">
