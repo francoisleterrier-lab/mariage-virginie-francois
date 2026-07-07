@@ -121,9 +121,10 @@ export default function Engagement({ invites }) {
                         Envoyer
                       </button>
                       <button className="btn-lien" onClick={() => setCible(null)}>Annuler</button>
+                      {!l.abonne && <span className="eng-warn">⚠️ Pas encore abonné·e — ne recevra pas la notification.</span>}
                     </span>
                   ) : (
-                    <button className="btn-editer" disabled={!l.abonne} title={l.abonne ? "" : "Non abonné aux notifications"} onClick={() => { setCible(l.id); setTitre(RELANCES[0].titre); setTexte(RELANCES[0].message); }}>
+                    <button className="btn-editer" onClick={() => { setCible(l.id); setTitre(RELANCES[0].titre); setTexte(RELANCES[0].message); }}>
                       Relancer
                     </button>
                   )}
