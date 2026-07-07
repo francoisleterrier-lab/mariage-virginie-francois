@@ -3,6 +3,7 @@ import { supabase } from "../lib/supabase.js";
 import Countdown from "./Countdown.jsx";
 import MedaillonArbre from "./MedaillonArbre.jsx";
 import TreeOfLife from "./TreeOfLife.jsx";
+import Lieu from "./Lieu.jsx";
 import PersonalWelcome from "./PersonalWelcome.jsx";
 import BandeSon from "./BandeSon.jsx";
 import Quiz from "./Quiz.jsx";
@@ -97,7 +98,6 @@ const LOGEMENTS = [
    LE SITE FAIRE-PART (contenu identique à la v1 statique)
    ============================================================ */
 export default function Site({ profile, onReload, onLogout, retourAdmin }) {
-  const [secret, setSecret] = useState(false);
   const [partenaire, setPartenaire] = useState(null);
   const [guideNotif, setGuideNotif] = useState(false);
   const [menu, setMenu] = useState(false);
@@ -546,42 +546,8 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
         </div>
       </section>
 
-      {/* LIEU MYSTÈRE */}
-      <section className="mystere" id="lieu">
-        <div className="wrap center reveal">
-          <p className="eyebrow">À venir · Le lieu</p>
-          <span className="pill-avenir">À venir</span>
-          <h2>
-            Chut… c'est encore <em>un secret</em>
-          </h2>
-          <p>
-            Nous avons trouvé un écrin de verdure confidentiel, à quelques minutes de Toulouse.
-            <br />
-            Son nom et son adresse vous seront dévoilés quelques semaines avant le grand jour.
-          </p>
-          <div
-            className={"carte-secrete" + (secret ? " ouverte" : "")}
-            role="button"
-            tabIndex={0}
-            aria-expanded={secret}
-            aria-label="Un indice sur le lieu — cliquer pour un teaser"
-            onClick={() => setSecret((s) => !s)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                setSecret((s) => !s);
-              }
-            }}
-          >
-            <div className="q">?</div>
-            <div className="flou" aria-hidden="true">
-              Le ··· des ······
-            </div>
-            <p className="indice">Un domaine caché dans la campagne du Sud-Toulousain — cliquez, si vous osez.</p>
-            <div className="reponse">Patience… 🌿 Un indice se glissera ici au fil des saisons. Revenez nous voir !</div>
-          </div>
-        </div>
-      </section>
+      {/* LIEU : « à venir » (secret) ou domaine annoncé selon lieu_revele */}
+      <Lieu />
 
       {/* INFOS */}
       <section className="infos" id="infos">

@@ -3,6 +3,7 @@ import { supabase } from "../lib/supabase.js";
 import PushAdmin from "./PushAdmin.jsx";
 import PlanEditor from "./PlanEditor.jsx";
 import PhasesEditor from "./PhasesEditor.jsx";
+import LieuEditor from "./LieuEditor.jsx";
 import PagesPerso from "./PagesPerso.jsx";
 import AdminBandeSon from "./AdminBandeSon.jsx";
 import QuizAdmin from "./QuizAdmin.jsx";
@@ -261,7 +262,12 @@ export default function Admin({ onLogout, onApercuInvite }) {
 
       {onglet === "plan" && <PlanEditor invites={invites} onReloadInvites={charger} />}
       {onglet === "notifications" && <PushAdmin />}
-      {onglet === "site" && <PhasesEditor />}
+      {onglet === "site" && (
+        <>
+          <LieuEditor />
+          <PhasesEditor />
+        </>
+      )}
       {onglet === "pages" && <PagesPerso invites={invites} />}
       {onglet === "bandeson" && <AdminBandeSon invites={invites} />}
       {onglet === "quiz" && <QuizAdmin invites={invites} />}
