@@ -8,6 +8,7 @@ import PagesPerso from "./PagesPerso.jsx";
 import AdminBandeSon from "./AdminBandeSon.jsx";
 import QuizAdmin from "./QuizAdmin.jsx";
 import Engagement from "./Engagement.jsx";
+import Familles from "./Familles.jsx";
 import EditInvite from "./EditInvite.jsx";
 
 const fmtDate = (iso) =>
@@ -34,7 +35,7 @@ export default function Admin({ onLogout, onApercuInvite }) {
     const [{ data, error }, { data: t }] = await Promise.all([
       supabase
         .from("invites")
-        .select("id, nom, email, couple_id, table_id, role, rsvp, rsvp_date, created_at")
+        .select("id, nom, email, couple_id, table_id, role, rsvp, rsvp_date, created_at, rattache_a")
         .order("created_at", { ascending: true }),
       supabase.from("tables_plan").select("id, nom").order("nom"),
     ]);
@@ -67,21 +68,27 @@ export default function Admin({ onLogout, onApercuInvite }) {
   const nomParId = Object.fromEntries(invites.map((g) => [g.id, g.nom]));
 
   /* Regroupe les invités par foyer : un couple (lien réciproque couple_id)
-     forme un seul « foyer » → une seule ligne dans le tableau. */
+     forme un seul « foyer » → une seule ligne. Les ados inscrits seuls et
+     rattachés à une famille (rattache_a) sont nichés dans ce foyer. */
+  const ados = invites.filter((g) => g.rattache_a);
+  const base = invites.filter((g) => !g.rattache_a);
   const vus = new Set();
   const foyers = [];
-  for (const g of invites) {
+  for (const g of base) {
     if (vus.has(g.id)) continue;
-    const partenaire = g.couple_id ? invites.find((x) => x.id === g.couple_id && x.couple_id === g.id) : null;
+    const partenaire = g.couple_id ? base.find((x) => x.id === g.couple_id && x.couple_id === g.id) : null;
+    let membres;
     if (partenaire) {
       vus.add(g.id);
       vus.add(partenaire.id);
-      const membres = [g, partenaire].sort((a, b) => new Date(a.created_at || 0) - new Date(b.created_at || 0));
-      foyers.push({ key: g.id, membres });
+      membres = [g, partenaire].sort((a, b) => new Date(a.created_at || 0) - new Date(b.created_at || 0));
     } else {
       vus.add(g.id);
-      foyers.push({ key: g.id, membres: [g] });
+      membres = [g];
     }
+    const ids = new Set(membres.map((m) => m.id));
+    const adosFoyer = ados.filter((a) => ids.has(a.rattache_a));
+    foyers.push({ key: g.id, membres, ados: adosFoyer });
   }
 
   const repondu = invites.filter((g) => g.rsvp);
@@ -157,6 +164,9 @@ export default function Admin({ onLogout, onApercuInvite }) {
         <button role="tab" aria-selected={onglet === "quiz"} className={onglet === "quiz" ? "on" : ""} onClick={() => setOnglet("quiz")}>
           Quiz
         </button>
+        <button role="tab" aria-selected={onglet === "familles"} className={onglet === "familles" ? "on" : ""} onClick={() => setOnglet("familles")}>
+          Familles
+        </button>
         <button role="tab" aria-selected={onglet === "engagement"} className={onglet === "engagement" ? "on" : ""} onClick={() => setOnglet("engagement")}>
           Engagement
         </button>
@@ -199,20 +209,29 @@ export default function Admin({ onLogout, onApercuInvite }) {
                 </tr>
               </thead>
               <tbody>
-                {foyers.map(({ key, membres }) => {
+                {foyers.map(({ key, membres, ados: adosFoyer = [] }) => {
                   const prenom = (n) => (n || "").split(" ")[0];
                   const couple = membres.length > 1;
-                  const emails = membres.map((m) => m.email).filter((e) => e && !e.endsWith("@vf2028.local"));
-                  const reps = membres.filter((m) => m.rsvp);
-                  // représentant pour les compteurs : celui qui a saisi le plus d'adultes
-                  const lead = reps.slice().sort((a, b) => (parseInt(b.rsvp.adultes) || 0) - (parseInt(a.rsvp.adultes) || 0))[0] || null;
+                  const tous = [...membres, ...adosFoyer];
+                  const emails = tous.map((m) => m.email).filter((e) => e && !e.endsWith("@vf2028.local"));
+                  const repsMembres = membres.filter((m) => m.rsvp);
+                  const reps = tous.filter((m) => m.rsvp);
+                  // représentant pour les compteurs : le parent ayant saisi le plus d'adultes
+                  const lead = repsMembres.slice().sort((a, b) => (parseInt(b.rsvp.adultes) || 0) - (parseInt(a.rsvp.adultes) || 0))[0] || null;
                   const presences = [...new Set(reps.map((m) => m.rsvp.presence).filter(Boolean))];
-                  const regimes = [...new Set(membres.map((m) => m.rsvp?.regime).filter(Boolean))];
-                  const messages = membres.map((m) => m.rsvp?.mot).filter(Boolean);
+                  const regimes = [...new Set(tous.map((m) => m.rsvp?.regime).filter(Boolean))];
+                  const messages = tous.map((m) => m.rsvp?.mot).filter(Boolean);
                   const noms = lead ? (lead.rsvp.enfantsNoms || []).filter(Boolean) : [];
                   return (
                     <tr key={key}>
-                      <td>{membres.map((m) => m.nom).join(" & ")}</td>
+                      <td>
+                        {membres.map((m) => m.nom).join(" & ")}
+                        {adosFoyer.map((a) => (
+                          <span key={a.id} className="foyer-ado">
+                            <span className="ado-tag">ado</span> {a.nom}
+                          </span>
+                        ))}
+                      </td>
                       <td>{emails.length ? emails.join(" · ") : "—"}</td>
                       <td>{fmtDate(membres[0].created_at)}</td>
                       <td>{couple ? "💍" : "—"}</td>
@@ -237,9 +256,9 @@ export default function Admin({ onLogout, onApercuInvite }) {
                       <td className="msg">{messages.length ? messages.join(" · ") : "—"}</td>
                       <td>
                         <div className="foyer-edit">
-                          {membres.map((m) => (
+                          {tous.map((m) => (
                             <button key={m.id} className="btn-editer" onClick={() => setEdit(m)}>
-                              {couple ? `Éditer ${prenom(m.nom)}` : "Éditer"}
+                              {couple || adosFoyer.length ? `Éditer ${prenom(m.nom)}` : "Éditer"}
                             </button>
                           ))}
                         </div>
@@ -271,6 +290,7 @@ export default function Admin({ onLogout, onApercuInvite }) {
       {onglet === "pages" && <PagesPerso invites={invites} />}
       {onglet === "bandeson" && <AdminBandeSon invites={invites} />}
       {onglet === "quiz" && <QuizAdmin invites={invites} />}
+      {onglet === "familles" && <Familles invites={invites} onReload={charger} />}
       {onglet === "engagement" && <Engagement invites={invites} />}
 
       {edit && (
