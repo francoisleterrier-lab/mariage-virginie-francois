@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "../lib/supabase.js";
 import PushAdmin from "./PushAdmin.jsx";
 import PlanEditor from "./PlanEditor.jsx";
+import PhasesEditor from "./PhasesEditor.jsx";
 import EditInvite from "./EditInvite.jsx";
 
 const fmtDate = (iso) =>
@@ -120,6 +121,9 @@ export default function Admin({ onLogout, onApercuInvite }) {
         <button role="tab" aria-selected={onglet === "notifications"} className={onglet === "notifications" ? "on" : ""} onClick={() => setOnglet("notifications")}>
           Notifications
         </button>
+        <button role="tab" aria-selected={onglet === "site"} className={onglet === "site" ? "on" : ""} onClick={() => setOnglet("site")}>
+          Le site
+        </button>
       </div>
 
       {onglet === "reponses" && (
@@ -197,6 +201,7 @@ export default function Admin({ onLogout, onApercuInvite }) {
 
       {onglet === "plan" && <PlanEditor invites={invites} onReloadInvites={charger} />}
       {onglet === "notifications" && <PushAdmin />}
+      {onglet === "site" && <PhasesEditor />}
 
       {edit && (
         <EditInvite
