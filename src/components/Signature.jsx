@@ -3,7 +3,7 @@
    italique + une volute dessinée (SVG, trait vert profond).
    ============================================================ */
 export default function Signature({ variant = "vf" }) {
-  const texte = variant === "vfe" ? "Virginie, François & Eden" : "Virginie & François";
+  const texte = variant === "vfe" ? "Virginie, François, Lou, Tiago, Ugo & Eden" : "Virginie & François";
   return (
     <div className="signature-perso">
       <span className="signature-txt">{texte}</span>
