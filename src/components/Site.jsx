@@ -10,6 +10,8 @@ import Citation from "./Citation.jsx";
 import BotanicalDecor from "./BotanicalDecor.jsx";
 import MaTable from "./MaTable.jsx";
 import PushOptIn from "./PushOptIn.jsx";
+import NotifGuide from "./NotifGuide.jsx";
+import { abonnementActif, pushSupporte } from "../lib/push.js";
 
 import fondVideo from "../assets/fond-inscription.mp4";
 import photoCouple from "../assets/couple.jpg";
@@ -97,6 +99,23 @@ const LOGEMENTS = [
 export default function Site({ profile, onReload, onLogout, retourAdmin }) {
   const [secret, setSecret] = useState(false);
   const [partenaire, setPartenaire] = useState(null);
+  const [guideNotif, setGuideNotif] = useState(false);
+
+  // Propose le parcours guidé une fois par session si pas encore abonné.
+  useEffect(() => {
+    if (!pushSupporte()) return;
+    if (sessionStorage.getItem("vf-guide") === "1") return;
+    abonnementActif()
+      .then((actif) => {
+        if (!actif) setGuideNotif(true);
+      })
+      .catch(() => {});
+    try {
+      sessionStorage.setItem("vf-guide", "1");
+    } catch {
+      /* ignore */
+    }
+  }, []);
 
   // Liaison couple tardive (bonus)
   const [candidats, setCandidats] = useState(null); // null = pas encore ouvert
@@ -240,6 +259,11 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
           </li>
           <li>
             <a href="#rsvp">RSVP</a>
+          </li>
+          <li>
+            <button className="nav-cloche" onClick={() => setGuideNotif(true)} aria-label="Activer les notifications" title="Notifications">
+              🔔
+            </button>
           </li>
           <li>
             <button className="nav-out" onClick={onLogout}>
@@ -631,6 +655,8 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
           </a>
         </p>
       </footer>
+
+      <NotifGuide inviteId={profile.id} open={guideNotif} onClose={() => setGuideNotif(false)} />
     </div>
   );
 }

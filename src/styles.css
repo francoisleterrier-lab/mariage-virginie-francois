@@ -2791,3 +2791,22 @@ footer {
 .eng-table th { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sauge); }
 .eng-relance { display: inline-flex; gap: 0.5rem; align-items: center; }
 .eng-relance input { padding: 0.4rem 0.6rem; border: 1px solid var(--ligne); border-radius: 8px; font: inherit; min-width: 180px; }
+
+/* ============================================================
+   Parcours guidé notifications
+   ============================================================ */
+.nav-cloche { background: none; border: none; font-size: 1.1rem; cursor: pointer; line-height: 1; padding: 0.2rem; }
+.notif-guide { max-width: 460px; }
+.ng-intro { color: var(--encre2); margin-bottom: 1.2rem; }
+.ng-etape { display: flex; gap: 0.9rem; padding: 1rem 0; border-top: 1px solid var(--ligne); }
+.ng-etape.bloquee { opacity: 0.5; }
+.ng-num { flex: none; width: 30px; height: 30px; border-radius: 50%; background: var(--encre); color: var(--fond); display: grid; place-items: center; font-family: "Cormorant Garamond", serif; font-size: 1.1rem; }
+.ng-etape.faite .ng-num { background: var(--or); }
+.ng-corps { display: flex; flex-direction: column; gap: 0.35rem; }
+.ng-corps strong { font-family: "Cormorant Garamond", serif; font-size: 1.25rem; font-weight: 500; }
+.ng-corps span { font-size: 0.92rem; color: var(--encre2); }
+.ng-btn { width: auto; align-self: flex-start; margin: 0.5rem 0 0; padding: 0.6rem 1.3rem; }
+.ng-attente { font-style: italic; }
+.ng-fini { text-align: center; }
+.ng-ok { font-family: "Cormorant Garamond", serif; font-size: 1.5rem; color: var(--or); margin-bottom: 0.6rem; }
+.ng-fini .btn-vert { max-width: 220px; margin: 1rem auto 0; }
