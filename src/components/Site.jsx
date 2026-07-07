@@ -3,6 +3,7 @@ import { supabase } from "../lib/supabase.js";
 import Countdown from "./Countdown.jsx";
 import MedaillonArbre from "./MedaillonArbre.jsx";
 import TreeOfLife from "./TreeOfLife.jsx";
+import PersonalWelcome from "./PersonalWelcome.jsx";
 import Citation from "./Citation.jsx";
 import BotanicalDecor from "./BotanicalDecor.jsx";
 import MaTable from "./MaTable.jsx";
@@ -239,6 +240,9 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
           </li>
         </ul>
       </nav>
+
+      {/* ACCUEIL PERSONNALISÉ (si une page a été publiée pour ce foyer) */}
+      <PersonalWelcome profile={profile} />
 
       {/* HÉRO */}
       <header className="hero" id="accueil">

@@ -3,6 +3,7 @@ import { supabase } from "../lib/supabase.js";
 import PushAdmin from "./PushAdmin.jsx";
 import PlanEditor from "./PlanEditor.jsx";
 import PhasesEditor from "./PhasesEditor.jsx";
+import PagesPerso from "./PagesPerso.jsx";
 import EditInvite from "./EditInvite.jsx";
 
 const fmtDate = (iso) =>
@@ -124,6 +125,9 @@ export default function Admin({ onLogout, onApercuInvite }) {
         <button role="tab" aria-selected={onglet === "site"} className={onglet === "site" ? "on" : ""} onClick={() => setOnglet("site")}>
           Le site
         </button>
+        <button role="tab" aria-selected={onglet === "pages"} className={onglet === "pages" ? "on" : ""} onClick={() => setOnglet("pages")}>
+          Pages perso
+        </button>
       </div>
 
       {onglet === "reponses" && (
@@ -202,6 +206,7 @@ export default function Admin({ onLogout, onApercuInvite }) {
       {onglet === "plan" && <PlanEditor invites={invites} onReloadInvites={charger} />}
       {onglet === "notifications" && <PushAdmin />}
       {onglet === "site" && <PhasesEditor />}
+      {onglet === "pages" && <PagesPerso invites={invites} />}
 
       {edit && (
         <EditInvite
