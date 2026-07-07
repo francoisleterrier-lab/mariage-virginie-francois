@@ -9,6 +9,7 @@ import { supabase } from "../lib/supabase.js";
 export default function Familles({ invites, onReload }) {
   const [adoId, setAdoId] = useState("");
   const [familleId, setFamilleId] = useState("");
+  const [categorie, setCategorie] = useState("ado");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
 
@@ -65,7 +66,10 @@ export default function Familles({ invites, onReload }) {
     if (!adoId || !familleId) return;
     setBusy(true);
     setErr("");
-    const { error } = await supabase.from("invites").update({ rattache_a: familleId }).eq("id", adoId);
+    const { error } = await supabase
+      .from("invites")
+      .update({ rattache_a: familleId, rattache_role: categorie })
+      .eq("id", adoId);
     setBusy(false);
     if (error) return setErr(error.message || "Rattachement impossible.");
     setAdoId("");
@@ -76,7 +80,7 @@ export default function Familles({ invites, onReload }) {
   async function detacher(id) {
     setBusy(true);
     setErr("");
-    const { error } = await supabase.from("invites").update({ rattache_a: null }).eq("id", id);
+    const { error } = await supabase.from("invites").update({ rattache_a: null, rattache_role: null }).eq("id", id);
     setBusy(false);
     if (error) return setErr(error.message || "Détachement impossible.");
     onReload?.();
@@ -84,23 +88,31 @@ export default function Familles({ invites, onReload }) {
 
   return (
     <div className="admin-bloc">
-      <h2 className="admin-h2">Familles — rattacher un ado</h2>
+      <h2 className="admin-h2">Familles — ajouter un enfant / ado</h2>
       <p className="admin-sous">
-        Certaines personnes se sont inscrites <strong>seules</strong> (avec leur propre compte) alors qu'elles font
-        partie d'une famille. Rattachez-les ici comme <strong>ado</strong> : elles apparaîtront dans le foyer choisi,
-        sur une seule ligne, dans l'onglet « Réponses ».
+        Un couple compte comme une <strong>famille</strong>. Certaines personnes se sont inscrites
+        <strong> seules</strong> (avec leur propre compte) alors qu'elles font partie d'une famille. Rattachez-les ici
+        comme <strong>enfant</strong> ou <strong>ado</strong> : elles apparaîtront dans le foyer choisi, sur une seule
+        ligne, dans l'onglet « Réponses ».
       </p>
 
       <div className="fam-form">
         <label>
           <span>Personne inscrite seule</span>
           <select value={adoId} onChange={(e) => setAdoId(e.target.value)}>
-            <option value="">— choisir un ado —</option>
+            <option value="">— choisir une personne —</option>
             {candidats.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.nom}
               </option>
             ))}
+          </select>
+        </label>
+        <label>
+          <span>Catégorie</span>
+          <select value={categorie} onChange={(e) => setCategorie(e.target.value)}>
+            <option value="ado">Ado</option>
+            <option value="enfant">Enfant</option>
           </select>
         </label>
         <label>
@@ -117,10 +129,19 @@ export default function Familles({ invites, onReload }) {
           </select>
         </label>
         <button className="btn-vert" style={{ margin: 0, width: "auto", padding: "0.55rem 1.3rem" }} disabled={busy || !adoId || !familleId} onClick={rattacher}>
-          {busy ? "…" : "Rattacher comme ado"}
+          {busy ? "…" : "Rattacher"}
         </button>
       </div>
       {err && <p className="gate-err" style={{ color: "#b06a4f" }}>{err}</p>}
+
+      <h3 className="admin-h3" style={{ marginTop: "1.6rem" }}>
+        Personnes encore inscrites seules {candidats.length > 0 && <span className="fam-compteur">({candidats.length})</span>}
+      </h3>
+      {candidats.length === 0 ? (
+        <p className="attente">Personne n'est inscrit seul pour le moment.</p>
+      ) : (
+        <p className="fam-seuls">{candidats.map((c) => c.nom).join(" · ")}</p>
+      )}
 
       <h3 className="admin-h3" style={{ marginTop: "1.6rem" }}>Rattachements actuels</h3>
       {Object.keys(adosParFamille).length === 0 ? (
@@ -134,7 +155,7 @@ export default function Familles({ invites, onReload }) {
                 {liste.map((a) => (
                   <li key={a.id}>
                     <span>
-                      <span className="ado-tag">ado</span> {a.nom}
+                      <span className="ado-tag">{a.rattache_role === "enfant" ? "enfant" : "ado"}</span> {a.nom}
                     </span>
                     <button className="btn-lien" disabled={busy} onClick={() => detacher(a.id)}>
                       Détacher
