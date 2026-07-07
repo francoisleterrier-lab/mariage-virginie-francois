@@ -549,7 +549,8 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
       {/* LIEU MYSTÈRE */}
       <section className="mystere" id="lieu">
         <div className="wrap center reveal">
-          <p className="eyebrow">Le lieu</p>
+          <p className="eyebrow">À venir · Le lieu</p>
+          <span className="pill-avenir">À venir</span>
           <h2>
             Chut… c'est encore <em>un secret</em>
           </h2>
@@ -633,6 +634,14 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
             Deux jours de fête, ça se savoure sans reprendre la route trop tôt. Voici quelques adresses à moins de
             15 minutes du lieu — pensez à réserver assez tôt, le pont de l'Ascension est prisé.
           </p>
+          <div className="loge-camping">
+            <span className="loge-camping-ico" aria-hidden="true">🚐</span>
+            <p>
+              <strong>Vous venez en camping-car ?</strong> C'est tout à fait possible : vous pourrez vous garer et
+              dormir dans votre camping-car directement sur le lieu de la fête. De quoi profiter des deux jours sans
+              reprendre la route.
+            </p>
+          </div>
           <div className="loge-grid">
             {LOGEMENTS.map((l) => (
               <a key={l.url} className="loge-carte" href={l.url} target="_blank" rel="noopener noreferrer">

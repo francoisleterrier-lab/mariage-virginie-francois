@@ -13,6 +13,7 @@ export default function PlanEditor({ invites, onReloadInvites }) {
   const [tables, setTables] = useState([]);
   const [planVisible, setPlanVisible] = useState(false);
   const [reservationOuverte, setReservationOuverte] = useState(false);
+  const [tablesAVenir, setTablesAVenir] = useState(true);
   const [nom, setNom] = useState("");
   const [forme, setForme] = useState("ronde");
   const [capacite, setCapacite] = useState(8);
@@ -28,12 +29,13 @@ export default function PlanEditor({ invites, onReloadInvites }) {
       supabase
         .from("parametres")
         .select("cle, valeur")
-        .in("cle", ["plan_visible", "reservation_ouverte", "arbre_objectif", "arbre_prenoms"]),
+        .in("cle", ["plan_visible", "reservation_ouverte", "tables_a_venir", "arbre_objectif", "arbre_prenoms"]),
     ]);
     setTables(t || []);
     const brut = Object.fromEntries((params || []).map((r) => [r.cle, r.valeur]));
     setPlanVisible(brut.plan_visible === true);
     setReservationOuverte(brut.reservation_ouverte === true);
+    setTablesAVenir(brut.tables_a_venir !== false);
     if (brut.arbre_objectif != null) setArbreObjectif(Number(brut.arbre_objectif) || 80);
     setArbrePrenoms(brut.arbre_prenoms !== false);
   }
@@ -82,6 +84,12 @@ export default function PlanEditor({ invites, onReloadInvites }) {
     const nouvelle = !reservationOuverte;
     setReservationOuverte(nouvelle);
     await supabase.from("parametres").upsert({ cle: "reservation_ouverte", valeur: nouvelle });
+  }
+
+  async function toggleTablesAVenir() {
+    const nouvelle = !tablesAVenir;
+    setTablesAVenir(nouvelle);
+    await supabase.from("parametres").upsert({ cle: "tables_a_venir", valeur: nouvelle });
   }
 
   async function toggleBloquee(t) {
@@ -152,11 +160,15 @@ export default function PlanEditor({ invites, onReloadInvites }) {
         <h2 className="admin-h2">Plan de table</h2>
         <div className="plan-switches">
           <label className="switch">
-            <input type="checkbox" checked={reservationOuverte} onChange={toggleReservation} />
+            <input type="checkbox" checked={tablesAVenir} onChange={toggleTablesAVenir} />
+            <span>Section « Ma table » en « à venir »</span>
+          </label>
+          <label className="switch">
+            <input type="checkbox" checked={reservationOuverte} onChange={toggleReservation} disabled={tablesAVenir} />
             <span>Réservations ouvertes</span>
           </label>
           <label className="switch">
-            <input type="checkbox" checked={planVisible} onChange={toggleVisible} />
+            <input type="checkbox" checked={planVisible} onChange={toggleVisible} disabled={tablesAVenir} />
             <span>Plan visible (placement imposé)</span>
           </label>
         </div>
