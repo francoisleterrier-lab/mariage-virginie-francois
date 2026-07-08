@@ -15,6 +15,7 @@ export default function EditInvite({ invite, invites, tables, onClose, onSaved }
   const [adultes, setAdultes] = useState(String(r.adultes || "1"));
   const [enfants, setEnfants] = useState(String(r.enfants || "0"));
   const [enfantsNoms, setEnfantsNoms] = useState(Array.isArray(r.enfantsNoms) ? r.enfantsNoms : []);
+  const [adultesNoms, setAdultesNoms] = useState(Array.isArray(r.adultesNoms) ? r.adultesNoms : []);
   const [regime, setRegime] = useState(r.regime || "");
   const [mot, setMot] = useState(r.mot || "");
   const [tableId, setTableId] = useState(invite.table_id || "");
@@ -70,6 +71,14 @@ export default function EditInvite({ invite, invites, tables, onClose, onSaved }
     setEnfants(String(noms.length));
   }
 
+  // Adultes accompagnants (non inscrits) : nom & prénom.
+  function ajouterAdulte() {
+    setAdultesNoms([...adultesNoms, ""]);
+  }
+  function retirerAdulte(i) {
+    setAdultesNoms(adultesNoms.filter((_, j) => j !== i));
+  }
+
   async function majCouple(aId, oldPid, newPid) {
     if ((oldPid || "") === (newPid || "")) return;
     const ops = {};
@@ -90,11 +99,13 @@ export default function EditInvite({ invite, invites, tables, onClose, onSaved }
     setBusy(true);
     setErr("");
     const nomsPropres = enfantsNoms.map((s) => (s || "").trim()).filter(Boolean);
+    const adultesPropres = adultesNoms.map((s) => (s || "").trim()).filter(Boolean);
     const rsvp = {
       presence,
       adultes,
       enfants: String(nomsPropres.length),
       enfantsNoms: nomsPropres,
+      adultesNoms: adultesPropres,
       regime,
       mot,
     };
@@ -180,6 +191,29 @@ export default function EditInvite({ invite, invites, tables, onClose, onSaved }
               <label>Enfants / ados</label>
               <input value={enfantsNoms.length} readOnly aria-label="Nombre d'enfants / ados (géré par la liste ci-dessous)" />
             </div>
+          </div>
+
+          <div className="enfants-edit">
+            <label>Adultes accompagnants (nom &amp; prénom)</label>
+            {adultesNoms.map((nom, i) => (
+              <div className="enfant-ligne" key={i}>
+                <input
+                  value={nom || ""}
+                  onChange={(e) => {
+                    const noms = [...adultesNoms];
+                    noms[i] = e.target.value;
+                    setAdultesNoms(noms);
+                  }}
+                  placeholder="Nom & prénom de l'adulte accompagnant"
+                />
+                <button type="button" className="enfant-x" onClick={() => retirerAdulte(i)} aria-label={`Retirer ${nom || "cet adulte"}`}>
+                  ×
+                </button>
+              </div>
+            ))}
+            <button type="button" className="btn-lien" onClick={ajouterAdulte}>
+              ＋ Ajouter un adulte accompagnant
+            </button>
           </div>
 
           <div className="enfants-edit">
