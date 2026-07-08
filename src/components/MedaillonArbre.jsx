@@ -20,12 +20,15 @@ export default function MedaillonArbre({ variant = "hero", withMono = false }) {
       if (vivant) setVideoOk(false);
     };
     v.addEventListener("error", echec);
+    // On tente l'autoplay. S'il est refusé (mode économie d'énergie iOS…), on
+    // NE bascule PAS sur le SVG : la vidéo reste affichée (1re image) et se lit
+    // au tap. On ne retombe sur le dessin que si la vidéo est réellement
+    // illisible (événement « error » ou aucun chargement du tout).
     const p = v.play();
-    if (p && p.catch) p.catch(echec);
-    // Si après 2,5 s la lecture n'a jamais démarré, on bascule sur le SVG.
+    if (p && p.catch) p.catch(() => {});
     const t = setTimeout(() => {
-      if (vivant && (v.readyState < 2 || (v.paused && v.currentTime === 0))) echec();
-    }, 2500);
+      if (vivant && v.readyState < 1) echec(); // HAVE_NOTHING → média illisible
+    }, 4000);
     return () => {
       vivant = false;
       clearTimeout(t);
@@ -55,7 +58,7 @@ export default function MedaillonArbre({ variant = "hero", withMono = false }) {
           if (e.key === "Enter") rejouer();
         }}
       >
-        <video ref={vidRef} src={videoArbre} autoPlay muted playsInline preload="auto" />
+        <video ref={vidRef} src={videoArbre} autoPlay muted playsInline loop={variant === "gate"} preload="auto" />
       </div>
       {withMono && (
         <div className="mono-hero">
