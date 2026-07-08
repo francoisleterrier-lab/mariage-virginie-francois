@@ -141,7 +141,15 @@ export default function EditInvite({ invite, invites, tables, onClose, onSaved }
     onSaved();
   }
 
-  const autres = invites.filter((x) => x.id !== invite.id);
+  // Pour « Couple avec » : on masque les personnes déjà affectées à quelqu'un
+  // (déjà en couple avec un autre, ou rattachées comme enfant/ado). On garde
+  // le/la partenaire actuel·le de cet invité pour que la sélection reste juste.
+  const autres = invites.filter(
+    (x) =>
+      x.id !== invite.id &&
+      !x.rattache_a &&
+      (!x.couple_id || x.couple_id === invite.id || x.id === coupleId)
+  );
 
   return (
     <div className="modal-fond" onClick={onClose}>
