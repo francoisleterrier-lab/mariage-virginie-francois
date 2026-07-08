@@ -19,10 +19,15 @@ clientsClaim();
 precacheAndRoute(self.__WB_MANIFEST || []);
 cleanupOutdatedCaches();
 
-// Médias (photos, vidéo arbre de vie, icônes) : SWR => dispo hors-ligne
-// après la 1re visite, mais rafraîchis en arrière-plan.
+// Médias statiques (photos, icônes, polices) : SWR => dispo hors-ligne après
+// la 1re visite, rafraîchis en arrière-plan.
+// IMPORTANT : on NE met PAS en cache la vidéo ni l'audio. Ces éléments <video>/
+// <audio> sont lus via des requêtes Range (206 Partial Content) ; un cache
+// StaleWhileRevalidate renvoie la réponse 200 complète et Safari/iOS refuse
+// alors de lire le média (l'intro « ne fonctionne plus » aux visites suivantes).
+// On les laisse passer directement au réseau pour préserver le support Range.
 registerRoute(
-  ({ request }) => ["image", "video", "audio", "font"].includes(request.destination),
+  ({ request }) => ["image", "font"].includes(request.destination),
   new StaleWhileRevalidate({
     cacheName: "medias-vf",
     plugins: [new ExpirationPlugin({ maxEntries: 60, maxAgeSeconds: 60 * 60 * 24 * 30 })],
