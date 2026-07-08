@@ -97,7 +97,7 @@ export default function Admin({ onLogout, onApercuInvite }) {
   const totalEnfants = presents.reduce((s, g) => s + (parseInt(g.rsvp.enfants) || 0), 0);
 
   function exporterCsv() {
-    const entetes = ["Invité", "E-mail", "Inscrit le", "Couple", "Présence", "Adultes", "Enfants", "Prénoms enfants", "Régime", "Message", "Réponse le"];
+    const entetes = ["Invité", "E-mail", "Inscrit le", "Couple", "Présence", "Adultes", "Adultes accompagnants", "Enfants", "Prénoms enfants", "Régime", "Message", "Réponse le"];
     const lignes = invites.map((g) => [
       g.nom,
       g.email,
@@ -105,6 +105,7 @@ export default function Admin({ onLogout, onApercuInvite }) {
       g.couple_id ? nomParId[g.couple_id] || "" : "",
       g.rsvp?.presence || "",
       g.rsvp?.adultes || "",
+      (g.rsvp?.adultesNoms || []).filter(Boolean).join(", "),
       g.rsvp?.enfants || "",
       (g.rsvp?.enfantsNoms || []).filter(Boolean).join(", "),
       g.rsvp?.regime || "",
@@ -222,10 +223,16 @@ export default function Admin({ onLogout, onApercuInvite }) {
                   const regimes = [...new Set(tous.map((m) => m.rsvp?.regime).filter(Boolean))];
                   const messages = tous.map((m) => m.rsvp?.mot).filter(Boolean);
                   const noms = lead ? (lead.rsvp.enfantsNoms || []).filter(Boolean) : [];
+                  const adultesAcc = tous.flatMap((m) => m.rsvp?.adultesNoms || []).filter(Boolean);
                   return (
                     <tr key={key}>
                       <td>
                         {membres.map((m) => m.nom).join(" & ")}
+                        {adultesAcc.map((n, i) => (
+                          <span key={"a" + i} className="foyer-ado">
+                            <span className="ado-tag adulte">adulte</span> {n}
+                          </span>
+                        ))}
                         {adosFoyer.map((a) => (
                           <span key={a.id} className="foyer-ado">
                             <span className="ado-tag">{a.rattache_role === "enfant" ? "enfant" : "ado"}</span> {a.nom}

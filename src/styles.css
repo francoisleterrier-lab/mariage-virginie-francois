@@ -2969,6 +2969,10 @@ footer {
   font-weight: 700;
   vertical-align: middle;
 }
+.ado-tag.adulte {
+  background: var(--sauge, #7f9a73);
+  color: #fff;
+}
 
 /* Admin — onglet Familles */
 .fam-form {
