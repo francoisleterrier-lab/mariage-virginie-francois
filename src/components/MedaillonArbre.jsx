@@ -20,12 +20,30 @@ export default function MedaillonArbre({ variant = "hero", withMono = false }) {
       if (vivant) setVideoOk(false);
     };
     v.addEventListener("error", echec);
-    // On tente l'autoplay. S'il est refusé (mode économie d'énergie iOS…), on
-    // NE bascule PAS sur le SVG : la vidéo reste affichée (1re image) et se lit
-    // au tap. On ne retombe sur le dessin que si la vidéo est réellement
-    // illisible (événement « error » ou aucun chargement du tout).
-    const p = v.play();
-    if (p && p.catch) p.catch(() => {});
+
+    // Fiabiliser le démarrage automatique : forcer le muet au niveau du DOM
+    // (React ne pose pas toujours l'attribut `muted`, ce que certains
+    // navigateurs interprètent comme « son actif » → autoplay refusé).
+    v.muted = true;
+    v.defaultMuted = true;
+    v.setAttribute("muted", "");
+    v.playsInline = true;
+
+    const lire = () => {
+      const p = v.play();
+      if (p && p.catch) p.catch(() => {});
+    };
+    lire();
+
+    // Filet : si l'autoplay est refusé (mode économie d'énergie iOS…), la vidéo
+    // démarre au tout premier geste sur la page — sans jamais basculer sur le
+    // dessin. On ne retombe sur le SVG que si le média est réellement illisible.
+    const surGeste = () => {
+      if (v.paused) lire();
+    };
+    const evts = ["pointerdown", "touchstart", "keydown"];
+    evts.forEach((ev) => document.addEventListener(ev, surGeste, { passive: true }));
+
     const t = setTimeout(() => {
       if (vivant && v.readyState < 1) echec(); // HAVE_NOTHING → média illisible
     }, 4000);
@@ -33,6 +51,7 @@ export default function MedaillonArbre({ variant = "hero", withMono = false }) {
       vivant = false;
       clearTimeout(t);
       v.removeEventListener("error", echec);
+      evts.forEach((ev) => document.removeEventListener(ev, surGeste));
     };
   }, []);
 
