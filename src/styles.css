@@ -2179,6 +2179,42 @@ footer {
     object-fit: contain;
   }
 }
+/* Bouton central de lecture (affiché seulement si l'autoplay est bloqué). */
+.intro-play {
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+  background: transparent;
+  border: none;
+  color: var(--blanc, #fff);
+  cursor: pointer;
+  font: inherit;
+}
+.intro-play-ic {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  background: rgba(24, 40, 31, 0.55);
+  border: 2px solid var(--orc);
+  backdrop-filter: blur(4px);
+  font-size: 2.2rem;
+  padding-left: 6px; /* recentre le triangle ▶ */
+}
+.intro-play-txt {
+  font-size: 0.78rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
 .intro-skip {
   position: absolute;
   z-index: 2;
