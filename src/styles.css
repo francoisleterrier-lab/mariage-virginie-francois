@@ -657,6 +657,45 @@ nav ul a:focus-visible::after {
   margin-bottom: 1rem;
   max-width: 52ch;
 }
+
+/* La demande — galerie polaroïd sous « Notre histoire » */
+.demande {
+  margin-top: 3.6rem;
+  text-align: center;
+}
+.demande-titre {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 500;
+  font-size: clamp(1.5rem, 3.4vw, 2.1rem);
+  margin: 0.2rem 0 1.8rem;
+}
+.demande-photos {
+  display: flex;
+  gap: 1.4rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.demande-photos .pola {
+  width: min(30%, 300px);
+}
+.demande-photos .pola:nth-child(1) {
+  transform: rotate(-2.5deg);
+}
+.demande-photos .pola:nth-child(2) {
+  transform: rotate(1.5deg);
+}
+.demande-photos .pola:nth-child(3) {
+  transform: rotate(-1deg);
+}
+.demande-photos .pola:hover {
+  transform: rotate(0) scale(1.04);
+  z-index: 2;
+}
+@media (max-width: 680px) {
+  .demande-photos .pola {
+    width: min(78%, 320px);
+  }
+}
 .signature {
   font-family: "Cormorant Garamond", serif;
   font-style: italic;

@@ -17,6 +17,9 @@ import { abonnementActif, pushSupporte } from "../lib/push.js";
 import fondVideo from "../assets/fond-inscription.mp4";
 import photoCouple from "../assets/couple.jpg";
 import photoEden from "../assets/eden.jpg";
+import demande1 from "../assets/demande-1.jpg";
+import demande2 from "../assets/demande-2.jpg";
+import demande3 from "../assets/demande-3.jpg";
 import photoTemoins from "../assets/temoins.jpg";
 
 /* Hébergements à moins de ~15 min du lieu de la fête (Sud-Toulousain).
@@ -469,6 +472,25 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
               </p>
             )}
             <p className="signature">Virginie, François, Lou, Tiago, Ugo &amp; Eden</p>
+          </div>
+        </div>
+
+        {/* La demande — galerie polaroïd du jour où François a posé un genou à terre */}
+        <div className="demande reveal">
+          <p className="eyebrow">La demande</p>
+          <h3 className="demande-titre">
+            Le jour où il a posé <em>un genou à terre</em>
+          </h3>
+          <div className="demande-photos">
+            <figure className="pola">
+              <img src={demande1} alt="François présente la bague à Virginie" loading="lazy" />
+            </figure>
+            <figure className="pola">
+              <img src={demande2} alt="Virginie et François, front contre front, émus" loading="lazy" />
+            </figure>
+            <figure className="pola">
+              <img src={demande3} alt="Virginie éclate de rire dans les bras de François" loading="lazy" />
+            </figure>
           </div>
         </div>
       </section>
