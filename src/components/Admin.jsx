@@ -4,6 +4,7 @@ import PushAdmin from "./PushAdmin.jsx";
 import PlanEditor from "./PlanEditor.jsx";
 import PhasesEditor from "./PhasesEditor.jsx";
 import LieuEditor from "./LieuEditor.jsx";
+import CagnotteEditor from "./CagnotteEditor.jsx";
 import PagesPerso from "./PagesPerso.jsx";
 import AdminBandeSon from "./AdminBandeSon.jsx";
 import QuizAdmin from "./QuizAdmin.jsx";
@@ -291,6 +292,7 @@ export default function Admin({ onLogout, onApercuInvite }) {
       {onglet === "site" && (
         <>
           <LieuEditor />
+          <CagnotteEditor />
           <PhasesEditor />
         </>
       )}

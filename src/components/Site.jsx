@@ -8,6 +8,7 @@ import PersonalWelcome from "./PersonalWelcome.jsx";
 import BandeSon from "./BandeSon.jsx";
 import Quiz from "./Quiz.jsx";
 import MurPhotos from "./MurPhotos.jsx";
+import Cagnotte from "./Cagnotte.jsx";
 import Citation from "./Citation.jsx";
 import BotanicalDecor from "./BotanicalDecor.jsx";
 import MaTable from "./MaTable.jsx";
@@ -105,6 +106,18 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
   const [partenaire, setPartenaire] = useState(null);
   const [guideNotif, setGuideNotif] = useState(false);
   const [menu, setMenu] = useState(false);
+  const [cagnotteActive, setCagnotteActive] = useState(false);
+
+  // La cagnotte n'apparaît dans la nav que si elle est activée (admin).
+  useEffect(() => {
+    supabase
+      .from("parametres")
+      .select("valeur")
+      .eq("cle", "cagnotte_active")
+      .maybeSingle()
+      .then(({ data }) => setCagnotteActive(data?.valeur === true))
+      .catch(() => {});
+  }, []);
 
   // Propose le parcours guidé une fois par session si pas encore abonné.
   useEffect(() => {
@@ -377,6 +390,11 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
           <li>
             <a href="#album">Album</a>
           </li>
+          {cagnotteActive && (
+            <li>
+              <a href="#cagnotte">Cagnotte</a>
+            </li>
+          )}
           <li>
             <a href="#rsvp">RSVP</a>
           </li>
@@ -663,6 +681,9 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
 
       {/* ALBUM PHOTO DES INVITÉS (mur commun, upload par invité connecté) */}
       <MurPhotos profile={profile} />
+
+      {/* CAGNOTTE / LISTE DE MARIAGE (fonds commun, lien externe) */}
+      <Cagnotte profile={profile} />
 
       {/* RSVP replacé en fin de site une fois la réponse enregistrée */}
       {saved && blocRsvp}
