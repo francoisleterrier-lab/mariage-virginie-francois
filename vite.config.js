@@ -44,5 +44,13 @@ export default defineConfig({
   ],
   build: {
     assetsInlineLimit: 4096,
+    rollupOptions: {
+      input: {
+        // Site de mariage V&F (inchangé)
+        main: new URL("./index.html", import.meta.url).pathname,
+        // Produit « Faire-part Vivant » : éditeur + rendu multi-clients
+        product: new URL("./product.html", import.meta.url).pathname,
+      },
+    },
   },
 });
