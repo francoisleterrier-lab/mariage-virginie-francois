@@ -96,7 +96,11 @@ export default function Admin({ onLogout, onApercuInvite }) {
 
   const repondu = invites.filter((g) => g.rsvp);
   const presents = repondu.filter((g) => g.rsvp && !String(g.rsvp.presence || "").startsWith("Hélas"));
-  const totalAdultes = presents.reduce((s, g) => s + (parseInt(g.rsvp.adultes) || 0), 0);
+  // Adultes = le nombre saisi + les adultes accompagnants ajoutés à la main (nom & prénom).
+  const totalAdultes = presents.reduce(
+    (s, g) => s + (parseInt(g.rsvp.adultes) || 0) + (g.rsvp.adultesNoms || []).filter(Boolean).length,
+    0
+  );
   const totalEnfants = presents.reduce((s, g) => s + (parseInt(g.rsvp.enfants) || 0), 0);
 
   function exporterCsv() {
@@ -259,7 +263,7 @@ export default function Admin({ onLogout, onApercuInvite }) {
                         )}
                       </td>
                       <td>
-                        {lead ? `${lead.rsvp.adultes} / ${lead.rsvp.enfants}` : "—"}
+                        {lead ? `${(parseInt(lead.rsvp.adultes) || 0) + adultesAcc.length} / ${lead.rsvp.enfants}` : "—"}
                         {noms.length > 0 && <span className="enfants-liste">{noms.join(", ")}</span>}
                       </td>
                       <td>{regimes.length ? regimes.join(" · ") : "—"}</td>
