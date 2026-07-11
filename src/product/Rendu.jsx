@@ -3,6 +3,7 @@ import { sb } from "./supabaseFpv.js";
 import ArbreVivant from "./ArbreVivant.jsx";
 import Constellation from "./Constellation.jsx";
 import AlbumInvites from "./AlbumInvites.jsx";
+import Cagnotte from "./Cagnotte.jsx";
 import { pushSupporte, estAbonne, abonner } from "./pushFpv.js";
 
 /* Rendu public d'une invitation « Faire-part Vivant » (multi-thèmes),
@@ -212,6 +213,19 @@ export default function Rendu({ slug }) {
             </form>
           )}
         </section>
+      )}
+
+      {sec.cagnotte === true && (
+        <Cagnotte
+          invitationId={inv.id}
+          cfg={{
+            titre: sec.cagnotteTitre,
+            texte: sec.cagnotteTexte,
+            objectif: sec.cagnotteObjectif,
+            montant: sec.cagnotteMontant,
+            lien: sec.cagnotteLien,
+          }}
+        />
       )}
 
       {sec.album === true && <AlbumInvites invitationId={inv.id} />}

@@ -202,6 +202,7 @@ function Editer({ invite, onRetour }) {
           <label className="fpv-toggle"><input type="checkbox" checked={v.sections.compte !== false} onChange={(e) => majSec("compte", e.target.checked)} /> Compte à rebours</label>
           <label className="fpv-toggle"><input type="checkbox" checked={v.sections.interactif === true || v.sections.arbre === true} onChange={(e) => majSec("interactif", e.target.checked)} /> Élément interactif ✨</label>
           <label className="fpv-toggle"><input type="checkbox" checked={v.sections.album === true} onChange={(e) => majSec("album", e.target.checked)} /> Album photo des invités 📸</label>
+          <label className="fpv-toggle"><input type="checkbox" checked={v.sections.cagnotte === true} onChange={(e) => majSec("cagnotte", e.target.checked)} /> Cagnotte 💝</label>
           <label className="fpv-toggle"><input type="checkbox" checked={v.sections.infos === true} onChange={(e) => majSec("infos", e.target.checked)} /> Infos pratiques</label>
           <label className="fpv-toggle"><input type="checkbox" checked={v.rsvp_ouvert} onChange={(e) => maj("rsvp_ouvert", e.target.checked)} /> RSVP ouvert</label>
         </div>
@@ -213,6 +214,28 @@ function Editer({ invite, onRetour }) {
             </select>
             <span className="fpv-hint">Un cœur du faire-part qui prend vie à chaque « oui ». D'autres éléments arriveront.</span>
           </label>
+        )}
+        {v.sections.cagnotte === true && (
+          <div className="fpv-cag-champs">
+            <label className="fpv-l" style={{ marginBottom: "1rem" }}>Titre de la cagnotte
+              <input value={v.sections.cagnotteTitre || ""} onChange={(e) => majSec("cagnotteTitre", e.target.value)} placeholder="Notre voyage de noces" />
+            </label>
+            <label className="fpv-l" style={{ marginBottom: "1rem" }}>Texte (pourquoi, pour quoi…)
+              <textarea rows={3} value={v.sections.cagnotteTexte || ""} onChange={(e) => majSec("cagnotteTexte", e.target.value)} placeholder="Plutôt que des cadeaux, offrez-nous un souvenir de voyage…" />
+            </label>
+            <div className="fpv-row" style={{ marginBottom: "1rem" }}>
+              <label className="fpv-l">Objectif (€, facultatif)
+                <input type="number" min="0" value={v.sections.cagnotteObjectif ?? ""} onChange={(e) => majSec("cagnotteObjectif", e.target.value === "" ? "" : Number(e.target.value))} placeholder="3000" />
+              </label>
+              <label className="fpv-l">Déjà collecté (€)
+                <input type="number" min="0" value={v.sections.cagnotteMontant ?? ""} onChange={(e) => majSec("cagnotteMontant", e.target.value === "" ? "" : Number(e.target.value))} placeholder="0" />
+              </label>
+            </div>
+            <label className="fpv-l">Lien de participation (Leetchi, Lydia, PayPal, RIB…)
+              <input value={v.sections.cagnotteLien || ""} onChange={(e) => majSec("cagnotteLien", e.target.value)} placeholder="https://www.leetchi.com/c/…" />
+              <span className="fpv-hint">Le bouton « Participer » ouvrira ce lien. Le montant « déjà collecté » se met à jour à la main, depuis votre cagnotte.</span>
+            </label>
+          </div>
         )}
         {v.sections.infos && (
           <label className="fpv-l">Texte des infos pratiques
