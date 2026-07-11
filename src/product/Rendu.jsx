@@ -4,6 +4,7 @@ import ArbreVivant from "./ArbreVivant.jsx";
 import Constellation from "./Constellation.jsx";
 import AlbumInvites from "./AlbumInvites.jsx";
 import Cagnotte from "./Cagnotte.jsx";
+import ListeCadeaux from "./ListeCadeaux.jsx";
 import { pushSupporte, estAbonne, abonner } from "./pushFpv.js";
 
 /* Rendu public d'une invitation « Faire-part Vivant » (multi-thèmes),
@@ -227,6 +228,8 @@ export default function Rendu({ slug }) {
           }}
         />
       )}
+
+      {sec.cadeaux === true && <ListeCadeaux invitationId={inv.id} />}
 
       {sec.album === true && <AlbumInvites invitationId={inv.id} />}
 
