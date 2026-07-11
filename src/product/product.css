@@ -115,6 +115,20 @@ label.fpv-l { display: flex; flex-direction: column; gap: .35rem; font-size: .84
 @keyframes fpvScintille { 0%,100% { opacity: .78; } 50% { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .fpv-lum, .fpv-orbe { animation: none; } }
 
+/* Élément interactif « Constellation » */
+.fpv-constel { position: relative; width: min(92vw, 560px); height: min(78vw, 380px); margin: 1.6rem auto 0; isolation: isolate; }
+.fpv-constel-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.fpv-constel-line { fill: none; stroke: var(--accent); stroke-width: .28; opacity: .45; vector-effect: non-scaling-stroke; }
+.fpv-constel-stars { position: absolute; inset: 0; }
+.fpv-star { position: absolute; transform: translate(-50%, -50%); width: 26px; height: 26px; padding: 0; border: 0; background: none; cursor: pointer; animation: fpvAllume .9s ease both; }
+.fpv-star-dot { display: block; width: 7px; height: 7px; margin: 9px auto; border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, #fff, var(--accent) 65%, transparent 75%);
+  box-shadow: 0 0 7px 2px color-mix(in srgb, var(--accent) 70%, transparent), 0 0 16px 6px color-mix(in srgb, var(--accent) 28%, transparent);
+  animation: fpvScintille var(--tw, 3s) ease-in-out infinite; }
+.fpv-star:hover .fpv-star-dot, .fpv-star:focus-visible .fpv-star-dot { transform: scale(1.6); }
+.fpv-star-tip { position: absolute; left: 50%; top: -4px; transform: translate(-50%, -100%); white-space: nowrap;
+  background: rgba(0,0,0,.72); color: #fff; font-size: .76rem; padding: .22rem .55rem; border-radius: 999px; border: 1px solid var(--line); pointer-events: none; }
+
 .fpv-push-ok { color: var(--accent); font-family: var(--serif); font-style: italic; font-size: 1.1rem; }
 .fpv-render footer { text-align: center; padding: 2.4rem 1rem 3rem; color: var(--muted); font-size: .78rem; border-top: 1px solid var(--line); }
 .fpv-render footer a { color: var(--accent); }
