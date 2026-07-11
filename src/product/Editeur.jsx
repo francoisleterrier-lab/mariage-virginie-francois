@@ -208,6 +208,7 @@ function Editer({ invite, onRetour }) {
           <label className="fpv-toggle"><input type="checkbox" checked={v.sections.livredor === true} onChange={(e) => majSec("livredor", e.target.checked)} /> Livre d'or vidéo 🎥</label>
           <label className="fpv-toggle"><input type="checkbox" checked={v.sections.playlist === true} onChange={(e) => majSec("playlist", e.target.checked)} /> Playlist collaborative 🎵</label>
           <label className="fpv-toggle"><input type="checkbox" checked={v.sections.covoiturage === true} onChange={(e) => majSec("covoiturage", e.target.checked)} /> Covoiturage 🚗</label>
+          <label className="fpv-toggle"><input type="checkbox" checked={v.sections.defis === true} onChange={(e) => majSec("defis", e.target.checked)} /> Défis photo 📸</label>
           <label className="fpv-toggle"><input type="checkbox" checked={v.sections.cagnotte === true} onChange={(e) => majSec("cagnotte", e.target.checked)} /> Cagnotte 💝</label>
           <label className="fpv-toggle"><input type="checkbox" checked={v.sections.cadeaux === true} onChange={(e) => majSec("cadeaux", e.target.checked)} /> Liste de cadeaux 🎁</label>
           <label className="fpv-toggle"><input type="checkbox" checked={v.sections.moments === true} onChange={(e) => majSec("moments", e.target.checked)} /> Timeline qui se dévoile ⏳</label>
@@ -257,6 +258,11 @@ function Editer({ invite, onRetour }) {
               </>
             )}
           </div>
+        )}
+        {v.sections.defis === true && (
+          <label className="fpv-l" style={{ marginTop: "1rem" }}>Vos défis photo (un par ligne)
+            <textarea rows={4} value={v.sections.defisListe || ""} onChange={(e) => majSec("defisListe", e.target.value)} placeholder={"une photo avec les mariés\nun selfie à 5\nla plus belle danse"} />
+          </label>
         )}
         {v.sections.cadeaux === true && (
           <div className="fpv-cag-champs">
