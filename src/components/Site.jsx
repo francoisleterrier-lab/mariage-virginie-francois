@@ -13,6 +13,7 @@ import TimelineReveal from "./TimelineReveal.jsx";
 import LivreDor from "./LivreDor.jsx";
 import Playlist from "./Playlist.jsx";
 import Covoiturage from "./Covoiturage.jsx";
+import Defis from "./Defis.jsx";
 import Citation from "./Citation.jsx";
 import BotanicalDecor from "./BotanicalDecor.jsx";
 import MaTable from "./MaTable.jsx";
@@ -697,6 +698,9 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
 
       {/* COVOITURAGE (offres / recherches de places) */}
       <Covoiturage profile={profile} />
+
+      {/* DÉFIS PHOTO (gamification de l'album) */}
+      <Defis profile={profile} />
 
       {/* CAGNOTTE / LISTE DE MARIAGE (fonds commun, lien externe) */}
       <Cagnotte profile={profile} />

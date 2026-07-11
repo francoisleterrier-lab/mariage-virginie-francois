@@ -186,6 +186,17 @@ a.fpv-cag-cta { display: inline-block; text-decoration: none; margin-top: 1.2rem
 .fpv-pl-note { flex: none; }
 .fpv-pl-txt em { color: var(--muted); font-size: .86rem; }
 
+/* Défis photo */
+.fpv-defis-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; margin-top: 1.8rem; text-align: left; }
+.fpv-defis-item { display: flex; flex-direction: column; gap: .6rem; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 1rem; }
+.fpv-defis-item.fait { border-color: var(--accent); }
+.fpv-defis-head { display: flex; align-items: center; gap: .6rem; }
+.fpv-defis-num { flex: none; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--accent); color: #201607; font-weight: 700; font-size: .85rem; }
+.fpv-defis-item h3 { margin: 0; font-size: 1.02rem; }
+.fpv-defis-vignettes { display: flex; flex-wrap: wrap; gap: 5px; }
+.fpv-defis-vignettes img { width: 48px; height: 48px; object-fit: cover; border-radius: 7px; }
+.fpv-defis-item .fpv-album-gal { margin-top: auto; align-self: flex-start; }
+
 /* Covoiturage */
 .fpv-covoit-type { display: flex; gap: .5rem; width: 100%; }
 .fpv-covoit-type button { flex: 1; padding: .6rem; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--text); font: inherit; cursor: pointer; }

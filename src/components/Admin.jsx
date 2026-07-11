@@ -6,6 +6,7 @@ import PhasesEditor from "./PhasesEditor.jsx";
 import LieuEditor from "./LieuEditor.jsx";
 import CagnotteEditor from "./CagnotteEditor.jsx";
 import MomentsEditor from "./MomentsEditor.jsx";
+import DefisEditor from "./DefisEditor.jsx";
 import PagesPerso from "./PagesPerso.jsx";
 import AdminBandeSon from "./AdminBandeSon.jsx";
 import QuizAdmin from "./QuizAdmin.jsx";
@@ -295,6 +296,7 @@ export default function Admin({ onLogout, onApercuInvite }) {
           <LieuEditor />
           <MomentsEditor />
           <CagnotteEditor />
+          <DefisEditor />
           <PhasesEditor />
           <div className="admin-bloc">
             <h2 className="admin-h2">Diaporama grand écran 📺</h2>
