@@ -28,6 +28,7 @@ export default function CameraCapture({ onCapture, onClose }) {
   const chunksRef = useRef([]);
   const timerRef = useRef(null);
   const startRef = useRef(0);
+  const capteRef = useRef(false);
   const [facing, setFacing] = useState("environment");
   const [mode, setMode] = useState("photo"); // "photo" | "video"
   const [recording, setRecording] = useState(false);
@@ -48,6 +49,7 @@ export default function CameraCapture({ onCapture, onClose }) {
       timerRef.current = null;
     }
     if (recRef.current && recRef.current.state !== "inactive") {
+      recRef.current.onstop = null; // annulation : on ne livre PAS le clip en cours
       try {
         recRef.current.stop();
       } catch {
@@ -64,7 +66,14 @@ export default function CameraCapture({ onCapture, onClose }) {
       stopFlux();
       setPret(false);
       try {
-        const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: facing }, audio: mode === "video" });
+        let s;
+        try {
+          s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: facing }, audio: mode === "video" });
+        } catch (e) {
+          // Micro refusé mais caméra OK → on garde la vidéo, sans le son.
+          if (mode === "video") s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: facing }, audio: false });
+          else throw e;
+        }
         if (annule) {
           s.getTracks().forEach((t) => t.stop());
           return;
@@ -91,7 +100,8 @@ export default function CameraCapture({ onCapture, onClose }) {
 
   function declencher() {
     const v = videoRef.current;
-    if (!v || !v.videoWidth) return;
+    if (!v || !v.videoWidth || capteRef.current) return;
+    capteRef.current = true; // évite une double-capture sur double-tap rapide
     const c = document.createElement("canvas");
     c.width = v.videoWidth;
     c.height = v.videoHeight;
@@ -101,6 +111,8 @@ export default function CameraCapture({ onCapture, onClose }) {
         if (blob) {
           stopFlux();
           onCapture(blob);
+        } else {
+          capteRef.current = false;
         }
       },
       "image/jpeg",

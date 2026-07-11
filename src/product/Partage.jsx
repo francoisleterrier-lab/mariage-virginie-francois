@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 /* Diffusion de l'invitation : pré-remplit un message (texte + lien) et ouvre
    WhatsApp / SMS / e-mail en un tap. Pas d'envoi serveur (donc ni compte
@@ -15,7 +15,14 @@ export default function Partage({ lien, couple, date }) {
   }, [couple, date, lien]);
 
   const [msg, setMsg] = useState(defaut);
+  const [modifie, setModifie] = useState(false);
   const [copie, setCopie] = useState(false);
+
+  // Tant que le couple n'a pas édité le message à la main, on garde le lien à jour
+  // (ex. changement de slug après publication).
+  useEffect(() => {
+    if (!modifie) setMsg(defaut);
+  }, [defaut, modifie]);
 
   const enc = encodeURIComponent(msg);
   const wa = `https://wa.me/?text=${enc}`;
@@ -44,7 +51,7 @@ export default function Partage({ lien, couple, date }) {
   return (
     <div className="fpv-partage">
       <label className="fpv-l" style={{ marginTop: ".4rem" }}>Message à envoyer (modifiable)
-        <textarea rows={3} value={msg} onChange={(e) => setMsg(e.target.value)} aria-label="Message à partager" />
+        <textarea rows={3} value={msg} onChange={(e) => { setModifie(true); setMsg(e.target.value); }} aria-label="Message à partager" />
       </label>
       <div className="fpv-partage-btns">
         <a className="fpv-btn accent" href={wa} target="_blank" rel="noopener noreferrer">📱 WhatsApp</a>
