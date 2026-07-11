@@ -177,6 +177,7 @@ function Editer({ invite, onRetour }) {
         </label>
         <div className="fpv-toggles" style={{ marginBottom: "1rem" }}>
           <label className="fpv-toggle"><input type="checkbox" checked={v.sections.compte !== false} onChange={(e) => majSec("compte", e.target.checked)} /> Compte à rebours</label>
+          <label className="fpv-toggle"><input type="checkbox" checked={v.sections.arbre === true} onChange={(e) => majSec("arbre", e.target.checked)} /> Arbre de vie vivant ✨</label>
           <label className="fpv-toggle"><input type="checkbox" checked={v.sections.infos === true} onChange={(e) => majSec("infos", e.target.checked)} /> Infos pratiques</label>
           <label className="fpv-toggle"><input type="checkbox" checked={v.rsvp_ouvert} onChange={(e) => maj("rsvp_ouvert", e.target.checked)} /> RSVP ouvert</label>
         </div>
