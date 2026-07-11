@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { sb } from "./supabaseFpv.js";
 import ArbreVivant from "./ArbreVivant.jsx";
 import Constellation from "./Constellation.jsx";
+import AlbumInvites from "./AlbumInvites.jsx";
 import { pushSupporte, estAbonne, abonner } from "./pushFpv.js";
 
 /* Rendu public d'une invitation « Faire-part Vivant » (multi-thèmes),
@@ -212,6 +213,8 @@ export default function Rendu({ slug }) {
           )}
         </section>
       )}
+
+      {sec.album === true && <AlbumInvites invitationId={inv.id} />}
 
       {pushSupporte() && (
         <section className="fpv-sec">
