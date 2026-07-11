@@ -280,6 +280,13 @@ function Editer({ invite, onRetour }) {
           </div>
           <h2 style={{ marginTop: "1.4rem" }}>Diffuser l'invitation</h2>
           <Partage lien={lienPublic(slug)} couple={v.couple} date={v.date_event} />
+
+          <h2 style={{ marginTop: "1.4rem" }}>Diaporama grand écran 📺</h2>
+          <p className="fpv-hint" style={{ marginTop: "-.4rem" }}>Le jour J, ouvrez cette page sur une TV ou un vidéoprojecteur : les photos et petits mots des invités défilent en direct.</p>
+          <div className="fpv-share">
+            <span>{lienPublic(slug)}&amp;live=1</span>
+            <a className="fpv-btn accent" href={`${lienPublic(slug)}&live=1`} target="_blank" rel="noopener noreferrer">Ouvrir le diaporama</a>
+          </div>
         </div>
       )}
 
