@@ -7,6 +7,7 @@ import Lieu from "./Lieu.jsx";
 import PersonalWelcome from "./PersonalWelcome.jsx";
 import BandeSon from "./BandeSon.jsx";
 import Quiz from "./Quiz.jsx";
+import MurPhotos from "./MurPhotos.jsx";
 import Citation from "./Citation.jsx";
 import BotanicalDecor from "./BotanicalDecor.jsx";
 import MaTable from "./MaTable.jsx";
@@ -374,6 +375,9 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
             <a href="#quiz">Quiz</a>
           </li>
           <li>
+            <a href="#album">Album</a>
+          </li>
+          <li>
             <a href="#rsvp">RSVP</a>
           </li>
           <li>
@@ -656,6 +660,9 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
 
       {/* QUIZ DES MARIÉS (teaser / jeu / podium selon quiz_state) */}
       <Quiz profile={profile} />
+
+      {/* ALBUM PHOTO DES INVITÉS (mur commun, upload par invité connecté) */}
+      <MurPhotos profile={profile} />
 
       {/* RSVP replacé en fin de site une fois la réponse enregistrée */}
       {saved && blocRsvp}
