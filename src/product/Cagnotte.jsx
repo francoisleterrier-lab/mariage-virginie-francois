@@ -15,6 +15,7 @@ export default function Cagnotte({ invitationId, cfg }) {
   const [mot, setMot] = useState("");
   const [busy, setBusy] = useState(false);
   const [ok, setOk] = useState(false);
+  const [err, setErr] = useState("");
 
   const charger = useCallback(async () => {
     const { data } = await sb
@@ -37,8 +38,13 @@ export default function Cagnotte({ invitationId, cfg }) {
     e.preventDefault();
     if (!mot.trim()) return;
     setBusy(true);
-    await sb.from("fpv_cagnotte_messages").insert({ invitation_id: invitationId, prenom: prenom.trim(), message: mot.trim() });
+    setErr("");
+    const { error } = await sb.from("fpv_cagnotte_messages").insert({ invitation_id: invitationId, prenom: prenom.trim(), message: mot.trim() });
     setBusy(false);
+    if (error) {
+      setErr("Envoi impossible, réessayez dans un instant.");
+      return;
+    }
     setMot("");
     setOk(true);
     setTimeout(() => setOk(false), 2600);
@@ -72,6 +78,7 @@ export default function Cagnotte({ invitationId, cfg }) {
           <textarea rows={2} value={mot} onChange={(e) => setMot(e.target.value)} placeholder="Un petit mot pour les mariés…" aria-label="Votre message" />
           <button className="fpv-album-gal" disabled={busy || !mot.trim()}>{busy ? "Envoi…" : "Laisser un mot"}</button>
           {ok && <span className="fpv-push-ok" style={{ fontSize: "1rem" }}>🌿 Merci !</span>}
+          {err && <span className="fpv-err">{err}</span>}
         </form>
 
         {messages.length > 0 && (

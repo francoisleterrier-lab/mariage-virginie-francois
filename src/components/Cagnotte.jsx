@@ -24,6 +24,7 @@ export default function Cagnotte({ profile }) {
   const [mot, setMot] = useState("");
   const [busy, setBusy] = useState(false);
   const [ok, setOk] = useState(false);
+  const [err, setErr] = useState("");
   const estAdmin = profile?.role === "admin";
   const prenom = (profile?.nom || "").split(" ")[0];
 
@@ -66,8 +67,13 @@ export default function Cagnotte({ profile }) {
     e.preventDefault();
     if (!mot.trim()) return;
     setBusy(true);
-    await supabase.from("cagnotte_messages").insert({ invite_id: profile.id, prenom, message: mot.trim() });
+    setErr("");
+    const { error } = await supabase.from("cagnotte_messages").insert({ invite_id: profile.id, prenom, message: mot.trim() });
     setBusy(false);
+    if (error) {
+      setErr("Envoi impossible, réessayez.");
+      return;
+    }
     setMot("");
     setOk(true);
     setTimeout(() => setOk(false), 2600);
@@ -111,6 +117,7 @@ export default function Cagnotte({ profile }) {
             <textarea rows={2} value={mot} onChange={(e) => setMot(e.target.value)} placeholder="Un petit mot pour les mariés…" aria-label="Votre message" />
             <button className="album-gal cag-envoi" disabled={busy || !mot.trim()}>{busy ? "Envoi…" : "Laisser un mot"}</button>
             {ok && <span className="ok">🌿 Merci !</span>}
+            {err && <span className="gate-err" style={{ color: "#b06a4f" }}>{err}</span>}
           </form>
 
           {messages.length > 0 && (

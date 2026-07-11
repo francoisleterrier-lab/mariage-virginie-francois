@@ -48,6 +48,7 @@ export default function AlbumInvites({ invitationId }) {
   }, [charger]);
 
   async function televerser(file) {
+    if (!file) return;
     setErr("");
     const type = file.type || "";
     const vid = type.startsWith("video/") || estVideo(file.name);
