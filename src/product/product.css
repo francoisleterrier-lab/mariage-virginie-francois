@@ -178,6 +178,10 @@ a.fpv-cag-cta { display: inline-block; text-decoration: none; margin-top: 1.2rem
 .fpv-cad-resa-btns .fpv-cta { margin-top: 0; padding: .55rem 1.1rem; }
 .fpv-cad-edit { margin-top: .4rem; }
 
+/* Diffuser l'invitation (WhatsApp / SMS / e-mail) */
+.fpv-partage-btns { display: flex; flex-wrap: wrap; gap: .5rem; margin: .8rem 0 .5rem; }
+a.fpv-btn { text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
+
 .fpv-push-ok { color: var(--accent); font-family: var(--serif); font-style: italic; font-size: 1.1rem; }
 .fpv-render footer { text-align: center; padding: 2.4rem 1rem 3rem; color: var(--muted); font-size: .78rem; border-top: 1px solid var(--line); }
 .fpv-render footer a { color: var(--accent); }
