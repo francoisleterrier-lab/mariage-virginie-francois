@@ -11,6 +11,7 @@ import MurPhotos from "./MurPhotos.jsx";
 import Cagnotte from "./Cagnotte.jsx";
 import TimelineReveal from "./TimelineReveal.jsx";
 import LivreDor from "./LivreDor.jsx";
+import Playlist from "./Playlist.jsx";
 import Citation from "./Citation.jsx";
 import BotanicalDecor from "./BotanicalDecor.jsx";
 import MaTable from "./MaTable.jsx";
@@ -689,6 +690,9 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
 
       {/* LIVRE D'OR VIDÉO (messages filmés/écrits aux mariés) */}
       <LivreDor profile={profile} />
+
+      {/* PLAYLIST COLLABORATIVE (les invités proposent des chansons) */}
+      <Playlist profile={profile} />
 
       {/* CAGNOTTE / LISTE DE MARIAGE (fonds commun, lien externe) */}
       <Cagnotte profile={profile} />

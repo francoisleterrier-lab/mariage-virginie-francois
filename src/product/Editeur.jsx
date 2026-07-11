@@ -206,6 +206,7 @@ function Editer({ invite, onRetour }) {
           <label className="fpv-toggle"><input type="checkbox" checked={v.sections.interactif === true || v.sections.arbre === true} onChange={(e) => majSec("interactif", e.target.checked)} /> Élément interactif ✨</label>
           <label className="fpv-toggle"><input type="checkbox" checked={v.sections.album === true} onChange={(e) => majSec("album", e.target.checked)} /> Album photo des invités 📸</label>
           <label className="fpv-toggle"><input type="checkbox" checked={v.sections.livredor === true} onChange={(e) => majSec("livredor", e.target.checked)} /> Livre d'or vidéo 🎥</label>
+          <label className="fpv-toggle"><input type="checkbox" checked={v.sections.playlist === true} onChange={(e) => majSec("playlist", e.target.checked)} /> Playlist collaborative 🎵</label>
           <label className="fpv-toggle"><input type="checkbox" checked={v.sections.cagnotte === true} onChange={(e) => majSec("cagnotte", e.target.checked)} /> Cagnotte 💝</label>
           <label className="fpv-toggle"><input type="checkbox" checked={v.sections.cadeaux === true} onChange={(e) => majSec("cadeaux", e.target.checked)} /> Liste de cadeaux 🎁</label>
           <label className="fpv-toggle"><input type="checkbox" checked={v.sections.moments === true} onChange={(e) => majSec("moments", e.target.checked)} /> Timeline qui se dévoile ⏳</label>
