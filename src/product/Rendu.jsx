@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { sb } from "./supabaseFpv.js";
 import ArbreVivant from "./ArbreVivant.jsx";
+import { pushSupporte, estAbonne, abonner } from "./pushFpv.js";
 
 /* Rendu public d'une invitation « Faire-part Vivant » (multi-thèmes),
    piloté 100 % par la donnée (table fpv_invitations, lue par slug). */
@@ -54,6 +55,22 @@ export default function Rendu({ slug }) {
     const id = setInterval(maj, 30000);
     return () => clearInterval(id);
   }, [inv]);
+
+  // Opt-in notifications invité
+  const [pushEtat, setPushEtat] = useState("idle"); // idle | abonne | busy | ok | err
+  useEffect(() => {
+    if (!inv || !pushSupporte()) return;
+    estAbonne().then((a) => a && setPushEtat("abonne")).catch(() => {});
+  }, [inv]);
+  async function activerPush() {
+    setPushEtat("busy");
+    try {
+      await abonner(inv.id);
+      setPushEtat("ok");
+    } catch {
+      setPushEtat("err");
+    }
+  }
 
   const sec = useMemo(() => inv?.sections || {}, [inv]);
   const [prenom1, prenom2] = useMemo(() => {
@@ -184,6 +201,23 @@ export default function Rendu({ slug }) {
               {err && <p className="fpv-err">{err}</p>}
               <button className="fpv-cta" disabled={envoi}>{envoi ? "Envoi…" : "Envoyer ma réponse"}</button>
             </form>
+          )}
+        </section>
+      )}
+
+      {pushSupporte() && (
+        <section className="fpv-sec">
+          <h2>Restez au courant</h2>
+          <p>Activez les notifications pour être prévenu·e des nouvelles : le lieu, le programme, les petits mots des mariés.</p>
+          {pushEtat === "abonne" || pushEtat === "ok" ? (
+            <p className="fpv-push-ok">🔔 Notifications activées — merci !</p>
+          ) : (
+            <>
+              <button className="fpv-cta" disabled={pushEtat === "busy"} onClick={activerPush}>
+                {pushEtat === "busy" ? "Activation…" : "🔔 Être prévenu·e"}
+              </button>
+              {pushEtat === "err" && <p className="fpv-err" style={{ marginTop: ".6rem" }}>Activation impossible (autorisez les notifications).</p>}
+            </>
           )}
         </section>
       )}

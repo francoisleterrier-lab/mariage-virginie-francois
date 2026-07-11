@@ -115,6 +115,7 @@ label.fpv-l { display: flex; flex-direction: column; gap: .35rem; font-size: .84
 @keyframes fpvScintille { 0%,100% { opacity: .78; } 50% { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .fpv-lum, .fpv-orbe { animation: none; } }
 
+.fpv-push-ok { color: var(--accent); font-family: var(--serif); font-style: italic; font-size: 1.1rem; }
 .fpv-render footer { text-align: center; padding: 2.4rem 1rem 3rem; color: var(--muted); font-size: .78rem; border-top: 1px solid var(--line); }
 .fpv-render footer a { color: var(--accent); }
 .fpv-loading, .fpv-404 { min-height: 100vh; display: grid; place-items: center; text-align: center; padding: 2rem; color: var(--admin-soft); }
