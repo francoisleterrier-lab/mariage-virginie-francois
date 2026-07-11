@@ -3043,6 +3043,19 @@ footer {
 .album-x { position: absolute; top: 6px; right: 6px; width: 1.8rem; height: 1.8rem; border-radius: 50%; border: none; background: rgba(0, 0, 0, 0.5); color: #fff; font-size: 1.1rem; line-height: 1; cursor: pointer; opacity: 0; transition: opacity 0.2s; }
 .album-item:hover .album-x, .album-x:focus-visible { opacity: 1; }
 
+/* Covoiturage (site V&F) */
+.covoit-sec { padding: 5rem 0; }
+.covoit-type { display: flex; gap: 0.5rem; width: 100%; }
+.covoit-type button { flex: 1; padding: 0.6rem; border-radius: 10px; border: 1px solid var(--ligne, #d8ddd2); background: #fff; color: var(--encre, #24301f); font: inherit; cursor: pointer; }
+.covoit-type button.on { background: var(--vert, #3f5d3a); color: #fff; border-color: var(--vert, #3f5d3a); font-weight: 700; }
+.covoit-liste { list-style: none; padding: 0; margin: 2rem auto 0; max-width: 560px; display: flex; flex-direction: column; gap: 0.6rem; text-align: left; }
+.covoit-item { position: relative; padding: 0.85rem 2.2rem 0.85rem 1rem; background: #fff; border-radius: 12px; border-left: 3px solid var(--vert, #3f5d3a); box-shadow: 0 10px 24px -18px rgba(34, 56, 44, 0.5); }
+.covoit-item.recherche { border-left-color: var(--sauge, #7f9a73); }
+.covoit-badge { display: inline-block; font-size: 0.78rem; font-weight: 700; color: var(--vert, #3f5d3a); margin-bottom: 0.3rem; }
+.covoit-info { font-size: 0.95rem; color: var(--encre, #24301f); }
+.covoit-contact { color: var(--vert, #3f5d3a); }
+.covoit-x { position: absolute; top: 8px; right: 8px; width: 1.6rem; height: 1.6rem; border-radius: 50%; border: none; background: rgba(0, 0, 0, 0.12); color: var(--encre, #24301f); font-size: 1rem; line-height: 1; cursor: pointer; }
+
 /* Playlist collaborative (site V&F) */
 .playlist-sec { padding: 5rem 0; background: var(--sauge-pale, #eef1ea); }
 .pl-form { max-width: 460px; margin: 1.6rem auto 0; display: flex; flex-direction: column; gap: 0.6rem; align-items: center; }

@@ -12,6 +12,7 @@ import Cagnotte from "./Cagnotte.jsx";
 import TimelineReveal from "./TimelineReveal.jsx";
 import LivreDor from "./LivreDor.jsx";
 import Playlist from "./Playlist.jsx";
+import Covoiturage from "./Covoiturage.jsx";
 import Citation from "./Citation.jsx";
 import BotanicalDecor from "./BotanicalDecor.jsx";
 import MaTable from "./MaTable.jsx";
@@ -693,6 +694,9 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
 
       {/* PLAYLIST COLLABORATIVE (les invités proposent des chansons) */}
       <Playlist profile={profile} />
+
+      {/* COVOITURAGE (offres / recherches de places) */}
+      <Covoiturage profile={profile} />
 
       {/* CAGNOTTE / LISTE DE MARIAGE (fonds commun, lien externe) */}
       <Cagnotte profile={profile} />
