@@ -7,6 +7,7 @@ import Admin from "./components/Admin.jsx";
 import Intro from "./components/Intro.jsx";
 import Musique from "./components/Musique.jsx";
 import InstallBanner from "./components/InstallBanner.jsx";
+import DiaporamaLive from "./components/DiaporamaLive.jsx";
 
 /* ============================================================
    RACINE — machine à états d'accès
@@ -20,6 +21,7 @@ export default function App() {
   const [phase, setPhase] = useState("boot");
   const [profile, setProfile] = useState(null);
   const [apercuInvite, setApercuInvite] = useState(false); // admin : aperçu du site invité
+  const [diaporama, setDiaporama] = useState(() => new URLSearchParams(location.search).get("diaporama") === "1");
   const [introVue, setIntroVue] = useState(() => {
     try {
       return sessionStorage.getItem("vf-intro") === "1";
@@ -109,6 +111,17 @@ export default function App() {
         </button>
       </div>
     );
+  } else if (diaporama) {
+    // Diaporama live plein écran (grand écran de la soirée), ouvert par les mariés connectés.
+    contenu = (
+      <DiaporamaLive
+        profile={profile}
+        onExit={() => {
+          setDiaporama(false);
+          try { history.replaceState(null, "", location.pathname); } catch { /* ignore */ }
+        }}
+      />
+    );
   } else if (profile.role === "admin" && !apercuInvite) {
     contenu = <Admin onLogout={deconnexion} onApercuInvite={() => setApercuInvite(true)} />;
   } else {
@@ -128,11 +141,11 @@ export default function App() {
   return (
     <PhaseProvider>
       {contenu}
-      {/* Bande-son (démarre au 1er geste, persiste sur tout le site). */}
-      <Musique />
+      {/* Bande-son (démarre au 1er geste, persiste sur tout le site) — pas en mode diaporama. */}
+      {!diaporama && <Musique />}
       {/* Intro affichée dès le 1er rendu (une fois par session), la vidéo
           se charge en avant-plan pendant que l'app démarre derrière. */}
-      {!introVue && (
+      {!introVue && !diaporama && (
         <Intro
           onFinish={() => {
             try {

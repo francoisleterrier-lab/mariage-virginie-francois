@@ -294,6 +294,16 @@ export default function Admin({ onLogout, onApercuInvite }) {
           <LieuEditor />
           <CagnotteEditor />
           <PhasesEditor />
+          <div className="admin-bloc">
+            <h2 className="admin-h2">Diaporama grand écran 📺</h2>
+            <p className="admin-sous">
+              Le jour J, ouvrez cette page sur une TV ou un vidéoprojecteur : les photos et les petits mots des invités
+              défilent en direct, en fondu. (Restez connecté·e sur cet écran.)
+            </p>
+            <a className="btn-vert" style={{ margin: 0, width: "auto", padding: "0.55rem 1.2rem", display: "inline-flex" }} href="?diaporama=1">
+              Ouvrir le diaporama
+            </a>
+          </div>
         </>
       )}
       {onglet === "pages" && <PagesPerso invites={invites} />}
