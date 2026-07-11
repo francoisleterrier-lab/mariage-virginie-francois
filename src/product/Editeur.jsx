@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { sb, messageAuth, versSlug } from "./supabaseFpv.js";
+import CadeauxEditeur from "./CadeauxEditeur.jsx";
 
 /* Éditeur self-service « Faire-part Vivant » :
    le couple se connecte, crée/édite son invitation, choisit un thème,
@@ -203,6 +204,7 @@ function Editer({ invite, onRetour }) {
           <label className="fpv-toggle"><input type="checkbox" checked={v.sections.interactif === true || v.sections.arbre === true} onChange={(e) => majSec("interactif", e.target.checked)} /> Élément interactif ✨</label>
           <label className="fpv-toggle"><input type="checkbox" checked={v.sections.album === true} onChange={(e) => majSec("album", e.target.checked)} /> Album photo des invités 📸</label>
           <label className="fpv-toggle"><input type="checkbox" checked={v.sections.cagnotte === true} onChange={(e) => majSec("cagnotte", e.target.checked)} /> Cagnotte 💝</label>
+          <label className="fpv-toggle"><input type="checkbox" checked={v.sections.cadeaux === true} onChange={(e) => majSec("cadeaux", e.target.checked)} /> Liste de cadeaux 🎁</label>
           <label className="fpv-toggle"><input type="checkbox" checked={v.sections.infos === true} onChange={(e) => majSec("infos", e.target.checked)} /> Infos pratiques</label>
           <label className="fpv-toggle"><input type="checkbox" checked={v.rsvp_ouvert} onChange={(e) => maj("rsvp_ouvert", e.target.checked)} /> RSVP ouvert</label>
         </div>
@@ -235,6 +237,19 @@ function Editer({ invite, onRetour }) {
               <input value={v.sections.cagnotteLien || ""} onChange={(e) => majSec("cagnotteLien", e.target.value)} placeholder="https://www.leetchi.com/c/…" />
               <span className="fpv-hint">Le bouton « Participer » ouvrira ce lien. Le montant « déjà collecté » se met à jour à la main, depuis votre cagnotte.</span>
             </label>
+          </div>
+        )}
+        {v.sections.cadeaux === true && (
+          <div className="fpv-cag-champs">
+            <p className="fpv-l" style={{ marginBottom: ".6rem", fontWeight: 700 }}>Vos cadeaux 🎁</p>
+            {estNouveau ? (
+              <span className="fpv-hint">Enregistrez d'abord l'invitation, puis vous pourrez ajouter vos cadeaux ici.</span>
+            ) : (
+              <>
+                <CadeauxEditeur invitationId={invite.id} />
+                <span className="fpv-hint" style={{ display: "block", marginTop: ".6rem" }}>Les invités réservent chaque cadeau une seule fois. « Libérer » annule une réservation.</span>
+              </>
+            )}
           </div>
         )}
         {v.sections.infos && (

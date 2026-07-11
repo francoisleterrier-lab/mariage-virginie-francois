@@ -161,6 +161,23 @@ a.fpv-cag-cta { display: inline-block; text-decoration: none; margin-top: 1.2rem
 .fpv-cag-liste li span { display: block; margin-top: .3rem; font-size: .82rem; color: var(--muted); }
 .fpv-cag-champs { margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--line); }
 
+/* Liste de cadeaux */
+.fpv-cad-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1rem; margin-top: 1.8rem; text-align: left; }
+.fpv-cad-item { display: flex; flex-direction: column; gap: .5rem; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 1.1rem 1.1rem 1.2rem; }
+.fpv-cad-item.pris { opacity: .62; }
+.fpv-cad-h { display: flex; align-items: baseline; justify-content: space-between; gap: .6rem; }
+.fpv-cad-item h3 { margin: 0; font-family: var(--serif); font-size: 1.2rem; }
+.fpv-cad-prix { flex: none; color: var(--accent); font-weight: 700; white-space: nowrap; }
+.fpv-cad-desc { margin: 0; color: var(--muted); font-size: .9rem; }
+.fpv-cad-lien { font-size: .85rem; color: var(--accent); }
+.fpv-cad-badge { margin-top: auto; align-self: flex-start; padding: .3rem .7rem; border-radius: 999px; background: var(--surface); border: 1px solid var(--accent); color: var(--accent); font-size: .8rem; font-weight: 700; }
+.fpv-cad-reserver { margin-top: auto; align-self: flex-start; }
+.fpv-cad-resa { margin-top: auto; display: flex; flex-direction: column; gap: .5rem; }
+.fpv-cad-resa input { font: inherit; padding: .55rem .7rem; border-radius: 9px; border: 1px solid var(--line); background: var(--bg, var(--surface)); color: var(--text); }
+.fpv-cad-resa-btns { display: flex; gap: .5rem; flex-wrap: wrap; }
+.fpv-cad-resa-btns .fpv-cta { margin-top: 0; padding: .55rem 1.1rem; }
+.fpv-cad-edit { margin-top: .4rem; }
+
 .fpv-push-ok { color: var(--accent); font-family: var(--serif); font-style: italic; font-size: 1.1rem; }
 .fpv-render footer { text-align: center; padding: 2.4rem 1rem 3rem; color: var(--muted); font-size: .78rem; border-top: 1px solid var(--line); }
 .fpv-render footer a { color: var(--accent); }
