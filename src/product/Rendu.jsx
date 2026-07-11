@@ -6,6 +6,7 @@ import AlbumInvites from "./AlbumInvites.jsx";
 import Cagnotte from "./Cagnotte.jsx";
 import ListeCadeaux from "./ListeCadeaux.jsx";
 import TimelineReveal from "./TimelineReveal.jsx";
+import LivreDor from "./LivreDor.jsx";
 import { pushSupporte, estAbonne, abonner } from "./pushFpv.js";
 
 /* Rendu public d'une invitation « Faire-part Vivant » (multi-thèmes),
@@ -235,6 +236,8 @@ export default function Rendu({ slug }) {
       {sec.cadeaux === true && <ListeCadeaux invitationId={inv.id} />}
 
       {sec.album === true && <AlbumInvites invitationId={inv.id} />}
+
+      {sec.livredor === true && <LivreDor invitationId={inv.id} />}
 
       {pushSupporte() && (
         <section className="fpv-sec">

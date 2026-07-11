@@ -178,6 +178,15 @@ a.fpv-cag-cta { display: inline-block; text-decoration: none; margin-top: 1.2rem
 .fpv-cad-resa-btns .fpv-cta { margin-top: 0; padding: .55rem 1.1rem; }
 .fpv-cad-edit { margin-top: .4rem; }
 
+/* Livre d'or vidéo */
+.fpv-livredor-grid { column-count: 2; column-gap: 12px; margin-top: 1.8rem; }
+@media (max-width: 620px) { .fpv-livredor-grid { column-count: 1; } }
+.fpv-livredor-item { break-inside: avoid; margin: 0 0 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; text-align: left; }
+.fpv-livredor-item video { display: block; width: 100%; height: auto; background: #000; }
+.fpv-livredor-item blockquote { margin: 0; padding: .9rem 1rem .3rem; font-family: var(--serif); font-style: italic; font-size: 1.02rem; line-height: 1.5; }
+.fpv-livredor-item figcaption { padding: .2rem 1rem 1rem; font-size: .82rem; color: var(--muted); }
+.fpv-livredor-item video + figcaption { padding-top: .7rem; }
+
 /* Diffuser l'invitation (WhatsApp / SMS / e-mail) */
 .fpv-partage-btns { display: flex; flex-wrap: wrap; gap: .5rem; margin: .8rem 0 .5rem; }
 a.fpv-btn { text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }

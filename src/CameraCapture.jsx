@@ -21,7 +21,7 @@ function meilleurMimeVideo() {
 }
 const mmss = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 
-export default function CameraCapture({ onCapture, onClose }) {
+export default function CameraCapture({ onCapture, onClose, defaultMode = "photo" }) {
   const videoRef = useRef(null);
   const streamRef = useRef(null);
   const recRef = useRef(null);
@@ -30,7 +30,7 @@ export default function CameraCapture({ onCapture, onClose }) {
   const startRef = useRef(0);
   const capteRef = useRef(false);
   const [facing, setFacing] = useState("environment");
-  const [mode, setMode] = useState("photo"); // "photo" | "video"
+  const [mode, setMode] = useState(defaultMode === "video" ? "video" : "photo"); // "photo" | "video"
   const [recording, setRecording] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [pret, setPret] = useState(false);
