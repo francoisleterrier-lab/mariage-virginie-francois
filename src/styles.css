@@ -3043,6 +3043,9 @@ footer {
 .album-x { position: absolute; top: 6px; right: 6px; width: 1.8rem; height: 1.8rem; border-radius: 50%; border: none; background: rgba(0, 0, 0, 0.5); color: #fff; font-size: 1.1rem; line-height: 1; cursor: pointer; opacity: 0; transition: opacity 0.2s; }
 .album-item:hover .album-x, .album-x:focus-visible { opacity: 1; }
 
+/* Timeline qui se dévoile (site V&F) */
+.timeline-reveal { padding: 5rem 0; background: var(--sauge-pale, #eef1ea); }
+
 /* Cagnotte / liste de mariage (site V&F) */
 .cagnotte { padding: 5rem 0; }
 .cag-jauge { max-width: 460px; margin: 1.8rem auto 0.4rem; }
