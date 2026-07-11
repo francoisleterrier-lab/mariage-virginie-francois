@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { sb } from "./supabaseFpv.js";
 import ArbreVivant from "./ArbreVivant.jsx";
+import Constellation from "./Constellation.jsx";
 import { pushSupporte, estAbonne, abonner } from "./pushFpv.js";
 
 /* Rendu public d'une invitation « Faire-part Vivant » (multi-thèmes),
@@ -146,7 +147,14 @@ export default function Rendu({ slug }) {
         </section>
       )}
 
-      {sec.arbre === true && <ArbreVivant slug={slug} />}
+      {/* Élément interactif « à la demande » : prend vie à chaque invité confirmé.
+          L'arbre de vie n'est qu'un des types possibles (constellation, …). */}
+      {(sec.interactif === true || sec.arbre === true) &&
+        ((sec.interactifType || (sec.arbre ? "arbre" : "arbre")) === "constellation" ? (
+          <Constellation slug={slug} />
+        ) : (
+          <ArbreVivant slug={slug} />
+        ))}
 
       {sec.infos !== false && (sec.infosTexte || "").trim() && (
         <section className="fpv-sec">

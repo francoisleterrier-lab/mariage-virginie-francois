@@ -200,10 +200,19 @@ function Editer({ invite, onRetour }) {
         </label>
         <div className="fpv-toggles" style={{ marginBottom: "1rem" }}>
           <label className="fpv-toggle"><input type="checkbox" checked={v.sections.compte !== false} onChange={(e) => majSec("compte", e.target.checked)} /> Compte à rebours</label>
-          <label className="fpv-toggle"><input type="checkbox" checked={v.sections.arbre === true} onChange={(e) => majSec("arbre", e.target.checked)} /> Arbre de vie vivant ✨</label>
+          <label className="fpv-toggle"><input type="checkbox" checked={v.sections.interactif === true || v.sections.arbre === true} onChange={(e) => majSec("interactif", e.target.checked)} /> Élément interactif ✨</label>
           <label className="fpv-toggle"><input type="checkbox" checked={v.sections.infos === true} onChange={(e) => majSec("infos", e.target.checked)} /> Infos pratiques</label>
           <label className="fpv-toggle"><input type="checkbox" checked={v.rsvp_ouvert} onChange={(e) => maj("rsvp_ouvert", e.target.checked)} /> RSVP ouvert</label>
         </div>
+        {(v.sections.interactif === true || v.sections.arbre === true) && (
+          <label className="fpv-l" style={{ marginBottom: "1rem" }}>Type d'élément interactif
+            <select value={v.sections.interactifType || (v.sections.arbre ? "arbre" : "arbre")} onChange={(e) => majSec("interactifType", e.target.value)}>
+              <option value="arbre">Arbre de vie — une lumière par invité confirmé</option>
+              <option value="constellation">Constellation — une étoile par invité confirmé</option>
+            </select>
+            <span className="fpv-hint">Un cœur du faire-part qui prend vie à chaque « oui ». D'autres éléments arriveront.</span>
+          </label>
+        )}
         {v.sections.infos && (
           <label className="fpv-l">Texte des infos pratiques
             <textarea rows={3} value={v.sections.infosTexte || ""} onChange={(e) => majSec("infosTexte", e.target.value)} placeholder="Dress code, hébergement, accès…" />
