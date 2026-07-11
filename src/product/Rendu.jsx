@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { sb } from "./supabaseFpv.js";
+import ArbreVivant from "./ArbreVivant.jsx";
 
 /* Rendu public d'une invitation « Faire-part Vivant » (multi-thèmes),
    piloté 100 % par la donnée (table fpv_invitations, lue par slug). */
@@ -127,6 +128,8 @@ export default function Rendu({ slug }) {
           ))}
         </section>
       )}
+
+      {sec.arbre === true && <ArbreVivant slug={slug} />}
 
       {sec.infos !== false && (sec.infosTexte || "").trim() && (
         <section className="fpv-sec">
