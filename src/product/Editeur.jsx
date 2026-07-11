@@ -86,16 +86,39 @@ function Editer({ invite, onRetour }) {
   const [err, setErr] = useState("");
   const [ok, setOk] = useState(false);
   const [rsvps, setRsvps] = useState([]);
+  const [nAb, setNAb] = useState(0);
+  const [nt, setNt] = useState("");
+  const [nm, setNm] = useState("");
+  const [notifBusy, setNotifBusy] = useState(false);
+  const [notifRet, setNotifRet] = useState(null);
   const estNouveau = !invite?.id;
 
   const slug = slugManuel ? v.slug : versSlug(v.couple);
 
   const chargerRsvps = useCallback(async () => {
     if (!invite?.id) return;
-    const { data } = await sb.from("fpv_rsvps").select("*").eq("invitation_id", invite.id).order("created_at", { ascending: false });
+    const [{ data }, { count }] = await Promise.all([
+      sb.from("fpv_rsvps").select("*").eq("invitation_id", invite.id).order("created_at", { ascending: false }),
+      sb.from("fpv_push_subscriptions").select("id", { count: "exact", head: true }).eq("invitation_id", invite.id),
+    ]);
     setRsvps(data || []);
+    setNAb(count || 0);
   }, [invite]);
   useEffect(() => { chargerRsvps(); }, [chargerRsvps]);
+
+  async function envoyerNotif(e) {
+    e.preventDefault();
+    if (!nt.trim() || !nm.trim()) return;
+    setNotifBusy(true);
+    setNotifRet(null);
+    const { data, error } = await sb.functions.invoke("fpv-notify", {
+      body: { slug: invite.slug, titre: nt.trim(), message: nm.trim() },
+    });
+    setNotifBusy(false);
+    if (error) return setNotifRet({ ok: false, t: "Échec de l'envoi." });
+    setNotifRet({ ok: true, t: `Envoyée à ${data.envoyes}/${data.total} abonné·e·s.` });
+    setNt(""); setNm("");
+  }
 
   function maj(champ, val) { setV((s) => ({ ...s, [champ]: val })); }
   function majSec(champ, val) { setV((s) => ({ ...s, sections: { ...s.sections, [champ]: val } })); }
@@ -206,6 +229,25 @@ function Editer({ invite, onRetour }) {
             <button className="fpv-btn ghost" onClick={() => navigator.clipboard?.writeText(lienPublic(slug))}>Copier</button>
             <a className="fpv-btn ghost" href={lienPublic(slug)} target="_blank" rel="noopener noreferrer">Voir</a>
           </div>
+        </div>
+      )}
+
+      {!estNouveau && v.publie && (
+        <div className="fpv-card" style={{ marginTop: "1.2rem" }}>
+          <h2>Notifier vos invités</h2>
+          <p className="fpv-hint" style={{ marginTop: "-.4rem" }}>{nAb} appareil·s abonné·s — annoncez le lieu, un changement, un petit mot.</p>
+          <form onSubmit={envoyerNotif} className="fpv-row" style={{ gridTemplateColumns: "1fr", marginTop: ".8rem" }}>
+            <label className="fpv-l">Titre
+              <input value={nt} onChange={(e) => setNt(e.target.value)} maxLength={60} placeholder="Le lieu est révélé ! 🌿" />
+            </label>
+            <label className="fpv-l">Message
+              <textarea rows={2} value={nm} onChange={(e) => setNm(e.target.value)} maxLength={180} placeholder="Rendez-vous au Domaine des Oliviers…" />
+            </label>
+            <div className="fpv-actions" style={{ marginTop: 0 }}>
+              <button className="fpv-btn accent" disabled={notifBusy || !nt.trim() || !nm.trim()}>{notifBusy ? "Envoi…" : "Envoyer à tous les abonnés"}</button>
+              {notifRet && <span className={notifRet.ok ? "fpv-ok" : "fpv-err"}>{notifRet.t}</span>}
+            </div>
+          </form>
         </div>
       )}
 
