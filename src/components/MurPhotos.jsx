@@ -94,10 +94,10 @@ export default function MurPhotos({ profile }) {
 
         <div className="album-add">
           <button className="btn-vert album-btn" disabled={busy} onClick={() => setCam(true)}>
-            📷 Photo ou vidéo
+            📷 Prendre une photo / vidéo
           </button>
           <label className="album-gal">
-            🖼 Depuis la galerie
+            🖼 Choisir dans la galerie
             <input type="file" accept="image/*,video/*" onChange={surFichier} disabled={busy} hidden />
           </label>
         </div>

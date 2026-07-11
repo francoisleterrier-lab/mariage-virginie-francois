@@ -86,9 +86,9 @@ export default function AlbumInvites({ invitationId }) {
         style={{ display: "block", margin: "1.2rem auto 0" }}
       />
       <div className="fpv-album-add">
-        <button className="fpv-cta" disabled={busy} onClick={() => setCam(true)}>📷 Photo ou vidéo</button>
+        <button className="fpv-cta" disabled={busy} onClick={() => setCam(true)}>📷 Prendre une photo / vidéo</button>
         <label className="fpv-album-gal">
-          🖼 Depuis la galerie
+          🖼 Choisir dans la galerie
           <input type="file" accept="image/*,video/*" onChange={surFichier} disabled={busy} hidden />
         </label>
       </div>
