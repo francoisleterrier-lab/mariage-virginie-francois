@@ -50,6 +50,8 @@ export default defineConfig({
         main: new URL("./index.html", import.meta.url).pathname,
         // Produit « Faire-part Vivant » : éditeur + rendu multi-clients
         product: new URL("./product.html", import.meta.url).pathname,
+        // Vitrine commerciale « Faire-part Vivant » (page publique indexable)
+        vitrine: new URL("./vitrine.html", import.meta.url).pathname,
       },
     },
   },

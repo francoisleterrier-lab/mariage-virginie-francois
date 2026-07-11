@@ -175,6 +175,24 @@ supabase/migrations/           0001 (base) + 0002 (push/plan/paramètres)
 supabase/functions/envoyer-notification/   Edge Function d'envoi push
 ```
 
+### Trois entrées Vite (multi-page)
+
+Le build (`vite.config.js` → `rollupOptions.input`) produit trois pages
+indépendantes dans `dist/` :
+
+```
+index.html      Faire-part privé de Virginie & François (noindex)
+product.html    Application « Faire-part Vivant » : éditeur self-service
+                (?i=slug → rendu public de l'invitation d'un couple)
+                → src/product/
+vitrine.html    Vitrine commerciale (page publique indexable) qui vend le
+                produit ; le CTA renvoie vers product.html → src/vitrine/
+```
+
+En local : `index.html` à `/`, l'éditeur à `/product.html`, la vitrine à
+`/vitrine.html`. En production (GitHub Pages), même arborescence sous
+`/mariage-virginie-francois/`.
+
 ## 9. Modèle de sécurité (résumé)
 
 - Aucun contenu visible sans session (portail obligatoire).
