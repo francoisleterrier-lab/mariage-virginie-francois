@@ -9,6 +9,7 @@ import BandeSon from "./BandeSon.jsx";
 import Quiz from "./Quiz.jsx";
 import MurPhotos from "./MurPhotos.jsx";
 import Cagnotte from "./Cagnotte.jsx";
+import TimelineReveal from "./TimelineReveal.jsx";
 import Citation from "./Citation.jsx";
 import BotanicalDecor from "./BotanicalDecor.jsx";
 import MaTable from "./MaTable.jsx";
@@ -592,6 +593,9 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
 
       {/* LIEU : « à venir » (secret) ou domaine annoncé selon lieu_revele */}
       <Lieu />
+
+      {/* TIMELINE QUI SE DÉVOILE (moments datés, contenu révélé à sa date) */}
+      <TimelineReveal />
 
       {/* INFOS */}
       <section className="infos" id="infos">

@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { sb, messageAuth, versSlug } from "./supabaseFpv.js";
 import CadeauxEditeur from "./CadeauxEditeur.jsx";
+import MomentsEditeur from "./MomentsEditeur.jsx";
 import Partage from "./Partage.jsx";
 
 /* Éditeur self-service « Faire-part Vivant » :
@@ -206,6 +207,7 @@ function Editer({ invite, onRetour }) {
           <label className="fpv-toggle"><input type="checkbox" checked={v.sections.album === true} onChange={(e) => majSec("album", e.target.checked)} /> Album photo des invités 📸</label>
           <label className="fpv-toggle"><input type="checkbox" checked={v.sections.cagnotte === true} onChange={(e) => majSec("cagnotte", e.target.checked)} /> Cagnotte 💝</label>
           <label className="fpv-toggle"><input type="checkbox" checked={v.sections.cadeaux === true} onChange={(e) => majSec("cadeaux", e.target.checked)} /> Liste de cadeaux 🎁</label>
+          <label className="fpv-toggle"><input type="checkbox" checked={v.sections.moments === true} onChange={(e) => majSec("moments", e.target.checked)} /> Timeline qui se dévoile ⏳</label>
           <label className="fpv-toggle"><input type="checkbox" checked={v.sections.infos === true} onChange={(e) => majSec("infos", e.target.checked)} /> Infos pratiques</label>
           <label className="fpv-toggle"><input type="checkbox" checked={v.rsvp_ouvert} onChange={(e) => maj("rsvp_ouvert", e.target.checked)} /> RSVP ouvert</label>
         </div>
@@ -238,6 +240,19 @@ function Editer({ invite, onRetour }) {
               <input value={v.sections.cagnotteLien || ""} onChange={(e) => majSec("cagnotteLien", e.target.value)} placeholder="https://www.leetchi.com/c/…" />
               <span className="fpv-hint">Le bouton « Participer » ouvrira ce lien. Le montant « déjà collecté » se met à jour à la main, depuis votre cagnotte.</span>
             </label>
+          </div>
+        )}
+        {v.sections.moments === true && (
+          <div className="fpv-cag-champs">
+            <p className="fpv-l" style={{ marginBottom: ".6rem", fontWeight: 700 }}>Vos moments ⏳</p>
+            {estNouveau ? (
+              <span className="fpv-hint">Enregistrez d'abord l'invitation, puis planifiez vos moments à dévoiler.</span>
+            ) : (
+              <>
+                <MomentsEditeur invitationId={invite.id} />
+                <span className="fpv-hint" style={{ display: "block", marginTop: ".6rem" }}>Le titre est visible tout de suite (teaser) ; le contenu n'apparaît qu'à la date de révélation.</span>
+              </>
+            )}
           </div>
         )}
         {v.sections.cadeaux === true && (
