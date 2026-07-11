@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { sb, messageAuth, versSlug } from "./supabaseFpv.js";
 import CadeauxEditeur from "./CadeauxEditeur.jsx";
+import Partage from "./Partage.jsx";
 
 /* Éditeur self-service « Faire-part Vivant » :
    le couple se connecte, crée/édite son invitation, choisit un thème,
@@ -277,6 +278,8 @@ function Editer({ invite, onRetour }) {
             <button className="fpv-btn ghost" onClick={() => navigator.clipboard?.writeText(lienPublic(slug))}>Copier</button>
             <a className="fpv-btn ghost" href={lienPublic(slug)} target="_blank" rel="noopener noreferrer">Voir</a>
           </div>
+          <h2 style={{ marginTop: "1.4rem" }}>Diffuser l'invitation</h2>
+          <Partage lien={lienPublic(slug)} couple={v.couple} date={v.date_event} />
         </div>
       )}
 
