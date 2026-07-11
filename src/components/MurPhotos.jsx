@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "../lib/supabase.js";
+import CameraCapture from "../CameraCapture.jsx";
 
 /* Album photo des invités (site V&F) : chaque invité connecté ajoute ses
    photos → mur commun, visible de tous. Stockage : bucket public vf-photos. */
@@ -10,6 +11,7 @@ export default function MurPhotos({ profile }) {
   const [photos, setPhotos] = useState([]);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
+  const [cam, setCam] = useState(false);
   const estAdmin = profile?.role === "admin";
   const prenom = (profile?.nom || "").split(" ")[0];
 
@@ -32,17 +34,16 @@ export default function MurPhotos({ profile }) {
     };
   }, [charger]);
 
-  async function ajouter(e) {
-    const file = e.target.files && e.target.files[0];
-    e.target.value = "";
+  async function televerser(file) {
     if (!file) return;
     setErr("");
-    if (!file.type.startsWith("image/")) return setErr("Choisissez une image.");
+    if (file.type && !file.type.startsWith("image/")) return setErr("Choisissez une image.");
     if (file.size > 12 * 1024 * 1024) return setErr("Photo trop lourde (max 12 Mo).");
     setBusy(true);
-    const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+    const ext =
+      file.type === "image/jpeg" ? "jpg" : ((file.name || "photo.jpg").split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
     const path = `${profile.id}/${crypto.randomUUID()}.${ext}`;
-    const { error: upErr } = await supabase.storage.from("vf-photos").upload(path, file, { contentType: file.type });
+    const { error: upErr } = await supabase.storage.from("vf-photos").upload(path, file, { contentType: file.type || "image/jpeg" });
     if (upErr) {
       setBusy(false);
       return setErr("Envoi impossible, réessayez.");
@@ -50,6 +51,12 @@ export default function MurPhotos({ profile }) {
     await supabase.from("photos_invites").insert({ invite_id: profile.id, chemin: path, prenom });
     setBusy(false);
     charger();
+  }
+
+  function surFichier(e) {
+    const file = e.target.files && e.target.files[0];
+    e.target.value = "";
+    if (file) televerser(file);
   }
 
   async function supprimer(p) {
@@ -72,11 +79,15 @@ export default function MurPhotos({ profile }) {
         </p>
 
         <div className="album-add">
-          <label className="btn-vert album-btn">
-            {busy ? "Envoi…" : "📸 Ajouter une photo"}
-            <input type="file" accept="image/*" onChange={ajouter} disabled={busy} hidden />
+          <button className="btn-vert album-btn" disabled={busy} onClick={() => setCam(true)}>
+            📷 Prendre une photo
+          </button>
+          <label className="album-gal">
+            🖼 Depuis la galerie
+            <input type="file" accept="image/*" onChange={surFichier} disabled={busy} hidden />
           </label>
         </div>
+        {busy && <p className="album-vide" style={{ marginTop: ".4rem" }}>Envoi de la photo…</p>}
         {err && <p className="gate-err" style={{ color: "#b06a4f" }}>{err}</p>}
 
         {photos.length === 0 ? (
@@ -97,6 +108,16 @@ export default function MurPhotos({ profile }) {
           </div>
         )}
       </div>
+
+      {cam && (
+        <CameraCapture
+          onCapture={(blob) => {
+            setCam(false);
+            televerser(blob);
+          }}
+          onClose={() => setCam(false)}
+        />
+      )}
     </section>
   );
 }
