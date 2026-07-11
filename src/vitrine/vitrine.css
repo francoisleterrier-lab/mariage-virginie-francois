@@ -319,6 +319,23 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.08; mar
 .vt-plan .vt-btn { width: 100%; justify-content: center; }
 .vt-plans-note { text-align: center; margin-top: 1.8rem; color: var(--vt-muted); font-size: 0.9rem; }
 
+/* Offre sur-mesure (prestation clé en main) */
+.vt-bespoke {
+  display: flex; align-items: center; justify-content: space-between; gap: 1.6rem; flex-wrap: wrap;
+  margin-top: 1.4rem; padding: clamp(1.6rem, 4vw, 2.3rem);
+  border-radius: var(--radius); color: #eef1e9; box-shadow: var(--shadow);
+  background: radial-gradient(130% 150% at 100% 0%, var(--vt-forest-3), var(--vt-forest));
+}
+.vt-bespoke-copy { flex: 1 1 340px; }
+.vt-bespoke-copy h3 { font-size: clamp(1.4rem, 3vw, 1.9rem); margin: 0.6rem 0; color: #fff; }
+.vt-bespoke-copy p { margin: 0; color: #cdd8c8; max-width: 54ch; }
+.vt-bespoke-cta { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 0.7rem; }
+.vt-bespoke-price { font-family: var(--serif); font-style: italic; font-size: 1.5rem; color: var(--vt-gold-soft); }
+@media (max-width: 620px) {
+  .vt-bespoke { flex-direction: column; align-items: flex-start; }
+  .vt-bespoke-cta { align-items: flex-start; }
+}
+
 /* Témoignages */
 .vt-quotes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; }
 .vt-quote { background: #fff; border: 1px solid var(--vt-line); border-radius: var(--radius); padding: 1.7rem; box-shadow: var(--shadow-sm); }

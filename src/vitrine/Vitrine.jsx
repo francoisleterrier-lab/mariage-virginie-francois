@@ -346,15 +346,15 @@ function Highlights() {
 /* ---------- Tarifs ---------- */
 const PLANS = [
   {
-    name: "Essentiel", tag: "L'invitation numérique élégante", price: 39, once: "Paiement unique · à vie",
+    name: "Essentiel", tag: "L'invitation vivante, installable", price: 149, once: "Paiement unique · à vie",
     feats: ["1 faire-part personnalisé", "Les 3 thèmes signés", "Compte à rebours", "RSVP en ligne illimités", "Partage WhatsApp / SMS / e-mail"],
   },
   {
-    name: "Vivant", tag: "Le préféré des futurs mariés", price: 69, once: "Paiement unique · à vie", featured: true,
+    name: "Vivant", tag: "Le préféré des futurs mariés", price: 249, once: "Paiement unique · à vie", featured: true,
     feats: ["Tout l'Essentiel, plus :", "Notifications push aux invités", "Album photo & vidéo des invités", "Éléments interactifs (arbre, constellation)", "Faire-part installable (appli)"],
   },
   {
-    name: "Signature", tag: "L'expérience complète", price: 129, once: "Paiement unique · à vie",
+    name: "Signature", tag: "L'expérience complète", price: 449, once: "Paiement unique · à vie",
     feats: ["Tout le Vivant, plus :", "Cagnotte & liste de cadeaux", "Pages personnalisées par invité", "Plan de table & « ma table »", "Accompagnement & support prioritaire"],
   },
 ];
@@ -382,7 +382,18 @@ function Pricing() {
             </div>
           ))}
         </div>
-        <p className="vt-plans-note">Prix indicatifs — à ajuster selon votre offre. L'éditeur est gratuit à l'essai : ne payez qu'au moment de publier.</p>
+        <div className="vt-bespoke">
+          <div className="vt-bespoke-copy">
+            <span className="vt-eyebrow on-dark">Sur-mesure · clé en main</span>
+            <h3>Envie qu'on s'occupe de tout ?</h3>
+            <p>Nous concevons et configurons votre Faire-part Vivant de A à Z — thème sur-mesure, mise en scène de vos éléments interactifs et accompagnement dédié jusqu'au grand jour.</p>
+          </div>
+          <div className="vt-bespoke-cta">
+            <div className="vt-bespoke-price">Sur devis</div>
+            <a className="vt-btn gold lg" href="mailto:contact@faire-part-vivant.fr?subject=Demande%20sur-mesure%20—%20Faire-part%20Vivant">Demander un devis {I.arrow()}</a>
+          </div>
+        </div>
+        <p className="vt-plans-note">Paiement unique, sans abonnement, invités illimités. L'éditeur est gratuit à l'essai : vous ne payez qu'au moment de publier.</p>
       </div>
     </section>
   );
