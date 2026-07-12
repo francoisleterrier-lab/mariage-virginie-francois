@@ -3074,7 +3074,7 @@ footer {
 .covoit-resa { margin-top: 0.55rem; padding-top: 0.55rem; border-top: 1px dashed var(--ligne, #d8ddd2); font-size: 0.9rem; }
 .covoit-restant { font-weight: 700; color: var(--vert, #3f5d3a); }
 .covoit-restant.complet { color: #9aa39a; }
-.covoit-passagers { color: var(--encre, #24301f); opacity: 0.75; }
+.covoit-passagers { display: block; margin-top: 0.3rem; color: var(--encre, #24301f); opacity: 0.8; font-size: 0.86rem; }
 .covoit-reserver { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-top: 0.5rem; }
 .covoit-reserver select { padding: 0.45rem 0.6rem; border-radius: 8px; border: 1px solid var(--ligne, #d8ddd2); background: #fff; color: var(--encre, #24301f); font: inherit; }
 .covoit-resa-btn { padding: 0.5rem 1rem; }
