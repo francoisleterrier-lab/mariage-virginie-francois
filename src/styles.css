@@ -3067,6 +3067,10 @@ footer {
 .covoit-info { font-size: 0.95rem; color: var(--encre, #24301f); }
 .covoit-contact { color: var(--vert, #3f5d3a); }
 .covoit-x { position: absolute; top: 8px; right: 8px; width: 1.6rem; height: 1.6rem; border-radius: 50%; border: none; background: rgba(0, 0, 0, 0.12); color: var(--encre, #24301f); font-size: 1rem; line-height: 1; cursor: pointer; }
+.covoit-dates { display: flex; gap: 0.6rem; width: 100%; }
+.covoit-dates label { flex: 1; display: flex; flex-direction: column; gap: 0.25rem; text-align: left; font-size: 0.8rem; color: var(--encre, #24301f); opacity: 0.85; }
+.covoit-dates input { padding: 0.6rem; border-radius: 10px; border: 1px solid var(--ligne, #d8ddd2); background: #fff; color: var(--encre, #24301f); font: inherit; }
+.covoit-trajet-dates { display: flex; flex-wrap: wrap; gap: 0.3rem 0.9rem; margin-top: 0.35rem; font-size: 0.88rem; font-weight: 600; color: var(--vert, #3f5d3a); }
 .covoit-resa { margin-top: 0.55rem; padding-top: 0.55rem; border-top: 1px dashed var(--ligne, #d8ddd2); font-size: 0.9rem; }
 .covoit-restant { font-weight: 700; color: var(--vert, #3f5d3a); }
 .covoit-restant.complet { color: #9aa39a; }

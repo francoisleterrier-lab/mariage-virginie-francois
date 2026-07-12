@@ -2,7 +2,20 @@ import { useEffect, useState, useCallback } from "react";
 import { supabase } from "../lib/supabase.js";
 
 /* Covoiturage (site V&F) : les invités proposent ou cherchent une place. */
-const VIDE = { type: "offre", ville: "", quand: "", places: "2", contact: "" };
+const VIDE = { type: "offre", ville: "", quand: "", places: "2", contact: "", arrivee: "", depart: "" };
+
+// Fenêtre autour de l'événement (26-27 mai 2028) : on arrive dès le 24, on repart jusqu'au 30.
+const DATE_MIN = "2028-05-24";
+const DATE_MAX = "2028-05-30";
+
+function fmtJour(d) {
+  if (!d) return "";
+  try {
+    return new Date(d + "T12:00:00").toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" });
+  } catch {
+    return d;
+  }
+}
 
 export default function Covoiturage({ profile }) {
   const [items, setItems] = useState([]);
@@ -21,7 +34,7 @@ export default function Covoiturage({ profile }) {
     const [{ data }, { data: r }] = await Promise.all([
       supabase
         .from("covoiturage")
-        .select("id, invite_id, type, ville, quand, places, prenom, contact, created_at")
+        .select("id, invite_id, type, ville, quand, places, prenom, contact, arrivee, depart, created_at")
         .order("created_at", { ascending: false }),
       supabase.from("covoiturage_reservations").select("id, trajet_id, invite_id, prenom, places"),
     ]);
@@ -72,6 +85,8 @@ export default function Covoiturage({ profile }) {
       places: f.type === "offre" ? parseInt(f.places) || 1 : 0,
       prenom,
       contact: f.contact.trim(),
+      arrivee: f.arrivee || null,
+      depart: f.depart || null,
     });
     setBusy(false);
     if (error) return setErr("Envoi impossible, réessayez.");
@@ -112,7 +127,17 @@ export default function Covoiturage({ profile }) {
             <button type="button" className={f.type === "recherche" ? "on" : ""} onClick={() => setF({ ...f, type: "recherche" })}>🙋 Je cherche</button>
           </div>
           <input value={f.ville} onChange={(e) => setF({ ...f, ville: e.target.value })} placeholder="Ville / secteur de départ" aria-label="Ville de départ" />
-          <input value={f.quand} onChange={(e) => setF({ ...f, quand: e.target.value })} placeholder="Quand ? (ex. vendredi 18h)" aria-label="Quand" />
+          <div className="covoit-dates">
+            <label>
+              <span>Arrivée sur place</span>
+              <input type="date" min={DATE_MIN} max={DATE_MAX} value={f.arrivee} onChange={(e) => setF({ ...f, arrivee: e.target.value })} aria-label="Jour d'arrivée" />
+            </label>
+            <label>
+              <span>Repartir le</span>
+              <input type="date" min={DATE_MIN} max={DATE_MAX} value={f.depart} onChange={(e) => setF({ ...f, depart: e.target.value })} aria-label="Jour de départ" />
+            </label>
+          </div>
+          <input value={f.quand} onChange={(e) => setF({ ...f, quand: e.target.value })} placeholder="Heure / précisions (ex. départ vendredi 18h)" aria-label="Heure ou précisions" />
           {f.type === "offre" && (
             <input type="number" min="1" max="8" value={f.places} onChange={(e) => setF({ ...f, places: e.target.value })} placeholder="Places disponibles" aria-label="Places" />
           )}
@@ -142,6 +167,12 @@ export default function Covoiturage({ profile }) {
                     {c.prenom ? ` · ${c.prenom}` : ""}
                     {c.contact ? <span className="covoit-contact"> · {c.contact}</span> : null}
                   </div>
+                  {(c.arrivee || c.depart) && (
+                    <div className="covoit-trajet-dates">
+                      {c.arrivee ? <span>🛬 Arrivée {fmtJour(c.arrivee)}</span> : null}
+                      {c.depart ? <span>🛫 Retour {fmtJour(c.depart)}</span> : null}
+                    </div>
+                  )}
 
                   {c.type === "offre" && (
                     <div className="covoit-resa">
