@@ -177,12 +177,14 @@ export default function Covoiturage({ profile }) {
                   {c.type === "offre" && (
                     <div className="covoit-resa">
                       <span className={"covoit-restant" + (restant === 0 ? " complet" : "")}>
-                        {restant === 0 ? "Complet 🚗" : `${restant} place${restant > 1 ? "s" : ""} restante${restant > 1 ? "s" : ""}`}
+                        {restant === 0
+                          ? "Complet 🚗"
+                          : `${restant} place${restant > 1 ? "s" : ""} encore libre${restant > 1 ? "s" : ""}`}
                       </span>
                       {rs.length > 0 && (
-                        <span className="covoit-passagers">
-                          · {rs.map((r) => `${r.prenom || "Invité"}${r.places > 1 ? ` (${r.places})` : ""}`).join(", ")}
-                        </span>
+                        <div className="covoit-passagers">
+                          Réservé par : {rs.map((r) => `${r.prenom || "Invité"}${r.places > 1 ? ` (${r.places} places)` : ""}`).join(", ")}
+                        </div>
                       )}
 
                       {maResa ? (
