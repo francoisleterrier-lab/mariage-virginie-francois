@@ -95,13 +95,33 @@ export default function Admin({ onLogout, onApercuInvite }) {
   }
 
   const repondu = invites.filter((g) => g.rsvp);
-  const presents = repondu.filter((g) => g.rsvp && !String(g.rsvp.presence || "").startsWith("Hélas"));
-  // Adultes = le nombre saisi + les adultes accompagnants ajoutés à la main (nom & prénom).
-  const totalAdultes = presents.reduce(
-    (s, g) => s + (parseInt(g.rsvp.adultes) || 0) + (g.rsvp.adultesNoms || []).filter(Boolean).length,
-    0
+
+  /* Compte par FOYER (pas par ligne invite) pour ne pas compter un couple
+     deux fois : chaque compte d'un couple a souvent adultes=2.
+     - Un couple = au moins 2 personnes (max(2, adultes saisi)).
+     - Une personne seule = son nombre d'adultes (≥ 1).
+     - Chaque accompagnant adulte nommé (adultesNoms) = +1.
+     - Enfants : on prend le max des membres (enfants partagés, pas additionnés). */
+  const estPresent = (m) => m.rsvp && !String(m.rsvp.presence || "").startsWith("Hélas");
+  function statsFoyer(membres) {
+    const presentsM = membres.filter(estPresent);
+    if (presentsM.length === 0) return { adultes: 0, enfants: 0, present: false };
+    const couple = membres.length > 1;
+    const maxAd = Math.max(0, ...presentsM.map((m) => parseInt(m.rsvp.adultes) || 0));
+    const base = couple ? Math.max(2, maxAd) : Math.max(1, maxAd);
+    const accompagnants = presentsM.flatMap((m) => m.rsvp?.adultesNoms || []).filter(Boolean).length;
+    const enfants = Math.max(0, ...presentsM.map((m) => parseInt(m.rsvp.enfants) || 0));
+    return { adultes: base + accompagnants, enfants, present: true };
+  }
+  const totaux = foyers.reduce(
+    (acc, f) => {
+      const s = statsFoyer(f.membres);
+      return { adultes: acc.adultes + s.adultes, enfants: acc.enfants + s.enfants };
+    },
+    { adultes: 0, enfants: 0 }
   );
-  const totalEnfants = presents.reduce((s, g) => s + (parseInt(g.rsvp.enfants) || 0), 0);
+  const totalAdultes = totaux.adultes;
+  const totalEnfants = totaux.enfants;
 
   function exporterCsv() {
     const entetes = ["Invité", "E-mail", "Inscrit le", "Couple", "Présence", "Adultes", "Adultes accompagnants", "Enfants", "Prénoms enfants", "Régime", "Message", "Réponse le"];
@@ -231,6 +251,7 @@ export default function Admin({ onLogout, onApercuInvite }) {
                   const messages = tous.map((m) => m.rsvp?.mot).filter(Boolean);
                   const noms = lead ? (lead.rsvp.enfantsNoms || []).filter(Boolean) : [];
                   const adultesAcc = tous.flatMap((m) => m.rsvp?.adultesNoms || []).filter(Boolean);
+                  const st = statsFoyer(membres); // même calcul que le total (couple = 1 foyer)
                   return (
                     <tr key={key}>
                       <td>
@@ -263,7 +284,7 @@ export default function Admin({ onLogout, onApercuInvite }) {
                         )}
                       </td>
                       <td>
-                        {lead ? `${(parseInt(lead.rsvp.adultes) || 0) + adultesAcc.length} / ${lead.rsvp.enfants}` : "—"}
+                        {st.present ? `${st.adultes} / ${st.enfants}` : "—"}
                         {noms.length > 0 && <span className="enfants-liste">{noms.join(", ")}</span>}
                       </td>
                       <td>{regimes.length ? regimes.join(" · ") : "—"}</td>
