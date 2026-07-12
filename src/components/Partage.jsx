@@ -61,8 +61,8 @@ export default function Partage() {
     <div className="admin-bloc">
       <h2 className="admin-h2">Diffuser l'invitation 📣</h2>
       <p className="admin-sous">
-        Envoyez votre faire-part par WhatsApp, SMS ou e-mail. Le message est pré-rempli avec le lien : vous choisissez
-        les destinataires et envoyez vous-même, groupe par groupe (familles, amis…).
+        Un seul geste : « Envoyer l'invitation » ouvre le menu de partage de votre téléphone — choisissez un contact ou
+        un groupe (famille, amis…) et c'est parti. Aucun envoi automatique : c'est vous qui gardez la main.
       </p>
       <label className="admin-partage-l">
         Message à envoyer (modifiable)
@@ -76,18 +76,23 @@ export default function Partage() {
           aria-label="Message à partager"
         />
       </label>
+
+      {partageNatif && (
+        <button type="button" className="btn-vert admin-partage-hero" onClick={partager}>
+          📤 Envoyer l'invitation
+        </button>
+      )}
+
+      <p className="admin-partage-ou">{partageNatif ? "ou choisissez directement :" : "Envoyer via :"}</p>
       <div className="admin-partage-btns">
-        <a className="btn-vert" href={wa} target="_blank" rel="noopener noreferrer">📱 WhatsApp</a>
+        <a className="btn-ghost" href={wa} target="_blank" rel="noopener noreferrer">📱 WhatsApp</a>
         <a className="btn-ghost" href={sms}>💬 SMS</a>
         <a className="btn-ghost" href={mail}>✉️ E-mail</a>
         <button type="button" className="btn-ghost" onClick={copier}>{copie ? "✓ Copié" : "📋 Copier"}</button>
-        {partageNatif && (
-          <button type="button" className="btn-ghost" onClick={partager}>Partager…</button>
-        )}
       </div>
       <p className="admin-partage-hint">
-        Astuce : ouvrez un groupe WhatsApp familial puis collez — tout le monde reçoit l'invitation d'un coup. Aucun
-        envoi automatique : c'est vous qui gardez la main.
+        Le lien s'affiche en belle carte (photo + vos prénoms) et ouvre l'app directement. Astuce : dans un groupe
+        WhatsApp familial, tout le monde reçoit l'invitation d'un coup.
       </p>
     </div>
   );

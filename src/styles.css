@@ -1549,6 +1549,18 @@ footer .credit a:hover {
   gap: 0.35rem;
   text-decoration: none;
 }
+.admin-partage-hero {
+  margin: 0 0 0.2rem;
+  width: 100%;
+  padding: 0.9rem 1.2rem;
+  font-size: 1.05rem;
+}
+.admin-partage-ou {
+  margin: 0.9rem 0 0.5rem;
+  font-size: 0.8rem;
+  color: var(--encre2);
+  opacity: 0.85;
+}
 .admin-partage-hint {
   margin-top: 0.9rem;
   font-size: 0.82rem;
