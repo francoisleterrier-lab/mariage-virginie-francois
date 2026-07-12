@@ -618,6 +618,9 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
         </div>
       </section>
 
+      {/* COVOITURAGE — remonté en premier (s'organiser tôt pour la route) */}
+      <Covoiturage profile={profile} />
+
       {/* LIEU : « à venir » (secret) ou domaine annoncé selon lieu_revele */}
       <Lieu />
 
@@ -718,9 +721,6 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
 
       {/* PLAYLIST COLLABORATIVE (les invités proposent des chansons) */}
       <Playlist profile={profile} />
-
-      {/* COVOITURAGE (offres / recherches de places) */}
-      <Covoiturage profile={profile} />
 
       {/* DÉFIS PHOTO (gamification de l'album) */}
       <Defis profile={profile} />
