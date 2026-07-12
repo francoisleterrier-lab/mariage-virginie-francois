@@ -1513,6 +1513,49 @@ footer .credit a:hover {
   margin-bottom: 1.2rem;
 }
 
+/* Diffuser l'invitation (admin) */
+.admin-partage-l {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--encre2);
+  margin-bottom: 0.8rem;
+}
+.admin-partage-l textarea {
+  display: block;
+  width: 100%;
+  margin-top: 0.35rem;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid rgba(126, 150, 120, 0.5);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--encre, #24301f);
+  font: inherit;
+  line-height: 1.5;
+  resize: vertical;
+}
+.admin-partage-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+.admin-partage-btns .btn-vert,
+.admin-partage-btns .btn-ghost {
+  margin: 0;
+  width: auto;
+  padding: 0.55rem 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  text-decoration: none;
+}
+.admin-partage-hint {
+  margin-top: 0.9rem;
+  font-size: 0.82rem;
+  color: var(--encre2);
+  opacity: 0.9;
+}
+
 /* push admin */
 .push-form label {
   display: block;
