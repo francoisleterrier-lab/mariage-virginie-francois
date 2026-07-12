@@ -5,7 +5,6 @@ import MedaillonArbre from "./MedaillonArbre.jsx";
 import TreeOfLife from "./TreeOfLife.jsx";
 import Lieu from "./Lieu.jsx";
 import PersonalWelcome from "./PersonalWelcome.jsx";
-import BandeSon from "./BandeSon.jsx";
 import Quiz from "./Quiz.jsx";
 import MurPhotos from "./MurPhotos.jsx";
 import Cagnotte from "./Cagnotte.jsx";
@@ -115,20 +114,19 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
   const [cagnotteActive, setCagnotteActive] = useState(false);
   // Sections « à venir » : regroupées en fin de site tant qu'elles ne sont pas
   // activées ; elles remontent automatiquement à leur place une fois ouvertes.
-  const [avenir, setAvenir] = useState({ lieu: true, table: true, bandeson: true, quiz: true });
+  const [avenir, setAvenir] = useState({ lieu: true, table: true, quiz: true });
 
   useEffect(() => {
     supabase
       .from("parametres")
       .select("cle, valeur")
-      .in("cle", ["cagnotte_active", "lieu_revele", "tables_a_venir", "bandeson_a_venir", "quiz_state"])
+      .in("cle", ["cagnotte_active", "lieu_revele", "tables_a_venir", "quiz_state"])
       .then(({ data }) => {
         const p = Object.fromEntries((data || []).map((r) => [r.cle, r.valeur]));
         setCagnotteActive(p.cagnotte_active === true);
         setAvenir({
           lieu: p.lieu_revele !== true,
           table: p.tables_a_venir !== false,
-          bandeson: p.bandeson_a_venir !== false,
           // Quiz « à venir » tant qu'il n'est pas ouvert (jeu) ou clos (podium).
           quiz: (p.quiz_state || "hidden") === "hidden",
         });
@@ -718,9 +716,6 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
       {/* MA TABLE : ici une fois ouverte ; sinon en bas (zone « à venir ») */}
       {!avenir.table && <MaTable profile={profile} onReload={onReload} />}
 
-      {/* BANDE-SON : ici une fois ouverte ; sinon en bas (zone « à venir ») */}
-      {!avenir.bandeson && <BandeSon profile={profile} />}
-
       {/* QUIZ DES MARIÉS : ici une fois ouvert/clos ; sinon en bas (zone « à venir ») */}
       {!avenir.quiz && <Quiz profile={profile} />}
 
@@ -743,7 +738,6 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
           de site. Chacune remonte à sa place plus haut dès qu'elle est activée. */}
       {avenir.lieu && <Lieu />}
       {avenir.table && <MaTable profile={profile} onReload={onReload} />}
-      {avenir.bandeson && <BandeSon profile={profile} />}
       {avenir.quiz && <Quiz profile={profile} />}
 
       {/* RSVP replacé en fin de site une fois la réponse enregistrée */}
