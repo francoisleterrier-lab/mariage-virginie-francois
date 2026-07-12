@@ -38,6 +38,11 @@ export const DICO = {
     pushErr: "Activation impossible (autorisez les notifications).",
     footer1: "Créé avec",
     footer2: "— l'invitation qui vit.",
+    agendaAjouter: "📅 Ajouter à mon agenda",
+    agendaGoogle: "Google Agenda",
+    agendaIcs: "Apple · Outlook (.ics)",
+    agendaRappel: "Notez la date : ",
+    mariageDe: "Mariage de",
   },
   en: {
     load: "One moment…",
@@ -74,6 +79,11 @@ export const DICO = {
     pushErr: "Couldn't enable (please allow notifications).",
     footer1: "Created with",
     footer2: "— the invitation that lives.",
+    agendaAjouter: "📅 Add to my calendar",
+    agendaGoogle: "Google Calendar",
+    agendaIcs: "Apple · Outlook (.ics)",
+    agendaRappel: "Save the date: ",
+    mariageDe: "Wedding of",
   },
 };
 

@@ -12,6 +12,7 @@ import Covoiturage from "./Covoiturage.jsx";
 import Defis from "./Defis.jsx";
 import { pushSupporte, estAbonne, abonner } from "./pushFpv.js";
 import { DICO, langInitiale } from "./i18n.js";
+import AgendaBouton from "../AgendaBouton.jsx";
 
 /* Rendu public d'une invitation « Faire-part Vivant » (multi-thèmes),
    piloté 100 % par la donnée (table fpv_invitations, lue par slug). */
@@ -94,6 +95,17 @@ export default function Rendu({ slug }) {
     return [parts[0] || inv?.couple || "", parts[1] || ""];
   }, [inv]);
 
+  const agendaEl = inv?.date_event ? (
+    <AgendaBouton
+      titre={`${t.mariageDe} ${inv.couple}`}
+      dateISO={inv.date_event}
+      lieu={inv.lieu_teaser || ""}
+      details={typeof location !== "undefined" ? location.href : ""}
+      accent="var(--accent)"
+      labels={{ ajouter: t.agendaAjouter, google: t.agendaGoogle, ics: t.agendaIcs }}
+    />
+  ) : null;
+
   async function envoyerRsvp(e) {
     e.preventDefault();
     if (!f.nom.trim()) return setErr(t.rErrNom);
@@ -140,6 +152,7 @@ export default function Rendu({ slug }) {
         </h1>
         {inv.date_event && <p className="fpv-date">{fmtDate(inv.date_event, lang)}</p>}
         {inv.lieu_teaser && <p className="fpv-teaser">{inv.lieu_teaser}</p>}
+        {agendaEl && <div style={{ marginTop: "1.1rem" }}>{agendaEl}</div>}
         {(sec.rsvp !== false || inv.intro) && (
           <a className="fpv-scroll" href={sec.rsvp !== false ? "#rsvp" : "#histoire"}>
             {t.decouvrir}
@@ -191,7 +204,10 @@ export default function Rendu({ slug }) {
         <section className="fpv-sec" id="rsvp">
           <h2>{t.rsvpTitre}</h2>
           {envoye ? (
-            <p>{t.rMerci}</p>
+            <>
+              <p>{t.rMerci}</p>
+              {agendaEl && <div style={{ marginTop: "1rem" }}>{agendaEl}</div>}
+            </>
           ) : (
             <form className="fpv-form" onSubmit={envoyerRsvp}>
               <div>
