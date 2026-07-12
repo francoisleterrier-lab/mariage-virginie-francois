@@ -68,6 +68,17 @@ export default function Covoiturage({ profile }) {
         </h2>
         <p>Le domaine est un peu à l'écart : proposez ou cherchez une place, et partagez le trajet. 🚗</p>
 
+        <a className="covoit-vol" href="https://www.volotea.com/fr/" target="_blank" rel="noopener noreferrer">
+          <span className="covoit-vol-ico" aria-hidden="true">✈️</span>
+          <span className="covoit-vol-txt">
+            <strong>Vous venez de Normandie ?</strong> Volotea relie <strong>Caen-Carpiquet</strong> à{" "}
+            <strong>Toulouse-Blagnac</strong> en direct. L'idéal : aller le <strong>jeudi 25 mai</strong>, retour le{" "}
+            <strong>dimanche 28</strong> ou <strong>lundi 29 mai</strong>. Pensez à réserver tôt — et à vous
+            regrouper pour l'aéroport ! 🌿
+            <span className="covoit-vol-lien">Voir les vols Volotea →</span>
+          </span>
+        </a>
+
         <form className="pl-form" onSubmit={ajouter}>
           <div className="covoit-type">
             <button type="button" className={f.type === "offre" ? "on" : ""} onClick={() => setF({ ...f, type: "offre" })}>🚗 Je propose</button>
