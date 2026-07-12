@@ -627,9 +627,6 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
         </div>
       </section>
 
-      {/* COVOITURAGE — remonté en premier (s'organiser tôt pour la route) */}
-      <Covoiturage profile={profile} />
-
       {/* LIEU : ici une fois révélé ; sinon regroupé dans la zone « à venir » en bas */}
       {!avenir.lieu && <Lieu />}
 
@@ -675,6 +672,9 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
           </div>
         </div>
       </section>
+
+      {/* COVOITURAGE — juste avant « Où se loger » (logistique regroupée) */}
+      <Covoiturage profile={profile} />
 
       {/* OÙ SE LOGER */}
       <section className="loger" id="loger">
