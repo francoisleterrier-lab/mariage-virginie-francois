@@ -172,7 +172,7 @@ export default function MaTable({ profile, onReload }) {
               </h2>
               <p>
                 Installez-vous où vous voulez — la table des mariés et la table des enfants sont réservées.
-                {profile.rsvp?.adultes ? ` Votre réservation prend ${profile.rsvp.adultes} place(s) adulte(s).` : ""}
+                {" "}Votre réservation garde la place de votre foyer : vous, votre conjoint·e et vos accompagnants adultes.
               </p>
               {liste}
               {maTable && (
