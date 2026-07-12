@@ -3091,6 +3091,10 @@ footer {
 .livredor-item video + figcaption { padding-top: 0.7rem; }
 .livredor-x { position: absolute; top: 6px; right: 6px; width: 1.8rem; height: 1.8rem; border-radius: 50%; border: none; background: rgba(0, 0, 0, 0.5); color: #fff; font-size: 1.1rem; line-height: 1; cursor: pointer; }
 
+/* Ajouter à mon agenda (site V&F) */
+.cd-agenda { margin-top: 1.4rem; }
+.rsvp-agenda { margin-top: 1rem; }
+
 /* Timeline qui se dévoile (site V&F) */
 .timeline-reveal { padding: 5rem 0; background: var(--sauge-pale, #eef1ea); }
 

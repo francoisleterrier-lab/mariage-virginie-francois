@@ -14,6 +14,7 @@ import LivreDor from "./LivreDor.jsx";
 import Playlist from "./Playlist.jsx";
 import Covoiturage from "./Covoiturage.jsx";
 import Defis from "./Defis.jsx";
+import AgendaBouton from "../AgendaBouton.jsx";
 import Citation from "./Citation.jsx";
 import BotanicalDecor from "./BotanicalDecor.jsx";
 import MaTable from "./MaTable.jsx";
@@ -336,7 +337,19 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
           <button className="btn-vert" disabled={busy}>
             {busy ? "Envoi…" : saved ? "Mettre à jour ma réponse" : "Envoyer ma réponse"}
           </button>
-          {saved && <p className="ok">🌿 Réponse enregistrée, merci !</p>}
+          {saved && (
+            <div className="rsvp-agenda">
+              <p className="ok" style={{ marginBottom: ".6rem" }}>🌿 Réponse enregistrée, merci ! Ajoutez la date à votre agenda :</p>
+              <AgendaBouton
+                titre="Mariage de Virginie & François"
+                dateISO="2028-05-26"
+                jours={2}
+                lieu="Sud-Toulousain"
+                details={typeof location !== "undefined" ? location.href : ""}
+                accent="var(--vert, #3f5d3a)"
+              />
+            </div>
+          )}
           <p className="deadline">
             Réponse souhaitée avant le 1<sup>er</sup> mars 2028
           </p>
@@ -442,6 +455,16 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
         <p className="eyebrow">Compte à rebours</p>
         <h2 className="cd-titre">Avant de nous dire <em>oui</em></h2>
         <Countdown />
+        <div className="cd-agenda">
+          <AgendaBouton
+            titre="Mariage de Virginie & François"
+            dateISO="2028-05-26"
+            jours={2}
+            lieu="Sud-Toulousain"
+            details={typeof location !== "undefined" ? location.href : ""}
+            accent="var(--vert, #3f5d3a)"
+          />
+        </div>
         <Citation />
       </div>
 
