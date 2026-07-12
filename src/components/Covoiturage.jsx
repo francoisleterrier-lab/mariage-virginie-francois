@@ -6,20 +6,47 @@ const VIDE = { type: "offre", ville: "", quand: "", places: "2", contact: "" };
 
 export default function Covoiturage({ profile }) {
   const [items, setItems] = useState([]);
+  const [resas, setResas] = useState([]);
   const [f, setF] = useState(VIDE);
   const [busy, setBusy] = useState(false);
   const [ok, setOk] = useState(false);
   const [err, setErr] = useState("");
+  const [qte, setQte] = useState({}); // nb de places choisi par trajet
+  const [resaBusy, setResaBusy] = useState(null); // id du trajet en cours
+  const [resaErr, setResaErr] = useState({}); // erreur par trajet
   const estAdmin = profile?.role === "admin";
   const prenom = (profile?.nom || "").split(" ")[0];
 
   const charger = useCallback(async () => {
-    const { data } = await supabase
-      .from("covoiturage")
-      .select("id, invite_id, type, ville, quand, places, prenom, contact, created_at")
-      .order("created_at", { ascending: false });
+    const [{ data }, { data: r }] = await Promise.all([
+      supabase
+        .from("covoiturage")
+        .select("id, invite_id, type, ville, quand, places, prenom, contact, created_at")
+        .order("created_at", { ascending: false }),
+      supabase.from("covoiturage_reservations").select("id, trajet_id, invite_id, prenom, places"),
+    ]);
     setItems(data || []);
+    setResas(r || []);
   }, []);
+
+  async function reserver(trajet) {
+    const n = Math.max(1, parseInt(qte[trajet.id]) || 1);
+    setResaErr((e) => ({ ...e, [trajet.id]: "" }));
+    setResaBusy(trajet.id);
+    const { error } = await supabase.rpc("vf_reserver_covoit", { p_trajet: trajet.id, p_places: n });
+    setResaBusy(null);
+    if (error) {
+      const msg = /complet/i.test(error.message) ? "Plus assez de places libres." : "Réservation impossible, réessayez.";
+      return setResaErr((e) => ({ ...e, [trajet.id]: msg }));
+    }
+    setQte((q) => ({ ...q, [trajet.id]: 1 }));
+    charger();
+  }
+
+  async function annuler(resaId) {
+    await supabase.from("covoiturage_reservations").delete().eq("id", resaId);
+    charger();
+  }
 
   useEffect(() => {
     charger();
@@ -99,20 +126,65 @@ export default function Covoiturage({ profile }) {
           <p className="album-vide">Aucune annonce pour l'instant. Lancez le covoiturage ! 🚙</p>
         ) : (
           <ul className="covoit-liste">
-            {items.map((c) => (
-              <li key={c.id} className={"covoit-item " + c.type}>
-                <span className="covoit-badge">{c.type === "offre" ? `🚗 Propose ${c.places} place${c.places > 1 ? "s" : ""}` : "🙋 Cherche une place"}</span>
-                <div className="covoit-info">
-                  <strong>Depuis {c.ville}</strong>
-                  {c.quand ? ` · ${c.quand}` : ""}
-                  {c.prenom ? ` · ${c.prenom}` : ""}
-                  {c.contact ? <span className="covoit-contact"> · {c.contact}</span> : null}
-                </div>
-                {(estAdmin || c.invite_id === profile?.id) && (
-                  <button className="covoit-x" onClick={() => supprimer(c)} aria-label="Retirer">×</button>
-                )}
-              </li>
-            ))}
+            {items.map((c) => {
+              const rs = resas.filter((r) => r.trajet_id === c.id);
+              const pris = rs.reduce((s, r) => s + (parseInt(r.places) || 0), 0);
+              const restant = Math.max(0, (parseInt(c.places) || 0) - pris);
+              const maResa = rs.find((r) => r.invite_id === profile?.id);
+              const monOffre = c.invite_id === profile?.id;
+              const n = Math.max(1, parseInt(qte[c.id]) || 1);
+              return (
+                <li key={c.id} className={"covoit-item " + c.type}>
+                  <span className="covoit-badge">{c.type === "offre" ? `🚗 Propose ${c.places} place${c.places > 1 ? "s" : ""}` : "🙋 Cherche une place"}</span>
+                  <div className="covoit-info">
+                    <strong>Depuis {c.ville}</strong>
+                    {c.quand ? ` · ${c.quand}` : ""}
+                    {c.prenom ? ` · ${c.prenom}` : ""}
+                    {c.contact ? <span className="covoit-contact"> · {c.contact}</span> : null}
+                  </div>
+
+                  {c.type === "offre" && (
+                    <div className="covoit-resa">
+                      <span className={"covoit-restant" + (restant === 0 ? " complet" : "")}>
+                        {restant === 0 ? "Complet 🚗" : `${restant} place${restant > 1 ? "s" : ""} restante${restant > 1 ? "s" : ""}`}
+                      </span>
+                      {rs.length > 0 && (
+                        <span className="covoit-passagers">
+                          · {rs.map((r) => `${r.prenom || "Invité"}${r.places > 1 ? ` (${r.places})` : ""}`).join(", ")}
+                        </span>
+                      )}
+
+                      {maResa ? (
+                        <div className="covoit-maresa">
+                          <span>✅ Vous avez réservé {maResa.places} place{maResa.places > 1 ? "s" : ""}</span>
+                          <button type="button" className="btn-lien" onClick={() => annuler(maResa.id)}>Annuler</button>
+                        </div>
+                      ) : monOffre ? (
+                        <span className="covoit-monoffre">C'est votre offre 🌿</span>
+                      ) : restant > 0 ? (
+                        <div className="covoit-reserver">
+                          {restant > 1 && (
+                            <select value={n} onChange={(e) => setQte((q) => ({ ...q, [c.id]: e.target.value }))} aria-label="Nombre de places">
+                              {Array.from({ length: restant }, (_, i) => i + 1).map((v) => (
+                                <option key={v} value={v}>{v} place{v > 1 ? "s" : ""}</option>
+                              ))}
+                            </select>
+                          )}
+                          <button type="button" className="btn-vert covoit-resa-btn" disabled={resaBusy === c.id} onClick={() => reserver(c)}>
+                            {resaBusy === c.id ? "…" : restant > 1 ? "Réserver" : "Réserver ma place"}
+                          </button>
+                        </div>
+                      ) : null}
+                      {resaErr[c.id] && <span className="gate-err" style={{ color: "#b06a4f" }}>{resaErr[c.id]}</span>}
+                    </div>
+                  )}
+
+                  {(estAdmin || monOffre) && (
+                    <button className="covoit-x" onClick={() => supprimer(c)} aria-label="Retirer">×</button>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         )}
       </div>

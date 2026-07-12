@@ -3067,6 +3067,15 @@ footer {
 .covoit-info { font-size: 0.95rem; color: var(--encre, #24301f); }
 .covoit-contact { color: var(--vert, #3f5d3a); }
 .covoit-x { position: absolute; top: 8px; right: 8px; width: 1.6rem; height: 1.6rem; border-radius: 50%; border: none; background: rgba(0, 0, 0, 0.12); color: var(--encre, #24301f); font-size: 1rem; line-height: 1; cursor: pointer; }
+.covoit-resa { margin-top: 0.55rem; padding-top: 0.55rem; border-top: 1px dashed var(--ligne, #d8ddd2); font-size: 0.9rem; }
+.covoit-restant { font-weight: 700; color: var(--vert, #3f5d3a); }
+.covoit-restant.complet { color: #9aa39a; }
+.covoit-passagers { color: var(--encre, #24301f); opacity: 0.75; }
+.covoit-reserver { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-top: 0.5rem; }
+.covoit-reserver select { padding: 0.45rem 0.6rem; border-radius: 8px; border: 1px solid var(--ligne, #d8ddd2); background: #fff; color: var(--encre, #24301f); font: inherit; }
+.covoit-resa-btn { padding: 0.5rem 1rem; }
+.covoit-maresa { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; margin-top: 0.5rem; color: var(--vert, #3f5d3a); font-weight: 600; }
+.covoit-monoffre { display: block; margin-top: 0.4rem; opacity: 0.7; }
 
 /* Playlist collaborative (site V&F) */
 .playlist-sec { padding: 5rem 0; background: var(--sauge-pale, #eef1ea); }
