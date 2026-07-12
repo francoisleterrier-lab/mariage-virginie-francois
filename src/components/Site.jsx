@@ -113,15 +113,24 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
   const [guideNotif, setGuideNotif] = useState(false);
   const [menu, setMenu] = useState(false);
   const [cagnotteActive, setCagnotteActive] = useState(false);
+  // Sections « à venir » : regroupées en fin de site tant qu'elles ne sont pas
+  // activées ; elles remontent automatiquement à leur place une fois ouvertes.
+  const [avenir, setAvenir] = useState({ lieu: true, table: true, bandeson: true });
 
-  // La cagnotte n'apparaît dans la nav que si elle est activée (admin).
   useEffect(() => {
     supabase
       .from("parametres")
-      .select("valeur")
-      .eq("cle", "cagnotte_active")
-      .maybeSingle()
-      .then(({ data }) => setCagnotteActive(data?.valeur === true))
+      .select("cle, valeur")
+      .in("cle", ["cagnotte_active", "lieu_revele", "tables_a_venir", "bandeson_a_venir"])
+      .then(({ data }) => {
+        const p = Object.fromEntries((data || []).map((r) => [r.cle, r.valeur]));
+        setCagnotteActive(p.cagnotte_active === true);
+        setAvenir({
+          lieu: p.lieu_revele !== true,
+          table: p.tables_a_venir !== false,
+          bandeson: p.bandeson_a_venir !== false,
+        });
+      })
       .catch(() => {});
   }, []);
 
@@ -621,8 +630,8 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
       {/* COVOITURAGE — remonté en premier (s'organiser tôt pour la route) */}
       <Covoiturage profile={profile} />
 
-      {/* LIEU : « à venir » (secret) ou domaine annoncé selon lieu_revele */}
-      <Lieu />
+      {/* LIEU : ici une fois révélé ; sinon regroupé dans la zone « à venir » en bas */}
+      {!avenir.lieu && <Lieu />}
 
       {/* TIMELINE QUI SE DÉVOILE (moments datés, contenu révélé à sa date) */}
       <TimelineReveal />
@@ -704,11 +713,11 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
         </div>
       </section>
 
-      {/* MA TABLE : réservation libre / plan publié / mystère */}
-      <MaTable profile={profile} onReload={onReload} />
+      {/* MA TABLE : ici une fois ouverte ; sinon en bas (zone « à venir ») */}
+      {!avenir.table && <MaTable profile={profile} onReload={onReload} />}
 
-      {/* BANDE-SON FANTÔME (collecte / mur souvenir selon la phase) */}
-      <BandeSon profile={profile} />
+      {/* BANDE-SON : ici une fois ouverte ; sinon en bas (zone « à venir ») */}
+      {!avenir.bandeson && <BandeSon profile={profile} />}
 
       {/* QUIZ DES MARIÉS (teaser / jeu / podium selon quiz_state) */}
       <Quiz profile={profile} />
@@ -727,6 +736,12 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
 
       {/* CAGNOTTE / LISTE DE MARIAGE (fonds commun, lien externe) */}
       <Cagnotte profile={profile} />
+
+      {/* ZONE « À VENIR » : les sections pas encore ouvertes, regroupées en fin
+          de site. Chacune remonte à sa place plus haut dès qu'elle est activée. */}
+      {avenir.lieu && <Lieu />}
+      {avenir.table && <MaTable profile={profile} onReload={onReload} />}
+      {avenir.bandeson && <BandeSon profile={profile} />}
 
       {/* RSVP replacé en fin de site une fois la réponse enregistrée */}
       {saved && blocRsvp}
