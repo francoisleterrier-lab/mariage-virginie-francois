@@ -131,21 +131,17 @@ export default function MurPhotos({ profile }) {
               const picker = pickerFor === p.id;
               return (
                 <figure key={p.id} className="album-item">
-                  {estVideo(p.chemin) ? (
-                    <div className="album-media" onClick={() => setApercu(p)} role="button" tabIndex={0}>
-                      <video src={urlOf(p.chemin)} playsInline preload="metadata" muted />
-                      <span className="album-play" aria-hidden="true">▶</span>
-                    </div>
-                  ) : (
-                    <img
-                      src={urlOf(p.chemin)}
-                      alt={p.prenom ? `Photo de ${p.prenom}` : "Photo d'invité"}
-                      loading="lazy"
-                      onClick={() => setApercu(p)}
-                      style={{ cursor: "zoom-in" }}
-                    />
-                  )}
-                  {p.prenom && <figcaption>{p.prenom}</figcaption>}
+                  <div className="album-media" onClick={() => setApercu(p)} role="button" tabIndex={0}>
+                    {estVideo(p.chemin) ? (
+                      <>
+                        <video src={urlOf(p.chemin)} playsInline preload="metadata" muted />
+                        <span className="album-play" aria-hidden="true">▶</span>
+                      </>
+                    ) : (
+                      <img src={urlOf(p.chemin)} alt={p.prenom ? `Photo de ${p.prenom}` : "Photo d'invité"} loading="lazy" />
+                    )}
+                    {p.prenom && <figcaption>{p.prenom}</figcaption>}
+                  </div>
 
                   <div className="album-reactions">
                     {EMOJIS.map((e) => {
