@@ -953,9 +953,9 @@ nav ul a:focus-visible::after {
 /* === Où se loger === */
 .loge-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.6rem;
-  margin-top: 3rem;
+  grid-template-columns: repeat(2, 1fr); /* deux cartes côte à côte (compact) */
+  gap: 0.8rem;
+  margin-top: 2rem;
   text-align: left;
 }
 .loge-carte {
@@ -963,11 +963,16 @@ nav ul a:focus-visible::after {
   flex-direction: column;
   background: var(--blanc);
   border: 1px solid rgba(126, 150, 120, 0.45);
-  border-radius: 16px;
-  padding: 1.7rem 1.6rem;
+  border-radius: 14px;
+  padding: 1rem 0.95rem;
   color: inherit;
   text-decoration: none;
   transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+/* Grand écran : on peut aérer et remettre plus de colonnes. */
+@media (min-width: 760px) {
+  .loge-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.4rem; margin-top: 3rem; }
+  .loge-carte { padding: 1.6rem 1.5rem; border-radius: 16px; }
 }
 .loge-carte:hover,
 .loge-carte:focus-visible {
@@ -986,9 +991,12 @@ nav ul a:focus-visible::after {
 .loge-carte h3 {
   font-family: "Cormorant Garamond", serif;
   font-weight: 500;
-  font-size: 1.5rem;
+  font-size: 1.15rem;
   margin: 0.35rem 0 0.15rem;
   line-height: 1.15;
+}
+@media (min-width: 760px) {
+  .loge-carte h3 { font-size: 1.5rem; }
 }
 .loge-lieu {
   font-size: 0.85rem;
