@@ -501,7 +501,7 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
                 <figcaption>Eden, notre plus bel ange</figcaption>
               </figure>
               <figure className="pola">
-                <img src={photoTemoins} alt="Alan et Mélane, souriants au soleil, en noir et blanc" />
+                <img src={photoTemoins} alt="Alan et Mélane, nos témoins, enlacés et souriants" />
                 <figcaption>Alan &amp; Mélane, nos témoins</figcaption>
               </figure>
             </div>
