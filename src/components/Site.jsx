@@ -743,6 +743,22 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
       {/* RSVP replacé en fin de site une fois la réponse enregistrée */}
       {saved && blocRsvp}
 
+      {/* AVIS GOOGLE — les invités laissent un avis sur la réalisation du site (François) */}
+      <section className="avis-google">
+        <div className="wrap center reveal">
+          <p className="avis-etoiles" aria-hidden="true">★★★★★</p>
+          <h2>Ce faire-part vous plaît&nbsp;?</h2>
+          <p>
+            Ce site a été imaginé et réalisé par François (<a href="https://francoisleterrier.fr/" target="_blank" rel="noopener noreferrer">francoisleterrier.fr</a>).
+            Si le rendu vous plaît et que vous avez 30&nbsp;secondes, un petit avis Google sur son travail l'aiderait
+            énormément. Merci&nbsp;! 🌿
+          </p>
+          <a className="btn-vert avis-btn" href="https://g.page/r/CWocELClfSW1EAE/review" target="_blank" rel="noopener noreferrer">
+            ⭐ Laisser un avis Google
+          </a>
+        </div>
+      </section>
+
       <footer>
         <div className="mono">V &amp; F</div>
         <p>26 &amp; 27 mai 2028 — Sud-Toulousain</p>
