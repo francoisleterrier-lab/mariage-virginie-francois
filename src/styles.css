@@ -1513,6 +1513,34 @@ footer .credit a:hover {
   margin-bottom: 1.2rem;
 }
 
+/* Avis Google (réalisation du site — François) */
+.avis-google {
+  padding: 4rem 0;
+  text-align: center;
+}
+.avis-google .avis-etoiles {
+  color: #e8b84b;
+  font-size: 1.6rem;
+  letter-spacing: 0.25rem;
+  margin-bottom: 0.4rem;
+}
+.avis-google h2 {
+  margin-bottom: 0.6rem;
+}
+.avis-google p {
+  max-width: 34rem;
+  margin: 0 auto 1.4rem;
+}
+.avis-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: auto;
+  margin: 0;
+  padding: 0.7rem 1.5rem;
+  text-decoration: none;
+}
+
 /* Diffuser l'invitation (admin) */
 .admin-partage-l {
   display: block;
