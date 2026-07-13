@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { supabase } from "../lib/supabase.js";
 import CameraCapture from "../CameraCapture.jsx";
 
@@ -26,6 +26,7 @@ export default function MurPhotos({ profile }) {
   const [reactions, setReactions] = useState([]);
   const [apercu, setApercu] = useState(null); // photo affichée en grand
   const [pickerFor, setPickerFor] = useState(null); // photo dont le sélecteur d'emoji est ouvert
+  const [personneOuverte, setPersonneOuverte] = useState(null); // invite_id de la galerie ouverte
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
   const [cam, setCam] = useState(false);
@@ -98,6 +99,65 @@ export default function MurPhotos({ profile }) {
     charger();
   }
 
+  // Regroupe les photos par personne (une rubrique + une vignette de présentation par invité).
+  const parPersonne = useMemo(() => {
+    const map = new Map();
+    for (const p of photos) {
+      const key = p.invite_id || p.prenom || p.id;
+      if (!map.has(key)) map.set(key, { key, invite_id: p.invite_id, prenom: p.prenom || "Invité", photos: [] });
+      map.get(key).photos.push(p);
+    }
+    return [...map.values()]; // ordre = 1re apparition = photo la plus récente en tête
+  }, [photos]);
+
+  const groupeOuvert = parPersonne.find((g) => g.key === personneOuverte) || null;
+
+  // Rendu d'une photo (vignette dans la galerie d'une personne) : réactions + clic pour agrandir.
+  function cartePhoto(p) {
+    const rp = reactions.filter((r) => r.photo_id === p.id);
+    const picker = pickerFor === p.id;
+    return (
+      <figure key={p.id} className="album-item">
+        <div className="album-media" onClick={() => setApercu(p)} role="button" tabIndex={0}>
+          {estVideo(p.chemin) ? (
+            <>
+              <video src={urlOf(p.chemin)} playsInline preload="metadata" muted />
+              <span className="album-play" aria-hidden="true">▶</span>
+            </>
+          ) : (
+            <img src={urlOf(p.chemin)} alt={p.prenom ? `Photo de ${p.prenom}` : "Photo d'invité"} loading="lazy" />
+          )}
+        </div>
+        <div className="album-reactions">
+          {EMOJIS.map((e) => {
+            const n = rp.filter((r) => r.emoji === e).length;
+            const mine = rp.some((r) => r.emoji === e && r.invite_id === profile?.id);
+            if (n === 0 && !picker) return null;
+            return (
+              <button key={e} type="button" className={"album-reac" + (mine ? " on" : "")} onClick={() => reagir(p.id, e)}>
+                <span className="album-reac-e">{e}</span>
+                {n > 0 && <span className="album-reac-n">{n}</span>}
+              </button>
+            );
+          })}
+          <button
+            type="button"
+            className="album-reac album-reac-plus"
+            onClick={() => setPickerFor(picker ? null : p.id)}
+            aria-label="Réagir avec un emoji"
+          >
+            {picker ? "×" : "🙂+"}
+          </button>
+        </div>
+        {(estAdmin || p.invite_id === profile?.id) && (
+          <button className="album-x" onClick={() => supprimer(p)} aria-label="Retirer cette photo">
+            ×
+          </button>
+        )}
+      </figure>
+    );
+  }
+
   return (
     <section className="album" id="album">
       <div className="wrap center">
@@ -124,53 +184,37 @@ export default function MurPhotos({ profile }) {
 
         {photos.length === 0 ? (
           <p className="album-vide">Soyez le premier à partager un souvenir. 🌿</p>
+        ) : groupeOuvert ? (
+          /* Galerie d'une personne */
+          <>
+            <div className="album-perso-tete">
+              <button className="btn-lien" onClick={() => setPersonneOuverte(null)}>← Tout l'album</button>
+              <h3 className="album-perso-titre">Photos de {groupeOuvert.prenom}</h3>
+            </div>
+            <div className="album-grid">{groupeOuvert.photos.map((p) => cartePhoto(p))}</div>
+          </>
         ) : (
-          <div className="album-grid">
-            {photos.map((p) => {
-              const rp = reactions.filter((r) => r.photo_id === p.id);
-              const picker = pickerFor === p.id;
+          /* Une vignette de présentation par personne */
+          <div className="album-personnes">
+            {parPersonne.map((g) => {
+              const cover = g.photos[0];
               return (
-                <figure key={p.id} className="album-item">
-                  <div className="album-media" onClick={() => setApercu(p)} role="button" tabIndex={0}>
-                    {estVideo(p.chemin) ? (
+                <button key={g.key} type="button" className="album-personne" onClick={() => setPersonneOuverte(g.key)}>
+                  <span className="album-personne-media">
+                    {estVideo(cover.chemin) ? (
                       <>
-                        <video src={urlOf(p.chemin)} playsInline preload="metadata" muted />
+                        <video src={urlOf(cover.chemin)} playsInline preload="metadata" muted />
                         <span className="album-play" aria-hidden="true">▶</span>
                       </>
                     ) : (
-                      <img src={urlOf(p.chemin)} alt={p.prenom ? `Photo de ${p.prenom}` : "Photo d'invité"} loading="lazy" />
+                      <img src={urlOf(cover.chemin)} alt={`Photos de ${g.prenom}`} loading="lazy" />
                     )}
-                    {p.prenom && <figcaption>{p.prenom}</figcaption>}
-                  </div>
-
-                  <div className="album-reactions">
-                    {EMOJIS.map((e) => {
-                      const n = rp.filter((r) => r.emoji === e).length;
-                      const mine = rp.some((r) => r.emoji === e && r.invite_id === profile?.id);
-                      if (n === 0 && !picker) return null;
-                      return (
-                        <button key={e} type="button" className={"album-reac" + (mine ? " on" : "")} onClick={() => reagir(p.id, e)}>
-                          <span className="album-reac-e">{e}</span>
-                          {n > 0 && <span className="album-reac-n">{n}</span>}
-                        </button>
-                      );
-                    })}
-                    <button
-                      type="button"
-                      className="album-reac album-reac-plus"
-                      onClick={() => setPickerFor(picker ? null : p.id)}
-                      aria-label="Réagir avec un emoji"
-                    >
-                      {picker ? "×" : "🙂+"}
-                    </button>
-                  </div>
-
-                  {(estAdmin || p.invite_id === profile?.id) && (
-                    <button className="album-x" onClick={() => supprimer(p)} aria-label="Retirer cette photo">
-                      ×
-                    </button>
-                  )}
-                </figure>
+                  </span>
+                  <span className="album-personne-bas">
+                    <span className="album-personne-nom">{g.prenom}</span>
+                    <span className="album-personne-n">{g.photos.length} photo{g.photos.length > 1 ? "s" : ""}</span>
+                  </span>
+                </button>
               );
             })}
           </div>
