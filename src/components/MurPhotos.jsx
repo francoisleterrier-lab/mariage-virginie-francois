@@ -7,6 +7,7 @@ import CameraCapture from "../CameraCapture.jsx";
 
 const urlOf = (chemin) => supabase.storage.from("vf-photos").getPublicUrl(chemin).data.publicUrl;
 const estVideo = (c) => /\.(mp4|webm|mov|m4v|ogg)$/i.test(c || "");
+const EMOJIS = ["❤️", "😍", "👏", "😂", "🌿", "🥂"];
 
 function extDe(file) {
   const type = file.type || "";
@@ -22,6 +23,9 @@ function extDe(file) {
 
 export default function MurPhotos({ profile }) {
   const [photos, setPhotos] = useState([]);
+  const [reactions, setReactions] = useState([]);
+  const [apercu, setApercu] = useState(null); // photo affichée en grand
+  const [pickerFor, setPickerFor] = useState(null); // photo dont le sélecteur d'emoji est ouvert
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
   const [cam, setCam] = useState(false);
@@ -29,12 +33,26 @@ export default function MurPhotos({ profile }) {
   const prenom = (profile?.nom || "").split(" ")[0];
 
   const charger = useCallback(async () => {
-    const { data } = await supabase
-      .from("photos_invites")
-      .select("id, invite_id, chemin, prenom, created_at")
-      .order("created_at", { ascending: false });
-    setPhotos(data || []);
+    const [{ data: ph }, { data: re }] = await Promise.all([
+      supabase.from("photos_invites").select("id, invite_id, chemin, prenom, created_at").order("created_at", { ascending: false }),
+      supabase.from("photos_reactions").select("id, photo_id, invite_id, emoji"),
+    ]);
+    setPhotos(ph || []);
+    setReactions(re || []);
   }, []);
+
+  async function reagir(photoId, emoji) {
+    const mien = reactions.find((r) => r.photo_id === photoId && r.invite_id === profile?.id && r.emoji === emoji);
+    // Optimiste : on met à jour l'affichage tout de suite.
+    if (mien) {
+      setReactions((rs) => rs.filter((r) => r.id !== mien.id));
+      await supabase.from("photos_reactions").delete().eq("id", mien.id);
+    } else {
+      setReactions((rs) => [...rs, { id: `tmp-${Date.now()}`, photo_id: photoId, invite_id: profile?.id, emoji }]);
+      await supabase.from("photos_reactions").insert({ photo_id: photoId, invite_id: profile.id, emoji });
+    }
+    charger();
+  }
 
   useEffect(() => {
     charger();
@@ -108,24 +126,72 @@ export default function MurPhotos({ profile }) {
           <p className="album-vide">Soyez le premier à partager un souvenir. 🌿</p>
         ) : (
           <div className="album-grid">
-            {photos.map((p) => (
-              <figure key={p.id} className="album-item">
-                {estVideo(p.chemin) ? (
-                  <video src={urlOf(p.chemin)} controls playsInline preload="metadata" />
-                ) : (
-                  <img src={urlOf(p.chemin)} alt={p.prenom ? `Photo de ${p.prenom}` : "Photo d'invité"} loading="lazy" />
-                )}
-                {p.prenom && <figcaption>{p.prenom}</figcaption>}
-                {(estAdmin || p.invite_id === profile?.id) && (
-                  <button className="album-x" onClick={() => supprimer(p)} aria-label="Retirer cette photo">
-                    ×
-                  </button>
-                )}
-              </figure>
-            ))}
+            {photos.map((p) => {
+              const rp = reactions.filter((r) => r.photo_id === p.id);
+              const picker = pickerFor === p.id;
+              return (
+                <figure key={p.id} className="album-item">
+                  {estVideo(p.chemin) ? (
+                    <div className="album-media" onClick={() => setApercu(p)} role="button" tabIndex={0}>
+                      <video src={urlOf(p.chemin)} playsInline preload="metadata" muted />
+                      <span className="album-play" aria-hidden="true">▶</span>
+                    </div>
+                  ) : (
+                    <img
+                      src={urlOf(p.chemin)}
+                      alt={p.prenom ? `Photo de ${p.prenom}` : "Photo d'invité"}
+                      loading="lazy"
+                      onClick={() => setApercu(p)}
+                      style={{ cursor: "zoom-in" }}
+                    />
+                  )}
+                  {p.prenom && <figcaption>{p.prenom}</figcaption>}
+
+                  <div className="album-reactions">
+                    {EMOJIS.map((e) => {
+                      const n = rp.filter((r) => r.emoji === e).length;
+                      const mine = rp.some((r) => r.emoji === e && r.invite_id === profile?.id);
+                      if (n === 0 && !picker) return null;
+                      return (
+                        <button key={e} type="button" className={"album-reac" + (mine ? " on" : "")} onClick={() => reagir(p.id, e)}>
+                          <span className="album-reac-e">{e}</span>
+                          {n > 0 && <span className="album-reac-n">{n}</span>}
+                        </button>
+                      );
+                    })}
+                    <button
+                      type="button"
+                      className="album-reac album-reac-plus"
+                      onClick={() => setPickerFor(picker ? null : p.id)}
+                      aria-label="Réagir avec un emoji"
+                    >
+                      {picker ? "×" : "🙂+"}
+                    </button>
+                  </div>
+
+                  {(estAdmin || p.invite_id === profile?.id) && (
+                    <button className="album-x" onClick={() => supprimer(p)} aria-label="Retirer cette photo">
+                      ×
+                    </button>
+                  )}
+                </figure>
+              );
+            })}
           </div>
         )}
       </div>
+
+      {apercu && (
+        <div className="album-lightbox" onClick={() => setApercu(null)} role="dialog" aria-modal="true">
+          <button className="album-lightbox-x" onClick={() => setApercu(null)} aria-label="Fermer">×</button>
+          {estVideo(apercu.chemin) ? (
+            <video src={urlOf(apercu.chemin)} controls playsInline autoPlay onClick={(e) => e.stopPropagation()} />
+          ) : (
+            <img src={urlOf(apercu.chemin)} alt={apercu.prenom ? `Photo de ${apercu.prenom}` : "Photo d'invité"} onClick={(e) => e.stopPropagation()} />
+          )}
+          {apercu.prenom && <p className="album-lightbox-cap">📷 {apercu.prenom}</p>}
+        </div>
+      )}
 
       {cam && (
         <CameraCapture
