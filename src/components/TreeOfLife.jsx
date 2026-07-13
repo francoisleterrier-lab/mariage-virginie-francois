@@ -120,8 +120,8 @@ export default function TreeOfLife() {
           Chacun·e de vous <em>illumine notre arbre</em>
         </h2>
         <p>
-          Vous, votre moitié, vos enfants : chaque personne inscrite allume une lumière dans notre arbre de vie.
-          Passez sur l'une d'elles pour découvrir qui nous rejoint.
+          Vous, votre moitié, vos enfants : chaque personne qui confirme sa venue allume une lumière dans notre
+          arbre de vie. Passez sur l'une d'elles pour découvrir qui nous rejoint.
         </p>
 
         <div className={"arbre-scene stade-" + stade} style={{ "--lueur": ratio.toFixed(2) }}>
