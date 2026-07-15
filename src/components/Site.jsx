@@ -14,6 +14,7 @@ import Playlist from "./Playlist.jsx";
 import Covoiturage from "./Covoiturage.jsx";
 import Defis from "./Defis.jsx";
 import AgendaBouton from "../AgendaBouton.jsx";
+import ScratchCard from "../ScratchCard.jsx";
 import Citation from "./Citation.jsx";
 import BotanicalDecor from "./BotanicalDecor.jsx";
 import MaTable from "./MaTable.jsx";
@@ -742,6 +743,30 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
 
       {/* RSVP replacé en fin de site une fois la réponse enregistrée */}
       {saved && blocRsvp}
+
+      {/* CARTE À GRATTER — petit jeu interactif, un mot caché à révéler au doigt */}
+      <section className="gratter-sec">
+        <div className="wrap center reveal">
+          <p className="eyebrow">Rien que pour vous</p>
+          <h2>
+            Un petit mot <em>caché</em>
+          </h2>
+          <p>Grattez la carte du bout du doigt pour le découvrir…</p>
+          <div className="gratter-carte">
+            <ScratchCard hint="✨ Grattez ici">
+              <div className="gratter-derriere">
+                <span className="gratter-emoji" aria-hidden="true">🌿</span>
+                <p>
+                  Merci de faire partie de notre histoire.
+                  <br />
+                  On a tellement hâte de danser avec vous !
+                </p>
+                <span className="gratter-sign">Virginie &amp; François</span>
+              </div>
+            </ScratchCard>
+          </div>
+        </div>
+      </section>
 
       {/* AVIS GOOGLE — les invités laissent un avis sur la réalisation du site (François) */}
       <section className="avis-google">
