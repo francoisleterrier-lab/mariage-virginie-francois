@@ -759,7 +759,7 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
                 <p>
                   Merci de faire partie de notre histoire.
                   <br />
-                  On a tellement hâte de danser avec vous !
+                  On a tellement hâte de vous revoir et de partager ce moment en votre compagnie.
                 </p>
                 <span className="gratter-sign">Virginie &amp; François</span>
               </div>
