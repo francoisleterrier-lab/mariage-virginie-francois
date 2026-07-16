@@ -22,6 +22,14 @@ export default function DemandeAvis({ invites }) {
   );
   const emails = [...new Set(destinataires.map((g) => (g.email || "").trim()).filter(Boolean))];
 
+  // Liste « Nom <email> » prête à copier-coller (dédupliquée par e-mail).
+  const vus = new Set();
+  const listeTexte = destinataires
+    .map((g) => ({ nom: g.nom, em: (g.email || "").trim() }))
+    .filter((x) => x.em && !vus.has(x.em) && vus.add(x.em))
+    .map((x) => `${x.nom} <${x.em}>`)
+    .join("\n");
+
   const sujet = "Un petit avis ? 🌿";
   const corps =
     "Bonjour,\n\n" +
@@ -91,6 +99,14 @@ export default function DemandeAvis({ invites }) {
         Si votre messagerie ne s'ouvre pas (app installée sur iPhone), utilisez « Copier les e-mails » et « Copier le
         message », puis collez-les dans un nouveau mail (les e-mails dans le champ Cci).
       </p>
+
+      <label className="admin-partage-l" style={{ marginTop: "1rem" }}>
+        Liste des invités (nom + e-mail) — prête à copier-coller
+        <textarea readOnly rows={Math.min(12, Math.max(3, emails.length))} value={listeTexte} onFocus={(e) => e.target.select()} />
+      </label>
+      <button type="button" className="btn-ghost" onClick={() => copier("liste", listeTexte)}>
+        {copie === "liste" ? "✓ Copié" : "📋 Copier la liste (noms + e-mails)"}
+      </button>
     </div>
   );
 }
