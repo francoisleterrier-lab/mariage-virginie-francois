@@ -2,7 +2,7 @@ import { useState } from "react";
 
 /* Relancer les invités sans réponse (site V&F) : ouvre la messagerie avec un
    rappel pré-rempli + le lien, tous les destinataires en copie cachée (Cci).
-   Pas d'envoi serveur (ni API) — l'admin choisit et envoie. */
+   Pas d'envoi serveur. Robuste PWA : ouverture forcée + secours « copier ». */
 
 function lienSite() {
   if (typeof window === "undefined") return "";
@@ -11,9 +11,16 @@ function lienSite() {
 }
 
 export default function Relance({ invites }) {
-  const [copie, setCopie] = useState(false);
-  const lien = lienSite();
+  const [copie, setCopie] = useState("");
+  const [from, setFrom] = useState(() => {
+    try {
+      return localStorage.getItem("vf-relance-from") || "";
+    } catch {
+      return "";
+    }
+  });
 
+  const lien = lienSite();
   const sansReponse = (invites || []).filter(
     (g) => !g.rsvp && !g.rattache_a && g.email && !g.email.endsWith("@vf2028.local")
   );
@@ -26,13 +33,29 @@ export default function Relance({ invites }) {
     "Ce serait un immense bonheur de vous compter parmi nous ! Merci de nous indiquer si vous serez présent·e ici :\n" +
     lien +
     "\n\nAvec toute notre affection,\nVirginie & François";
-  const mailto = `mailto:?bcc=${encodeURIComponent(emails.join(","))}&subject=${encodeURIComponent(sujet)}&body=${encodeURIComponent(corps)}`;
 
-  async function copier() {
+  // Un destinataire dans « À : » (l'expéditeur lui-même) fiabilise l'ouverture ;
+  // les invités passent en copie cachée pour ne pas se voir entre eux.
+  const mailto =
+    `mailto:${encodeURIComponent(from)}` +
+    `?bcc=${encodeURIComponent(emails.join(","))}` +
+    `&subject=${encodeURIComponent(sujet)}` +
+    `&body=${encodeURIComponent(corps)}`;
+
+  function relancer() {
     try {
-      await navigator.clipboard.writeText(emails.join(", "));
-      setCopie(true);
-      setTimeout(() => setCopie(false), 1800);
+      if (from) localStorage.setItem("vf-relance-from", from.trim());
+    } catch {
+      /* ignore */
+    }
+    window.location.href = mailto; // plus fiable que <a> dans l'app installée
+  }
+
+  async function copier(quoi, texte) {
+    try {
+      await navigator.clipboard.writeText(texte);
+      setCopie(quoi);
+      setTimeout(() => setCopie(""), 1800);
     } catch {
       /* ignore */
     }
@@ -52,15 +75,35 @@ export default function Relance({ invites }) {
       <h2 className="admin-h2">Relancer les sans-réponse ✉️</h2>
       <p className="admin-sous">
         <strong>{sansReponse.length}</strong> personne{sansReponse.length > 1 ? "s n'ont" : " n'a"} pas encore répondu.
-        Le bouton ouvre votre messagerie avec un rappel pré-rempli (tout le monde en copie cachée) — vous n'avez plus
-        qu'à cliquer sur « Envoyer ».
+        Le bouton ouvre votre messagerie avec un rappel pré-rempli, tout le monde en copie cachée.
       </p>
+
+      <label className="admin-partage-l">
+        Votre adresse e-mail (recommandé — sinon la messagerie peut refuser de s'ouvrir)
+        <input
+          type="email"
+          value={from}
+          onChange={(e) => setFrom(e.target.value)}
+          placeholder="vous@exemple.fr"
+          autoComplete="email"
+        />
+      </label>
+
       <div className="admin-partage-btns">
-        <a className="btn-vert" href={mailto}>✉️ Relancer par e-mail</a>
-        <button type="button" className="btn-ghost" onClick={copier}>
-          {copie ? "✓ Copié" : "📋 Copier les e-mails"}
+        <button type="button" className="btn-vert" onClick={relancer}>✉️ Relancer par e-mail</button>
+        <button type="button" className="btn-ghost" onClick={() => copier("mails", emails.join(", "))}>
+          {copie === "mails" ? "✓ Copié" : "📋 Copier les e-mails"}
+        </button>
+        <button type="button" className="btn-ghost" onClick={() => copier("msg", corps)}>
+          {copie === "msg" ? "✓ Copié" : "📝 Copier le message"}
         </button>
       </div>
+
+      <p className="admin-partage-hint">
+        Si votre messagerie ne s'ouvre toujours pas (fréquent avec l'app installée sur iPhone), utilisez « Copier les
+        e-mails » et « Copier le message », puis collez-les dans un nouveau mail (les e-mails dans le champ Cci).
+      </p>
+
       <ul className="relance-liste">
         {sansReponse.map((g) => (
           <li key={g.id}>
