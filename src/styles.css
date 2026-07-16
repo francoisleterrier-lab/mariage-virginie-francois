@@ -1591,7 +1591,8 @@ footer .credit a:hover {
   color: var(--encre2);
   margin-bottom: 0.8rem;
 }
-.admin-partage-l textarea {
+.admin-partage-l textarea,
+.admin-partage-l input {
   display: block;
   width: 100%;
   margin-top: 0.35rem;
@@ -1604,6 +1605,7 @@ footer .credit a:hover {
   line-height: 1.5;
   resize: vertical;
 }
+.admin-partage-l input { resize: none; }
 .admin-partage-btns {
   display: flex;
   flex-wrap: wrap;
