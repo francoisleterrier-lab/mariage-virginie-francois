@@ -36,6 +36,14 @@ export default function Relance({ invites }) {
   );
   const emails = [...new Set(sansReponse.map((g) => (g.email || "").trim()).filter(Boolean))];
 
+  // Liste « Nom <email> » prête à copier-coller (dédupliquée).
+  const vus = new Set();
+  const listeTexte = sansReponse
+    .map((g) => ({ nom: g.nom, em: (g.email || "").trim() }))
+    .filter((x) => x.em && !vus.has(x.em) && vus.add(x.em))
+    .map((x) => `${x.nom} <${x.em}>`)
+    .join("\n");
+
   const sujet = "Un petit rappel — votre présence 🌿";
   const corps =
     "Bonjour,\n\n" +
@@ -115,13 +123,13 @@ export default function Relance({ invites }) {
         e-mails » et « Copier le message », puis collez-les dans un nouveau mail (les e-mails dans le champ Cci).
       </p>
 
-      <ul className="relance-liste">
-        {sansReponse.map((g) => (
-          <li key={g.id}>
-            {g.nom} <span className="relance-mail">· {g.email}</span>
-          </li>
-        ))}
-      </ul>
+      <label className="admin-partage-l" style={{ marginTop: "1rem" }}>
+        Liste des sans-réponse (nom + e-mail) — prête à copier-coller
+        <textarea readOnly rows={Math.min(12, Math.max(3, emails.length))} value={listeTexte} onFocus={(e) => e.target.select()} />
+      </label>
+      <button type="button" className="btn-ghost" onClick={() => copier("liste", listeTexte)}>
+        {copie === "liste" ? "✓ Copié" : "📋 Copier la liste (noms + e-mails)"}
+      </button>
     </div>
   );
 }
