@@ -1639,6 +1639,19 @@ footer .credit a:hover {
   opacity: 0.9;
 }
 
+/* Relance des sans-réponse */
+.relance-liste {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+}
+.relance-liste li { padding: 0.3rem 0; border-bottom: 1px solid var(--ligne, #e3e7dd); }
+.relance-mail { color: var(--encre2, #4a5548); opacity: 0.75; }
+
 /* push admin */
 .push-form label {
   display: block;

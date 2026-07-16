@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "../lib/supabase.js";
 import PushAdmin from "./PushAdmin.jsx";
 import Partage from "./Partage.jsx";
+import Relance from "./Relance.jsx";
 import PlanEditor from "./PlanEditor.jsx";
 import PhasesEditor from "./PhasesEditor.jsx";
 import LieuEditor from "./LieuEditor.jsx";
@@ -221,6 +222,8 @@ export default function Admin({ onLogout, onApercuInvite }) {
               <span>enfants attendus</span>
             </div>
           </div>
+
+          <Relance invites={invites} />
 
           <div className="admin-table-wrap">
             <table>
