@@ -3,6 +3,7 @@ import { supabase } from "../lib/supabase.js";
 import PushAdmin from "./PushAdmin.jsx";
 import Partage from "./Partage.jsx";
 import Relance from "./Relance.jsx";
+import DemandeAvis from "./DemandeAvis.jsx";
 import PlanEditor from "./PlanEditor.jsx";
 import PhasesEditor from "./PhasesEditor.jsx";
 import LieuEditor from "./LieuEditor.jsx";
@@ -322,6 +323,7 @@ export default function Admin({ onLogout, onApercuInvite }) {
       {onglet === "notifications" && (
         <>
           <Partage />
+          <DemandeAvis invites={invites} />
           <PushAdmin />
         </>
       )}
