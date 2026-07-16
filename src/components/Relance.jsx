@@ -21,8 +21,18 @@ export default function Relance({ invites }) {
   });
 
   const lien = lienSite();
+
+  // Un couple est confirmé dès qu'UN membre répond (sa réponse vaut pour les deux).
+  // On ne relance donc pas un conjoint dont l'autre moitié a déjà répondu.
+  const parId = Object.fromEntries((invites || []).map((g) => [g.id, g]));
+  const partenaireARepondu = (g) => {
+    if (!g.couple_id) return false;
+    const p = parId[g.couple_id];
+    return !!(p && p.couple_id === g.id && p.rsvp);
+  };
+
   const sansReponse = (invites || []).filter(
-    (g) => !g.rsvp && !g.rattache_a && g.email && !g.email.endsWith("@vf2028.local")
+    (g) => !g.rsvp && !g.rattache_a && g.email && !g.email.endsWith("@vf2028.local") && !partenaireARepondu(g)
   );
   const emails = [...new Set(sansReponse.map((g) => (g.email || "").trim()).filter(Boolean))];
 
@@ -75,7 +85,8 @@ export default function Relance({ invites }) {
       <h2 className="admin-h2">Relancer les sans-réponse ✉️</h2>
       <p className="admin-sous">
         <strong>{sansReponse.length}</strong> personne{sansReponse.length > 1 ? "s n'ont" : " n'a"} pas encore répondu.
-        Le bouton ouvre votre messagerie avec un rappel pré-rempli, tout le monde en copie cachée.
+        Le bouton ouvre votre messagerie avec un rappel pré-rempli, tout le monde en copie cachée. Les couples dont
+        l'un des deux a déjà répondu sont considérés confirmés (une réponse vaut pour le couple) : ils ne sont pas relancés.
       </p>
 
       <label className="admin-partage-l">
