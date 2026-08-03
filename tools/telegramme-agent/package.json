@@ -1,0 +1,14 @@
+{
+  "name": "telegramme-agent",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Agent d'impression thermique pour Le Télégramme (Faire-part Vivant).",
+  "scripts": {
+    "start": "node agent.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0",
+    "node-thermal-printer": "^4.4.4"
+  }
+}
