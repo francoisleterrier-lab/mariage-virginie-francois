@@ -1528,6 +1528,32 @@ footer .credit a:hover {
   margin-bottom: 1.2rem;
 }
 
+/* Le Vitrail Sonore */
+.vitrail { padding: 4rem 0; }
+.vitrail-btn { margin-top: 1.4rem; }
+.vitrail-rec { background: #b0574f; animation: vitrail-rec 1.2s ease-in-out infinite; }
+@keyframes vitrail-rec { 0%, 100% { opacity: 1; } 50% { opacity: 0.72; } }
+@media (prefers-reduced-motion: reduce) { .vitrail-rec { animation: none; } }
+.vitrail-grille {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 1rem 0.6rem;
+  margin-top: 2.4rem;
+  justify-items: center;
+}
+.vitrail-petale { position: relative; margin: 0; display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
+.vitrail-petale > button:first-child {
+  border: none; background: transparent; padding: 0; cursor: pointer; line-height: 0;
+  border-radius: 50%; transition: transform 0.18s ease, filter 0.18s ease;
+  filter: drop-shadow(0 6px 14px rgba(34, 56, 44, 0.28));
+}
+.vitrail-petale > button:first-child:hover { transform: scale(1.08) rotate(6deg); }
+.vitrail-petale figcaption { font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 0.95rem; color: var(--encre2, #47554b); }
+.vitrail-x {
+  position: absolute; top: -0.3rem; right: 0.4rem; width: 1.5rem; height: 1.5rem; border-radius: 50%;
+  border: none; background: rgba(0, 0, 0, 0.45); color: #fff; font-size: 0.95rem; line-height: 1; cursor: pointer;
+}
+
 /* Le Tifo — fresque de lumière collective */
 .tifo-surface {
   position: fixed;
