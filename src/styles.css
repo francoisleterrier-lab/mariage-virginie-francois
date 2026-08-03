@@ -1528,6 +1528,19 @@ footer .credit a:hover {
   margin-bottom: 1.2rem;
 }
 
+/* Admin — onglet Animations (interrupteurs) */
+.anim-liste { list-style: none; padding: 0; margin: 1rem 0 0; display: flex; flex-direction: column; gap: 0.7rem; }
+.anim-item { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.9rem 1rem; border: 1px solid rgba(126, 150, 120, 0.35); border-radius: 12px; }
+.anim-txt { flex: 1; }
+.anim-txt strong { font-size: 1.02rem; }
+.anim-txt p { margin: 0.25rem 0 0; font-size: 0.85rem; color: var(--encre2, #47554b); }
+.anim-etat { margin-left: 0.5rem; font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.1rem 0.45rem; border-radius: 999px; background: rgba(126, 150, 120, 0.18); color: #5f7758; }
+.anim-etat.on { background: rgba(201, 162, 75, 0.22); color: #8f6d29; }
+.anim-switch { flex: 0 0 auto; width: 52px; height: 30px; border-radius: 999px; border: none; background: #cfd6c9; cursor: pointer; position: relative; transition: background 0.2s ease; }
+.anim-switch.on { background: var(--or, #c9a24b); }
+.anim-knob { position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.3); transition: transform 0.2s ease; }
+.anim-switch.on .anim-knob { transform: translateX(22px); }
+
 /* Le Télégramme */
 .telegramme { padding: 4rem 0; }
 .telegramme-form { max-width: 30rem; margin: 1.5rem auto 0; display: flex; flex-direction: column; gap: 0.7rem; }

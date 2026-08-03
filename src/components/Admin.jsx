@@ -14,6 +14,7 @@ import PagesPerso from "./PagesPerso.jsx";
 import AdminBandeSon from "./AdminBandeSon.jsx";
 import QuizAdmin from "./QuizAdmin.jsx";
 import CanalAdmin from "./CanalAdmin.jsx";
+import AnimationsAdmin from "./AnimationsAdmin.jsx";
 import Engagement from "./Engagement.jsx";
 import Familles from "./Familles.jsx";
 import EditInvite from "./EditInvite.jsx";
@@ -205,6 +206,9 @@ export default function Admin({ onLogout, onApercuInvite }) {
         <button role="tab" aria-selected={onglet === "canal"} className={onglet === "canal" ? "on" : ""} onClick={() => setOnglet("canal")}>
           Le Canal
         </button>
+        <button role="tab" aria-selected={onglet === "animations"} className={onglet === "animations" ? "on" : ""} onClick={() => setOnglet("animations")}>
+          Animations
+        </button>
       </div>
 
       {onglet === "reponses" && (
@@ -367,6 +371,7 @@ export default function Admin({ onLogout, onApercuInvite }) {
           </div>
         </>
       )}
+      {onglet === "animations" && <AnimationsAdmin />}
       {onglet === "familles" && <Familles invites={invites} onReload={charger} />}
       {onglet === "engagement" && <Engagement invites={invites} />}
 

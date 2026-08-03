@@ -39,15 +39,17 @@ export default function Vitrail({ profile }) {
   const [chrono, setChrono] = useState(0);
   const [err, setErr] = useState("");
   const [dispo, setDispo] = useState(true);
+  const [actif, setActif] = useState(false);
   const rec = useRef(null);
   const stopTimer = useRef(null);
   const audioRef = useRef(null);
 
   const charger = useCallback(async () => {
-    const { data, error } = await supabase
-      .from("voix")
-      .select("id, invite_id, prenom, chemin, params, created_at")
-      .order("created_at", { ascending: true });
+    const [{ data, error }, { data: anim }] = await Promise.all([
+      supabase.from("voix").select("id, invite_id, prenom, chemin, params, created_at").order("created_at", { ascending: true }),
+      supabase.from("parametres").select("valeur").eq("cle", "animations").maybeSingle(),
+    ]);
+    setActif(!!anim?.valeur?.vitrail);
     if (error) {
       setDispo(false);
       return;
@@ -170,6 +172,7 @@ export default function Vitrail({ profile }) {
   }
 
   if (!dispo) return null; // tables pas encore créées → section masquée
+  if (!actif) return null; // animation en veille (réglage admin)
 
   const estAdmin = profile?.role === "admin";
 
