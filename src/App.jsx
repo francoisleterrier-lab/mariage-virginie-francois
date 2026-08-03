@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "./lib/supabase.js";
 import { PhaseProvider } from "./lib/phase.jsx";
 import Gate from "./components/Gate.jsx";
@@ -8,6 +8,7 @@ import Intro from "./components/Intro.jsx";
 import Musique from "./components/Musique.jsx";
 import InstallBanner from "./components/InstallBanner.jsx";
 import DiaporamaLive from "./components/DiaporamaLive.jsx";
+import Tifo from "./components/Tifo.jsx";
 
 /* ============================================================
    RACINE — machine à états d'accès
@@ -22,6 +23,9 @@ export default function App() {
   const [profile, setProfile] = useState(null);
   const [apercuInvite, setApercuInvite] = useState(false); // admin : aperçu du site invité
   const [diaporama, setDiaporama] = useState(() => new URLSearchParams(location.search).get("diaporama") === "1");
+  const [tifoParam] = useState(() => new URLSearchParams(location.search).get("tifo")); // "1" | "regie" | null
+  const [tifoEtat, setTifoEtat] = useState(null); // { scene, t0 } diffusé par la régie
+  const tifoCh = useRef(null);
   const [introVue, setIntroVue] = useState(() => {
     try {
       return sessionStorage.getItem("vf-intro") === "1";
@@ -84,6 +88,35 @@ export default function App() {
     // le listener SIGNED_OUT bascule sur 'gate'
   }, []);
 
+  // Canal Realtime du Tifo : la régie diffuse la scène, tous les écrans réagissent
+  // (les téléphones ouverts basculent tout seuls en plein écran quand une scène démarre).
+  useEffect(() => {
+    if (phase !== "app" || !profile) return undefined;
+    const ch = supabase.channel("tifo-live", { config: { broadcast: { self: true } } });
+    ch.on("broadcast", { event: "scene" }, ({ payload }) => setTifoEtat(payload?.scene ? payload : null));
+    ch.subscribe();
+    tifoCh.current = ch;
+    return () => {
+      supabase.removeChannel(ch);
+      tifoCh.current = null;
+    };
+  }, [phase, profile]);
+
+  const tifoSend = useCallback((payload) => {
+    tifoCh.current?.send({ type: "broadcast", event: "scene", payload });
+    setTifoEtat(payload?.scene ? payload : null);
+  }, []);
+
+  const sortirTifo = useCallback(() => {
+    setTifoEtat(null);
+    try {
+      history.replaceState(null, "", location.pathname);
+    } catch {
+      /* ignore */
+    }
+    if (tifoParam) location.href = location.pathname; // recharge propre si ouvert via ?tifo=
+  }, [tifoParam]);
+
   // Contenu selon la phase (rendu SOUS l'intro, qui charge en avant-plan).
   let contenu;
   if (phase === "boot") {
@@ -111,6 +144,12 @@ export default function App() {
         </button>
       </div>
     );
+  } else if (tifoParam === "regie" && profile.role === "admin") {
+    // Régie du Tifo (mariés / DJ).
+    contenu = <Tifo mode="regie" profile={profile} etat={tifoEtat} onSend={tifoSend} onExit={sortirTifo} />;
+  } else if (tifoParam === "1" || tifoEtat?.scene) {
+    // Écran participant : ouvert via la notif (?tifo=1) ou bascule auto quand une scène démarre.
+    contenu = <Tifo mode="participant" profile={profile} etat={tifoEtat} onExit={sortirTifo} />;
   } else if (diaporama) {
     // Diaporama live plein écran (grand écran de la soirée), ouvert par les mariés connectés.
     contenu = (
@@ -141,11 +180,11 @@ export default function App() {
   return (
     <PhaseProvider>
       {contenu}
-      {/* Bande-son (démarre au 1er geste, persiste sur tout le site) — pas en mode diaporama. */}
-      {!diaporama && <Musique />}
+      {/* Bande-son (démarre au 1er geste, persiste sur tout le site) — pas en diaporama ni Tifo. */}
+      {!diaporama && !tifoParam && !tifoEtat?.scene && <Musique />}
       {/* Intro affichée dès le 1er rendu (une fois par session), la vidéo
           se charge en avant-plan pendant que l'app démarre derrière. */}
-      {!introVue && !diaporama && (
+      {!introVue && !diaporama && !tifoParam && !tifoEtat?.scene && (
         <Intro
           onFinish={() => {
             try {

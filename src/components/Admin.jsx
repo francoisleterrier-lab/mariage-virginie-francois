@@ -353,7 +353,20 @@ export default function Admin({ onLogout, onApercuInvite }) {
       {onglet === "pages" && <PagesPerso invites={invites} />}
       {onglet === "bandeson" && <AdminBandeSon invites={invites} />}
       {onglet === "quiz" && <QuizAdmin invites={invites} />}
-      {onglet === "canal" && <CanalAdmin />}
+      {onglet === "canal" && (
+        <>
+          <CanalAdmin />
+          <div className="admin-bloc">
+            <h2 className="admin-h2">Le Tifo — la fresque de lumière ✨</h2>
+            <p className="admin-sous">
+              Le jour J, faites lever les téléphones : les écrans des invités s'allument à l'unisson et forment une
+              fresque vivante (cœur, vague dorée…). Ouvrez la régie sur votre téléphone, réveillez les invités, puis
+              lancez une scène.
+            </p>
+            <a className="btn-vert" href="?tifo=regie">✨ Ouvrir la régie du Tifo</a>
+          </div>
+        </>
+      )}
       {onglet === "familles" && <Familles invites={invites} onReload={charger} />}
       {onglet === "engagement" && <Engagement invites={invites} />}
 
