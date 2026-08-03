@@ -21,6 +21,7 @@ function sceau(id) {
 
 export default function Coffre({ profile }) {
   const [dispo, setDispo] = useState(true);
+  const [actif, setActif] = useState(false);
   const [tous, setTous] = useState([]); // invites_public : {id, nom}
   const [echanges, setEchanges] = useState([]);
   const [config, setConfig] = useState({ objectif: 25, texte: "", media: null });
@@ -30,11 +31,13 @@ export default function Coffre({ profile }) {
   const moi = profile?.id ? sceau(profile.id) : { code: "", emoji: "🌿" };
 
   const charger = useCallback(async () => {
-    const [{ data: inv }, { data: ech, error }, { data: par }] = await Promise.all([
+    const [{ data: inv }, { data: ech, error }, { data: par }, { data: anim }] = await Promise.all([
       supabase.from("invites_public").select("id, nom"),
       supabase.from("coffre_echanges").select("id, collecteur_id, cible_id"),
       supabase.from("parametres").select("valeur").eq("cle", "coffre").maybeSingle(),
+      supabase.from("parametres").select("valeur").eq("cle", "animations").maybeSingle(),
     ]);
+    setActif(!!anim?.valeur?.coffre);
     if (error) { setDispo(false); return; }
     setDispo(true);
     setTous(inv || []);
@@ -81,6 +84,7 @@ export default function Coffre({ profile }) {
   }
 
   if (!dispo) return null;
+  if (!actif) return null; // animation en veille (réglage admin)
 
   const total = echanges.length;
   const objectif = Math.max(1, config.objectif || 25);

@@ -25,6 +25,7 @@ function chaleur(d) {
 
 export default function Chasse({ profile }) {
   const [dispo, setDispo] = useState(true);
+  const [enService, setEnService] = useState(false);
   const [balises, setBalises] = useState([]);
   const [decouvertes, setDecouvertes] = useState([]);
   const [ma, setMa] = useState(null); // {lat,lng}
@@ -39,10 +40,12 @@ export default function Chasse({ profile }) {
   const [pt, setPt] = useState(null);
 
   const charger = useCallback(async () => {
-    const [{ data: b, error }, { data: d }] = await Promise.all([
+    const [{ data: b, error }, { data: d }, { data: anim }] = await Promise.all([
       supabase.from("chasse_balises").select("*").order("ordre"),
       supabase.from("chasse_decouvertes").select("id, balise_id, invite_id"),
+      supabase.from("parametres").select("valeur").eq("cle", "animations").maybeSingle(),
     ]);
+    setEnService(!!anim?.valeur?.chasse);
     if (error) { setDispo(false); return; }
     setDispo(true);
     setBalises(b || []);
@@ -125,6 +128,7 @@ export default function Chasse({ profile }) {
   }
 
   if (!dispo) return null;
+  if (!enService) return null; // animation en veille (réglage admin)
   if (balisesActives.length === 0 && !estAdmin) return null;
 
   const total = balisesActives.length;

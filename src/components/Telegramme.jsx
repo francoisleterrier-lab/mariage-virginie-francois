@@ -14,16 +14,15 @@ export default function Telegramme({ profile }) {
   const [envoye, setEnvoye] = useState(false);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
-  const estAdmin = profile?.role === "admin";
 
   const charger = useCallback(async () => {
-    const [{ data: par, error }, { count }] = await Promise.all([
-      supabase.from("parametres").select("valeur").eq("cle", "telegramme").maybeSingle(),
+    const [{ data: par }, { count, error }] = await Promise.all([
+      supabase.from("parametres").select("valeur").eq("cle", "animations").maybeSingle(),
       supabase.from("telegrammes").select("id", { count: "exact", head: true }),
     ]);
+    setActif(!!par?.valeur?.telegramme);
     if (error) { setDispo(false); return; }
     setDispo(true);
-    setActif(!!par?.valeur?.actif);
     setNb(count || 0);
   }, []);
 
@@ -32,12 +31,6 @@ export default function Telegramme({ profile }) {
     const t = setInterval(charger, 15000);
     return () => clearInterval(t);
   }, [charger]);
-
-  async function basculer() {
-    const next = !actif;
-    setActif(next);
-    await supabase.from("parametres").upsert({ cle: "telegramme", valeur: { actif: next } }, { onConflict: "cle" });
-  }
 
   async function envoyer() {
     if (!texte.trim()) return;
@@ -64,7 +57,7 @@ export default function Telegramme({ profile }) {
   }
 
   if (!dispo) return null;
-  if (!actif && !estAdmin) return null;
+  if (!actif) return null; // en veille (réglage admin → onglet Animations)
 
   return (
     <section className="telegramme" id="telegramme">
@@ -76,29 +69,18 @@ export default function Telegramme({ profile }) {
           dans le bocal des mariés. {nb > 0 && <>Déjà <strong>{nb}</strong> télégramme{nb > 1 ? "s" : ""} ce soir.</>}
         </p>
 
-        {actif ? (
-          envoye ? (
-            <p className="telegramme-ok">✨ Votre télégramme part à l'impression… allez le récupérer près du bar !</p>
-          ) : (
-            <div className="telegramme-form">
-              <textarea rows={3} maxLength={220} value={texte} onChange={(e) => setTexte(e.target.value)} placeholder="Votre petit mot aux mariés…" />
-              <div className="telegramme-actions">
-                <label className="album-gal">🖼 Photo (option)<input type="file" accept="image/*" hidden onChange={(e) => setFichier(e.target.files?.[0] || null)} /></label>
-                <button type="button" className="btn-vert" disabled={busy || !texte.trim()} onClick={envoyer}>{busy ? "…" : "Imprimer mon télégramme"}</button>
-              </div>
-              {fichier && <p className="telegramme-fichier">📎 {fichier.name}</p>}
-              {err && <p className="gate-err" style={{ color: "#b06a4f" }}>{err}</p>}
-            </div>
-          )
+        {envoye ? (
+          <p className="telegramme-ok">✨ Votre télégramme part à l'impression… allez le récupérer près du bar !</p>
         ) : (
-          <p className="album-vide">Section inactive — activez-la quand l'imprimante est prête.</p>
-        )}
-
-        {estAdmin && (
-          <label className="telegramme-toggle">
-            <input type="checkbox" checked={actif} onChange={basculer} />
-            {actif ? "Télégramme actif (imprimante branchée)" : "Activer le télégramme"}
-          </label>
+          <div className="telegramme-form">
+            <textarea rows={3} maxLength={220} value={texte} onChange={(e) => setTexte(e.target.value)} placeholder="Votre petit mot aux mariés…" />
+            <div className="telegramme-actions">
+              <label className="album-gal">🖼 Photo (option)<input type="file" accept="image/*" hidden onChange={(e) => setFichier(e.target.files?.[0] || null)} /></label>
+              <button type="button" className="btn-vert" disabled={busy || !texte.trim()} onClick={envoyer}>{busy ? "…" : "Imprimer mon télégramme"}</button>
+            </div>
+            {fichier && <p className="telegramme-fichier">📎 {fichier.name}</p>}
+            {err && <p className="gate-err" style={{ color: "#b06a4f" }}>{err}</p>}
+          </div>
         )}
       </div>
     </section>
