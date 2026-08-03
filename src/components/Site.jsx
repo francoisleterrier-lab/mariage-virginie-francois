@@ -19,6 +19,7 @@ import Canal from "./Canal.jsx";
 import Vitrail from "./Vitrail.jsx";
 import Coffre from "./Coffre.jsx";
 import Chasse from "./Chasse.jsx";
+import Telegramme from "./Telegramme.jsx";
 import Citation from "./Citation.jsx";
 import BotanicalDecor from "./BotanicalDecor.jsx";
 import MaTable from "./MaTable.jsx";
@@ -759,6 +760,9 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
 
       {/* LA CHASSE AU DOMAINE — radar GPS vers des souvenirs cachés */}
       <Chasse profile={profile} />
+
+      {/* LE TÉLÉGRAMME — mot qui s'imprime en vrai (si activé par les mariés) */}
+      <Telegramme profile={profile} />
 
       {/* CARTE À GRATTER — petit jeu interactif, un mot caché à révéler au doigt */}
       <section className="gratter-sec">

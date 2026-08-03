@@ -1528,6 +1528,15 @@ footer .credit a:hover {
   margin-bottom: 1.2rem;
 }
 
+/* Le Télégramme */
+.telegramme { padding: 4rem 0; }
+.telegramme-form { max-width: 30rem; margin: 1.5rem auto 0; display: flex; flex-direction: column; gap: 0.7rem; }
+.telegramme-form textarea { padding: 0.8rem 0.9rem; border: 1px solid rgba(126, 150, 120, 0.5); border-radius: 12px; font: inherit; resize: vertical; }
+.telegramme-actions { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; }
+.telegramme-fichier { font-size: 0.82rem; color: var(--encre2, #47554b); }
+.telegramme-ok { font-family: "Cormorant Garamond", serif; font-size: 1.35rem; margin-top: 1.4rem; color: var(--encre, #24301f); }
+.telegramme-toggle { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1.6rem; font-size: 0.85rem; color: var(--encre2, #47554b); cursor: pointer; }
+
 /* La Chasse au domaine */
 .chasse { padding: 4rem 0; }
 .chasse-radar { margin-top: 1.6rem; }
