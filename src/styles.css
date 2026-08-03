@@ -1528,6 +1528,33 @@ footer .credit a:hover {
   margin-bottom: 1.2rem;
 }
 
+/* Le Coffre des invités */
+.coffre { padding: 4rem 0; }
+.coffre-mon-sceau {
+  display: inline-flex; align-items: center; gap: 1rem; margin: 1.6rem auto 0;
+  padding: 1rem 1.4rem; border-radius: 16px; background: var(--blanc, #fff);
+  border: 1px solid rgba(126, 150, 120, 0.4); box-shadow: 0 16px 34px -26px rgba(34, 56, 44, 0.5);
+}
+.coffre-emoji { font-size: 2.6rem; line-height: 1; }
+.coffre-sceau-l { font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--or); margin: 0; }
+.coffre-code { font-family: "Jost", sans-serif; font-weight: 500; font-size: 2rem; letter-spacing: 0.32em; margin: 0.1rem 0 0; color: var(--encre, #24301f); }
+.coffre-ajout { display: flex; gap: 0.5rem; max-width: 24rem; margin: 1.6rem auto 0; }
+.coffre-ajout input {
+  flex: 1; min-width: 0; padding: 0.7rem 0.9rem; border: 1px solid rgba(126, 150, 120, 0.5); border-radius: 12px;
+  background: #fff; font: inherit; text-align: center; letter-spacing: 0.3em; text-transform: uppercase;
+}
+.coffre-msg { margin-top: 0.7rem; font-size: 0.95rem; color: var(--encre2, #47554b); }
+.coffre-barre { max-width: 30rem; height: 12px; margin: 1.6rem auto 0.5rem; background: rgba(126, 150, 120, 0.2); border-radius: 999px; overflow: hidden; }
+.coffre-barre span { display: block; height: 100%; background: linear-gradient(90deg, var(--sage, #7f9678), var(--or, #c9a24b)); border-radius: 999px; transition: width 0.5s ease; }
+.coffre-compte { font-size: 0.9rem; color: var(--encre2, #47554b); }
+.coffre-ouvert { margin-top: 1.5rem; }
+.coffre-cadenas { font-size: 3.2rem; }
+.coffre-bravo { font-family: "Cormorant Garamond", serif; font-size: 1.6rem; margin: 0.4rem 0; }
+.coffre-recompense-txt { max-width: 40ch; margin: 0.6rem auto; color: var(--encre2, #47554b); }
+.coffre-media { width: 100%; max-width: 480px; border-radius: 14px; margin: 1rem auto 0; display: block; }
+.coffre-admin { max-width: 30rem; margin: 2rem auto 0; text-align: left; background: rgba(126, 150, 120, 0.08); border-radius: 12px; padding: 0.6rem 1rem; }
+.coffre-admin summary { cursor: pointer; font-size: 0.9rem; color: var(--encre2, #47554b); }
+
 /* Le Vitrail Sonore */
 .vitrail { padding: 4rem 0; }
 .vitrail-btn { margin-top: 1.4rem; }
