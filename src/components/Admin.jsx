@@ -13,6 +13,7 @@ import DefisEditor from "./DefisEditor.jsx";
 import PagesPerso from "./PagesPerso.jsx";
 import AdminBandeSon from "./AdminBandeSon.jsx";
 import QuizAdmin from "./QuizAdmin.jsx";
+import CanalAdmin from "./CanalAdmin.jsx";
 import Engagement from "./Engagement.jsx";
 import Familles from "./Familles.jsx";
 import EditInvite from "./EditInvite.jsx";
@@ -201,6 +202,9 @@ export default function Admin({ onLogout, onApercuInvite }) {
         <button role="tab" aria-selected={onglet === "engagement"} className={onglet === "engagement" ? "on" : ""} onClick={() => setOnglet("engagement")}>
           Engagement
         </button>
+        <button role="tab" aria-selected={onglet === "canal"} className={onglet === "canal" ? "on" : ""} onClick={() => setOnglet("canal")}>
+          Le Canal
+        </button>
       </div>
 
       {onglet === "reponses" && (
@@ -349,6 +353,7 @@ export default function Admin({ onLogout, onApercuInvite }) {
       {onglet === "pages" && <PagesPerso invites={invites} />}
       {onglet === "bandeson" && <AdminBandeSon invites={invites} />}
       {onglet === "quiz" && <QuizAdmin invites={invites} />}
+      {onglet === "canal" && <CanalAdmin />}
       {onglet === "familles" && <Familles invites={invites} onReload={charger} />}
       {onglet === "engagement" && <Engagement invites={invites} />}
 
