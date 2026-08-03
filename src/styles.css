@@ -1528,6 +1528,32 @@ footer .credit a:hover {
   margin-bottom: 1.2rem;
 }
 
+/* La Chasse au domaine */
+.chasse { padding: 4rem 0; }
+.chasse-radar { margin-top: 1.6rem; }
+.chasse-jauge {
+  width: 210px; height: 210px; margin: 0 auto; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; text-align: center;
+  background: radial-gradient(circle, color-mix(in srgb, var(--c) calc(var(--t) * 90%), #0b0f0c) 0%, #0b0f0c 72%);
+  box-shadow: 0 0 calc(20px + var(--t) * 60px) color-mix(in srgb, var(--c) 70%, transparent);
+  transition: background 0.6s ease, box-shadow 0.6s ease;
+}
+.chasse-temp { color: #fff; font-family: "Cormorant Garamond", serif; font-size: 1.5rem; padding: 0 1rem; }
+.chasse-indice { margin-top: 1rem; font-style: italic; color: var(--encre2, #47554b); }
+.chasse-fini { font-family: "Cormorant Garamond", serif; font-size: 1.5rem; margin-top: 1.2rem; }
+.chasse-admin { max-width: 34rem; margin: 2rem auto 0; text-align: left; background: rgba(126, 150, 120, 0.08); border-radius: 12px; padding: 0.6rem 1rem; }
+.chasse-admin summary { cursor: pointer; font-size: 0.9rem; color: var(--encre2, #47554b); }
+.chasse-form { display: flex; flex-direction: column; gap: 0.5rem; margin: 0.8rem 0; }
+.chasse-form input { padding: 0.55rem 0.75rem; border: 1px solid rgba(126, 150, 120, 0.5); border-radius: 10px; font: inherit; }
+.chasse-liste { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.4rem; }
+.chasse-liste li { display: flex; justify-content: space-between; align-items: center; gap: 0.6rem; font-size: 0.9rem; padding: 0.35rem 0; border-bottom: 1px solid rgba(126, 150, 120, 0.25); }
+.chasse-liste-act { display: flex; gap: 0.4rem; align-items: center; }
+.chasse-up { cursor: pointer; }
+.chasse-reveal { position: fixed; inset: 0; z-index: 9000; background: rgba(10, 14, 11, 0.92); display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+.chasse-reveal-box { max-width: 32rem; width: 100%; background: var(--blanc, #fff); border-radius: 18px; padding: 1.8rem; text-align: center; }
+.chasse-reveal-box h3 { font-family: "Cormorant Garamond", serif; font-weight: 500; font-size: 1.7rem; margin: 0.2rem 0 1rem; }
+.chasse-media { width: 100%; border-radius: 12px; margin-bottom: 1rem; }
+
 /* Le Coffre des invités */
 .coffre { padding: 4rem 0; }
 .coffre-mon-sceau {
