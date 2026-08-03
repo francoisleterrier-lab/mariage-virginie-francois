@@ -1528,6 +1528,52 @@ footer .credit a:hover {
   margin-bottom: 1.2rem;
 }
 
+/* Le Tifo — fresque de lumière collective */
+.tifo-surface {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: #0b0f0c;
+  transition: background 0.08s linear;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tifo-attente { text-align: center; color: #f3eee1; padding: 2rem; }
+.tifo-attente p { font-family: "Cormorant Garamond", serif; font-size: 1.7rem; margin: 0.6rem 0 0.2rem; }
+.tifo-attente span { font-size: 0.95rem; opacity: 0.8; }
+.tifo-etoile { font-size: 3rem; color: #d8b063; animation: tifo-pulse 1.8s ease-in-out infinite; }
+@keyframes tifo-pulse { 0%, 100% { opacity: 0.4; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1.1); } }
+@media (prefers-reduced-motion: reduce) { .tifo-etoile { animation: none; } }
+.tifo-quitter {
+  position: absolute; top: max(0.8rem, env(safe-area-inset-top)); right: 1rem;
+  width: 2.4rem; height: 2.4rem; border-radius: 50%; border: none;
+  background: rgba(255, 255, 255, 0.12); color: #fff; font-size: 1.4rem; line-height: 1; cursor: pointer;
+}
+
+.tifo-regie {
+  position: fixed; inset: 0; z-index: 9000; overflow: auto;
+  background: radial-gradient(circle at 50% 20%, #1b2a20, #0b0f0c);
+  color: #f3eee1; display: flex; align-items: flex-start; justify-content: center;
+  padding: 2rem 1.2rem max(2rem, env(safe-area-inset-bottom));
+}
+.tifo-regie-box { width: 100%; max-width: 32rem; }
+.tifo-regie-box h1 { font-family: "Cormorant Garamond", serif; font-weight: 500; font-size: 2rem; margin: 0.3rem 0 0.8rem; }
+.tifo-regie-note { font-size: 0.92rem; opacity: 0.85; line-height: 1.5; }
+.tifo-reveil { width: 100%; margin-top: 1.2rem; }
+.tifo-regie-notif { font-size: 0.85rem; color: #d8b063; margin: 0.5rem 0 0; }
+.tifo-scenes { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.7rem; margin: 1.4rem 0; }
+.tifo-scene-btn {
+  padding: 1.1rem 0.6rem; border-radius: 14px; border: 1px solid rgba(216, 176, 99, 0.4);
+  background: rgba(255, 255, 255, 0.05); color: #f3eee1; font-size: 1rem; cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+.tifo-scene-btn:hover { background: rgba(255, 255, 255, 0.1); }
+.tifo-scene-btn.on { background: rgba(216, 176, 99, 0.22); border-color: #d8b063; transform: translateY(-1px); }
+.tifo-regie-actions { display: flex; gap: 0.6rem; }
+.tifo-regie-actions .btn-ghost { flex: 1; color: #f3eee1; border-color: rgba(255, 255, 255, 0.25); }
+.tifo-regie-etat { text-align: center; font-size: 0.85rem; opacity: 0.7; margin-top: 1rem; }
+
 /* Le Canal — annonces après le mariage */
 .canal { padding: 2.5rem 0 0; }
 .canal .wrap { display: flex; flex-direction: column; gap: 1.6rem; }
