@@ -15,6 +15,7 @@ import Covoiturage from "./Covoiturage.jsx";
 import Defis from "./Defis.jsx";
 import AgendaBouton from "../AgendaBouton.jsx";
 import ScratchCard from "../ScratchCard.jsx";
+import Canal from "./Canal.jsx";
 import Citation from "./Citation.jsx";
 import BotanicalDecor from "./BotanicalDecor.jsx";
 import MaTable from "./MaTable.jsx";
@@ -441,6 +442,9 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
 
       {/* ACCUEIL PERSONNALISÉ (si une page a été publiée pour ce foyer) */}
       <PersonalWelcome profile={profile} />
+
+      {/* LE CANAL — annonces après le mariage (naissance…), s'affiche s'il y en a */}
+      <Canal profile={profile} />
 
       {/* HÉRO */}
       <header className="hero" id="accueil">
