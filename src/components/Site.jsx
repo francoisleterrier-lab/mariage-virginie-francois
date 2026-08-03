@@ -17,6 +17,7 @@ import AgendaBouton from "../AgendaBouton.jsx";
 import ScratchCard from "../ScratchCard.jsx";
 import Canal from "./Canal.jsx";
 import Vitrail from "./Vitrail.jsx";
+import Coffre from "./Coffre.jsx";
 import Citation from "./Citation.jsx";
 import BotanicalDecor from "./BotanicalDecor.jsx";
 import MaTable from "./MaTable.jsx";
@@ -751,6 +752,9 @@ export default function Site({ profile, onReload, onLogout, retourAdmin }) {
 
       {/* LE VITRAIL SONORE — la voix des invités devient une œuvre collective */}
       <Vitrail profile={profile} />
+
+      {/* LE COFFRE DES INVITÉS — jeu de rencontres coopératif */}
+      <Coffre profile={profile} />
 
       {/* CARTE À GRATTER — petit jeu interactif, un mot caché à révéler au doigt */}
       <section className="gratter-sec">
