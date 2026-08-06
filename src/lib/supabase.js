@@ -24,6 +24,11 @@ export const supabase = createClient(url, anon, {
 /* Traduit les erreurs Supabase Auth en messages français précis. */
 export function messageErreurAuth(error) {
   const m = (error?.message || "").toLowerCase();
+  // Erreur réseau (le navigateur n'a pas pu joindre le serveur) : très souvent
+  // un navigateur intégré (WhatsApp/Facebook/Instagram…), la traduction de page,
+  // un bloqueur de pub/VPN ou une connexion instable.
+  if (m.includes("failed to fetch") || m.includes("networkerror") || m.includes("load failed") || m.includes("network request failed"))
+    return "Impossible de joindre le serveur. Ouvrez le lien dans votre navigateur (Chrome ou Safari) plutôt que dans l'application (WhatsApp, Facebook…), désactivez la traduction de la page et un éventuel VPN/bloqueur, puis réessayez.";
   if (m.includes("already registered") || m.includes("already been registered"))
     return "Cet e-mail est déjà inscrit — utilisez « Déjà inscrit·e ».";
   if (m.includes("invalid login credentials"))
